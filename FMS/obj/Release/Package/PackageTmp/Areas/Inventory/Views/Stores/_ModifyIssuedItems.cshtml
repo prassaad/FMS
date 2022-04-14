@@ -1,0 +1,399 @@
+﻿@model FMS.Models.InventoryModel.IssuedStock
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    StoresController objStore = new StoresController();
+    int hasAvailable = ViewBag.hasAvailable;
+    int sno = 0;
+}          
+<div class="clsmodalheader">Transfer Issued Items</div>
+<div style="overflow: auto;z-index:9999;height:500px;">
+  <div id="ModifyIssueloading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 30%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loader.gif")" alt="Loading..." />
+    </div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-condensed table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <b style="font-size: 16px;"><i class="fa fa-info-circle"></i>&nbsp;Issue Info.</b>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Issue.No# :
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._IssuedMaster.IssueNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Indent Ref.No# :
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._IssuedMaster.IndentRefNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Issue Dt:
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._IssuedMaster.IssueDt)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Issue Qty:
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._IssuedMaster.IssueQty)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Vehicle :
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._IssuedMaster.tbl_vehicles.VehicleRegNum)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 57%;">
+                        &nbsp;&nbsp;&nbsp;&nbsp; Issue Item Status :
+                    </td>
+                    <td style="width: 43%;">
+                        @if (Model._IssuedMaster.Status.ToUpper() == "REJECTED")
+                        {
+                            <span class="label label-important">Rejected</span>
+                        }
+                        else if (Model._IssuedMaster.Status.ToUpper() == "EDIT")
+                        {
+                            <span class="label label-important">Edit</span>
+                        }
+                        else if (Model._IssuedMaster.Status.ToUpper() == "CONFIRM")
+                        {
+                            <span class="label label-pending">Confirm</span>
+                        }
+                        else if (Model._IssuedMaster.Status.ToUpper() == "READYTOTRANSFER")
+                        {
+                            <span class="label label-warning">Ready to Transfer</span>
+                        }
+                        else if (Model._IssuedMaster.Status.ToUpper() == "TRANSFER")
+                        {
+                            <span class="label label-success">Transfer</span>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12">
+       <div class="errorHandler alert alert-danger" style="font-weight:bold;display:none;">
+		<i class="fa fa-remove-sign"></i> <span id="spnError" class="field-validation-error"></span>
+	</div>
+        @if (Model._IssuedDetail.ToList().Count > 0)
+        {
+           
+            <table class="table table-striped table-bordered table-hover">
+               
+                    <tr>
+                        <th>
+                            SNo.
+                        </th>
+                       
+                        <th>
+                            Product
+                        </th>
+                       
+                        <th>Req. Qty</th>
+                        <th>
+                            Avail. Qty
+                        </th>
+                       
+                        <td>
+                            Status
+                        </td>
+                       @* <th></th>*@
+                    </tr>
+                @{
+            double AvaiQty = 0; double IssueQty = 0; sno = 0;
+                 }
+                    @foreach (var item in Model._IssuedDetail)
+                    {  
+                        <tr>
+                            @{
+                        InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                        InventoryIssuedMaster _Issued = db.InventoryIssuedMasters.Where(a => a.IssueNo == item.IssueNo).FirstOrDefault();
+                        long vehicleId = Convert.ToInt64(_Issued.VehicleId);
+                        decimal AvailQty = (decimal)objStore.GetAvailQty(item.ReceiptNo,(int)item.ItemId, vehicleId);
+                            }
+                            <td>
+                              @{   var btnEdit = "btnEdit_" + item.Slno + item.ItemId + vehicleId;
+                                   var btnSave = "btnSave_" + item.Slno + item.ItemId + vehicleId;
+                                   var btnClose = "btnClose_" + item.Slno + item.ItemId + vehicleId;
+                                   var txtReqQty = "txtReqQty_" + item.Slno + item.ItemId + vehicleId;
+                                   var spnIssQty = "spnIssQty_" + item.Slno + item.ItemId + vehicleId;
+                                   var spnAvailQty = "spnAvailQty_" + item.Slno + item.ItemId + vehicleId;
+                                  IssueQty +=(double)item.IssuedQty;
+                                  sno = sno + 1;
+                               }
+
+                                @Html.Encode(sno)
+                            </td>
+                           
+                            <td>
+                                @Html.Encode(item.ItemText)
+                            </td>
+                          
+                           
+                            <td  id="td_IssueQty">
+                               <span id="@spnIssQty" class="sp_qty">@Html.Encode(item.IssuedQty)</span>
+                              
+                               <input type="text" name="@txtReqQty" id="@txtReqQty" value="@item.IssuedQty" class="txtReqQty" style=" display: none;width: 60px;", onkeypress = "return numberValidate(event);"/>
+                            </td>
+                            <td>
+                            @*  @{
+                                AvaiQty = ((double)AvailQty - IssueQty);
+                                if (AvaiQty < 0)
+                                {
+                                    AvaiQty = 0;
+                                }
+                                }*@
+                             <span id="@spnAvailQty">@Html.Encode(AvailQty)</span>
+                            </td>
+                            
+                            <td>
+                                @if (item.Status.ToUpper() == "AVAILABLE")
+                                {
+                                    <span class="label label-success">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-warning">Waiting for Availability</span>
+                                }
+                            </td>
+                            @*<td>
+                                <a id="@btnEdit" class="btn btn-primary btn-xs btnEdit_CSS" onclick="EditIssueItem('@item.Slno','@item.ItemId','@CampusId')"href="#"  title="Edit"><i class="clip-pencil-2"></i></a>
+                                <a id="@btnSave" class="btn btn-green btn-xs btn_Save_CSS"  onclick="SaveIssueItem('@item.Id','@item.Slno','@item.ItemId','@CampusId','@Model._IssuedMaster.Id')" href="#"  style="display:none;" title="Save">Save</a>
+                                <a id="@btnClose" class="btn btn-warning btn-xs btn_EditClose_CSS"  onclick="EditCloseIssueItem('@Model._IssuedMaster.Id') " href="#"  style="display:none;" title="Cancel">Cancel</a>
+                                <a id="btnDelIssueItem" class="btn btn-danger btn-xs btnDelete_CSS" onclick="DeleteIssueItem('@item.Id','@item.Slno','@item.ItemId','@CampusId','@Model._IssuedMaster.Id');" href="#"  title="Delete"><i class="fa fa-times-circle"></i></a>
+                            </td>*@
+                           </tr>
+                    }
+               
+            </table>
+
+        }
+        else
+        {
+            <h3>
+                No Issue item(s) found to display.
+            </h3>
+                            }
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td colspan="7" style="text-align: center;">
+                  @*<input type="button" id="btItemAdd" class="btn btn-primary btn-xs" onclick="AddItemsModal('@Model._IssuedMaster.VehicleId');" value="Add" />*@
+                         
+                  <input type="button" id="btnTransfer" class="btn btn-primary btn-xs" value="Transfer" onclick="TransferIssueItems('@Model._IssuedMaster.Id','@Model._IssuedMaster.VehicleId')"/>
+                             
+                    <input type="button" id="btnCancel" class="btn btn-primary btn-xs"  onclick="ClosePopUpWindow('@Model._IssuedMaster.Id')" value="Cancel" />
+                               
+                    @Html.Hidden("hdnIssuedId", Model._IssuedMaster.Id)
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</div>
+<div id="divSimpleModalInner" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loadingInner" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalInnerDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script type="text/javascript">
+    if ('@hasAvailable' == 0) {
+        $("#btnTransfer").hide();
+    }
+    else {
+        $("#btnTransfer").show();
+    }
+    function ClosePopUpWindow(IssueId) {
+        $.modal.close();
+        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId;
+    }
+    $('#ModifyIssueloading').fadeOut('slow');
+    function EditIssueItem(slNo, ItemId, VehicleId) {
+        $(".errorHandler").hide();
+        $(".txtReqQty").hide();
+        $('#txtReqQty_' + slNo + ItemId + VehicleId).show();
+        $('.sp_qty').show();
+        $('table tr #td_IssueQty #spnIssQty_' + slNo + ItemId + VehicleId).hide();
+
+        $('#btnEdit_' + slNo + ItemId + VehicleId).hide();
+
+        $('#btnSave_' + slNo + ItemId + VehicleId).show();
+        $('#btnClose_' + slNo + ItemId + VehicleId).show();
+
+        if ($('table tr td  .btn_Save_CSS').show()) {
+            $('table tr td  .btn_Save_CSS').hide();
+            $('table tr td  .btn_EditClose_CSS').hide();
+            $('table tr td  .btnEdit_CSS').show();
+            $('#btnSave_' + slNo + ItemId + VehicleId).show();
+            $('#btnClose_' + slNo + ItemId + VehicleId).show();
+            $('#btnEdit_' + slNo + ItemId + VehicleId).hide();
+            $(".btnAdd_CSS").hide();
+            $(".btnDelete_CSS").hide();
+        }
+
+    }
+    function EditCloseIssueItem(IssueId) {
+        $("#ModifyIssueloading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("ModifyIssuedItems", "Stores", new { area = "Inventory" })?IssueId=' + IssueId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#divTransIssuedItems').html(result);
+                      $("#ModifyIssueloading").fadeOut('slow');
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+          }
+          $(".txtReqQty").change(function () {
+              var Qty = $(this).val();
+              var txtId = $(this).attr('id');
+              var Ids = txtId.split('_');
+              var AvailQty = $("#spnAvailQty_" + Ids[1]).html();
+              var a = parseInt(Qty)
+              var b = parseInt(AvailQty)
+              if (Qty.charAt(0) == 0) { // or use Qty.slice(0, 1)
+                  $(this).val("")
+                  return;
+              }
+          });
+            function DeleteIssueItem(Id, Slno, ItemId, VehicleId, IssueId) {
+                $("#ModifyIssueloading").fadeIn('slow');
+                $.post('@Url.Action("DeleteIssueItem", "Stores", new { area = "Inventory" })?Id=' + Id + '&ItemId=' + ItemId + '&IssueId=' + IssueId + '&VehicleId=' + VehicleId + '', function (data) {
+                    if (data.success) {
+                        $(".errorHandler").show();
+                        $("#spnError").text(data.msg);
+                        $('#ModifyIssueloading').show();
+                        EditCloseIssueItem(data.IssueId)
+                        $('#ModifyIssueloading').hide();
+                    }
+                    else {
+                        $(".errorHandler").show();
+                        $("#spnError").text(data.msg);
+                        $('#ModifyIssueloading').hide();
+                    }
+                });
+            }
+            function AddItemsModal(VehicleId) {
+                $("#div_loadingInner").fadeIn('slow');
+                $('#divSimpleModalInner').modal
+            ({
+                containerCss: {
+                    width: 510,
+                    height: 550
+                },
+                close: false,
+                onShow: function (dialog) {
+                    dialog.data.find('.no').click(function () {
+                        $.modal.close();
+                    });
+                    $("#btnItemAdd").attr("href", "#");
+                    $('#div_loadingInner').show();
+                    AddItems(VehicleId, 1);
+                }
+            });
+            }
+          function AddItems(VehicleId, IsEdit) {
+              $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("AddIssueItems", "Stores", new { area = "Inventory" })?VehicleId=' + VehicleId + "&IsEdit=" + IsEdit,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loadingInner').hide();
+                      $('#divSimpleModalInnerDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+          }
+          function SaveIssueItem(Id, Slno, ItemId, VehicleId, IssueId) {
+              var txtReqQty = $('#txtReqQty_' + Slno + ItemId + VehicleId).val();
+              if (txtReqQty != "") {
+                  $.post('@Url.Action("SaveIssueItem", "Stores", new { area = "Inventory" })?Id=' + Id + '&txtReqQty=' + txtReqQty + '&VehicleId=' + VehicleId + '', function (data) {
+                      if (data.success) {
+                          $(".btnDelete_CSS").hide();
+                          $('#btnSave_' + Slno + ItemId + VehicleId).hide();
+                          $('#btnClose_' + Slno + ItemId + VehicleId).hide();
+                          $('#btnEdit_' + Slno + ItemId + VehicleId).show();
+                          $(".errorHandler").show();
+                          $("#spnError").text(data.msg);
+                          $('#ModifyIssueloading').show(); 
+                          var delay =1000; //1 seconds
+                          setTimeout(function () {
+                              EditCloseIssueItem(IssueId)
+                              $('#ModifyIssueloading').hide();
+                          }, delay);
+                         
+                      }
+                      else {
+                          $(".errorHandler").show();
+                          $("#spnError").text(data.msg);
+                          $('#ModifyIssueloading').hide();
+                      }
+                      $(".btnDelete_CSS").show();
+                  });
+              }
+              else {
+                  $(".errorHandler").show();
+                  $("#spnError").text("Please enter issue quantity.");
+                  $('#txtReqQty_' + Slno + ItemId + VehicleId).focus();
+              }
+          }
+
+          function TransferIssueItems(IssueId, VechicleId) {
+              $.post('@Url.Action("TransferIssueItems", "Stores", new { area = "Inventory" })?IssueId=' + IssueId + '&VehicleId=' + VechicleId + '', function (data) {
+                  $('#ModifyIssueloading').show();
+                  if (data.success) {
+                      alert(data.msg);
+                      $('#ModifyIssueloading').hide();
+                      $("#TransIssuedItems").modal('hide');
+                      var delay = 1000; //1 seconds
+                      setTimeout(function () {
+                          window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId;
+                      }, delay);
+                  }
+                  else {
+                      alert(data.msg);
+                      $('#ModifyIssueloading').hide();
+                  }
+              });
+          }
+          function numberValidate(evt) {
+              var charCode = (evt.which) ? evt.which : evt.keyCode
+              if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+              { return true; } else { return false; }
+          }
+       
+</script>

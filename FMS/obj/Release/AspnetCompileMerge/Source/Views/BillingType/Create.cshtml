@@ -1,0 +1,40 @@
+﻿@model FMS.Models.tbl_billing_types
+
+@{
+    ViewBag.Title = "Add Billing Type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Add  Billing Type</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                            <li class="lastactive">@Html.ActionLink("List of Billing Type", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+ <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Add  Billing Type</legend>
+         <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td>
+                Billing Type :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.BillingType)
+                @Html.ValidationMessageFor(model => model.BillingType)
+            </td>
+        </tr>
+         <tr>
+            <td colspan="2">
+                <input type="submit" value="Create" /> 
+            </td>
+        </tr>
+        </table>
+    </fieldset>
+}
+

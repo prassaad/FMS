@@ -1,0 +1,164 @@
+﻿@model FMS.Models.InventoryItemsMaster
+@{
+    System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+}
+<div class="clsmodalheader">Add New Spare Item / Service </div>
+<br />
+<br />
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmItemAdd", @enctype = "multipart/form-data" }))
+{
+   @Html.ValidationSummary(true)
+   <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td colspan="2" style="margin-top: 20px;">
+                            <span id="errormsg" class="clsmark"></span>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Item Category <span class="symbol required">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("ItemCatId", (IEnumerable<SelectListItem>)ViewBag.ItemCategory, "- Select -", new { @style = "width:160px", @class = "form-control" })
+                            @Html.Hidden("MessItem", true)
+                            @Html.Hidden("InSummary", false)
+                            @Html.Hidden("IsItem", (Int32)ViewBag.IsItem)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Item <span class="symbol required">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBox("ItemText", Model.ItemText, new { @style = "width:160px", @maxlength = 50, @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Unit Price 
+                        </td>
+                        <td>
+                            @Html.TextBox("Amount", "", new { @style = "width:160px;", @maxlength = 8, @class = "validate form-control", @onkeypress = "return numberValidatedot(event);" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            UOM <span class="symbol required">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("UnitId", (IEnumerable<SelectListItem>)ViewBag.Units, "- Select -", new { @style = "width:160px", @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="button" class="btn btn-primary" value="Save & Continue" id="btnAddItem" /> 
+                            <input type="button" class="btn btn-primary" value="Save & Close" id="btnSaveCloseItem" /> 
+                            <input type="button" class="btn btn-primary" value="Close" id="btnCloseItem" />
+                        </td>
+                    </tr>
+                </table>
+          
+}
+
+<script type="text/javascript">
+
+    $('#btnAddItem').click(function () {
+        if (RequiredValidation()) {
+            $.post('@Url.Action("AddItemPartial", "Item", new { area = "Inventory" })', $('#frmItemAdd').serialize(), function (data) {
+                if (data.success) {
+                    if (confirm('Are you want to one more item ?')) {
+                        ClearAll();
+                    }
+                    else {
+                        $.modal.close();
+                        LoadItem(data.ItemType);
+                    }
+                }
+                else {
+                    alert(data.msg);
+                }
+            });
+        }
+    });
+
+    $('#btnCloseItem').click(function () {
+        $.modal.close();
+    });
+    $('#btnSaveCloseItem').click(function () {
+        if (RequiredValidation()) {
+            $.post('@Url.Action("AddItemPartial", "Item", new { area = "Inventory" })', $('#frmItemAdd').serialize(), function (data) {
+                alert(data.msg);
+                if (data.success) {
+                    $.modal.close();
+                    LoadItem(data.ItemType);
+                }
+            });
+        }
+    });
+
+    function ClearAll() {
+        $('#ItemText').val("");
+        $('#ItemCatId').val(""); $('#frmItemAdd input[type="Amount"]').val("");
+        $('#UnitId').val("");
+        $('#ItemText').focus();
+    }
+    function RequiredValidation() {
+        var ItemText = $('#ItemText').val();
+        var ItemCode = $('#ItemCode').val();
+        var ItemCatId = $('#ItemCatId').val();
+        var UnitId = $('#UnitId').val();
+        var ErrorMsg = $("#errormsg");
+
+        if (ItemCatId == "") {
+            ErrorMsg.show();
+            ErrorMsg.text("Please select item category.");
+            $('#ItemCatId').focus();
+            return false;
+        }
+        if (ItemText == "") {
+            ErrorMsg.show();
+            ErrorMsg.text("Please enter item name.");
+            $('#ItemText').focus();
+            return false;
+        }
+        if (UnitId == "") {
+            ErrorMsg.show();
+            ErrorMsg.text("Please select units.");
+            $('UnitId').focus();
+            return false;
+        }
+        ErrorMsg.hide();
+        return true;
+    }
+
+    $(function () {
+        $(".datetimepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+     
+    $('#ItemCode').change(function () {
+        $.get('/Inventory/Item/VerifyItemCode?_ItemCode=' + $(this).val(), function (data) {
+            if (data == 'True') {
+                $("#errormsg").show();
+                $("#errormsg").text("Item Code has already exists.");
+                $('#ItemCode').val('');
+                $('#ItemCode').focus();
+            }
+        });
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

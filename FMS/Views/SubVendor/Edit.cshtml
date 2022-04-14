@@ -1,0 +1,426 @@
+﻿@model FMS.Models.tbl_vendor_details
+
+@{
+    ViewBag.Title = "Edit Sub Vendor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Sub Vendor [ @Model.FirstName @Model.LastName ]</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive"> @Html.ActionLink("List of Sub Vendors","Index") </li>
+        </ul>
+    </div>
+</div>
+<link href="../../Content/jquery.stepy.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery.stepy.min.js" type="text/javascript"></script>
+@using (Html.BeginForm("Edit", "SubVendor", FormMethod.Post, new { enctype = "multipart/form-data", id = "callback" }))
+{
+    @Html.ValidationSummary(true)
+    
+    <fieldset title="Vendor" class="step" id="callback-step-1" style="display: block;
+        width: 98%">
+        <legend>Sub Vendor Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SubVendorValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    First Name :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.FirstName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                    @Html.Hidden("VendorID", Model.ID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Last Name :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.LastName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(a => a.Address, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Contact Number :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.ContactNumber, new { @maxlength = "10" })
+                    @Html.ValidationMessageFor(model => model.ContactNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    PAN Card Number :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.PanCardNumber)
+                    @Html.ValidationMessageFor(model => model.PanCardNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Photo :
+                </td>
+                <td>
+                    <input type="file" name="Photo" id="PhotoUrl" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if (Model.PhotoUrl != null)
+                    {
+                        <img src="../../Content/uploadimages/@Model.PhotoUrl" width="80" height="80" alt="Photo" />
+                                                                                            }
+                    else
+                    {
+                        <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                                                                                            }
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>
+                        Bank Details:</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Holder Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountHolderName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Bank Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.BankName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Branch :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.Branch)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Type :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountType)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IFSC Code :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.IFSCCode)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save Changes" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset title="Vehicle" class="step" id="callback-step-2" style="width: 98%">
+        <legend>Vehicle Details</legend>
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: top;">
+                    <h2>
+                        List of the Vehicles</h2>
+                    @if ((bool)FMS.Models.core.GetUserAccess(1, User.Identity.Name).Add)
+                    { <p style="float: right; margin-top: -20px;">
+                        <a style="color:Red;text-decoration:underline;cursor:pointer;" onclick="AddVehicleForm(@Model.ID);">
+                            Add New Vehicle</a></p> }
+                    <div id="divVehicleList">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset> 
+    <fieldset title="Driver" class="step" id="callback-step-3" style="width: 98%">
+        <legend>Driver Details</legend>
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: top;">
+                    <h2>
+                        List of the Drivers</h2>
+                         @if ((bool)FMS.Models.core.GetUserAccess(6, User.Identity.Name).Add)
+                         {
+                    <p style="float: right; margin-top: -20px;">
+                        <a  style="color:Red;text-decoration:underline;cursor:pointer;" onclick="AddDriverForm(@Model.ID);">
+                            Add Driver</a></p>}
+                    <div id="divDriversList">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset> 
+
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+
+                    <div id="divSimpleModalDet">
+                       
+                    </div>
+               
+    <a class="no"></a>
+
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+ <script type="text/javascript"> 
+ $('#callback').stepy({ titleClick: true, select: function (index) {
+             switch (index) {
+                 case 1:
+                     break;
+                 case 2:
+                     var vendorID = $("#VendorID").val();   
+                     VehiclesList(vendorID);
+                     break;
+                 case 3:
+                     var vendorID = $("#VendorID").val();
+                     DriversList(vendorID);
+                     break;
+             }
+         }
+});
+
+ // Vehicles Tab
+
+     function VehiclesList(vendorID) {
+         $.ajax(
+    {
+        type: "POST",
+        url: "../../Vehicle/GetVehicleListByVendor",
+        data: "VendorId=" + vendorID,
+        dataType: "html",
+        success: function (result) {
+            $('#divVehicleList').html(result);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+}
+ 
+function ViewVehicleDetails(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width:710,  
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+     $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/ViewVehicleDetails",
+        data: "Id=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+}
+function AddVehicleForm(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width:710,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/CreatePartial",
+        data: "VendorId=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+}
+ 
+
+// Drivers Tab 
+function DriversList(vendorID) {
+    $.ajax(
+    {
+        type: "POST",
+        url: "../../Driver/GetDriverListByVendor",
+        data: "VendorId=" + vendorID,
+        dataType: "html",
+        success: function (result) {
+            $('#divDriversList').html(result);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+}
+function ViewDriverDetails(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width:710,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Driver/ViewDriverDetails",
+        data: "Id=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+   
+}
+function AddDriverForm(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+             width:710,
+             height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Driver/CreatePartial",
+        data: "VendorId=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+
+}
+
+$("#ContactNumber").change(function () {
+    var result = isValidMobileNumber(this.value)
+    $("#SubVendorValidateMsg").hide();
+    if (result == false) {
+        $("#SubVendorValidateMsg").show();
+        $("#SubVendorValidateMsg").html("Contact number should be digit..");
+        document.getElementById("" + this.id + "").value = '';
+        $("#" + this.id).focus();
+    }
+});
+$("#PanCardNumber").change(function () {
+    var result = isAlphaNumeric(this.value)
+    $("#SubVendorValidateMsg").hide();
+    if (result == false) {
+        $("#SubVendorValidateMsg").show();
+        $("#SubVendorValidateMsg").html("Pan card number should be alphanumeric.");
+        document.getElementById("" + this.id + "").value = '';
+        $("#" + this.id).focus();
+    }
+});
+$(".isName").change(function () {
+    var result = IsPureCharsAndSpace($.trim(this.value))
+    $("#SubVendorValidateMsg").hide();
+    if (this.id == "FirstName") {
+        if (result == false) {
+            $("#SubVendorValidateMsg").show();
+            $("#SubVendorValidateMsg").html("First Name should be alphabets.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    }
+    else {
+        if (result == false) {
+            $("#SubVendorValidateMsg").show();
+            $("#SubVendorValidateMsg").html("Last Name should be alphabets.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    }
+});
+ </script>

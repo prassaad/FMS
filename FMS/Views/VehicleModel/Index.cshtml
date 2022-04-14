@@ -1,0 +1,43 @@
+﻿@model IEnumerable<FMS.Models.tbl_vehicle_models>
+@using FMS.Models
+@{
+    ViewBag.Title = "List of Vehicle Models";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>List of Vehicle Models</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                            @if ((bool)core.GetUserAccess(30, User.Identity.Name).Add)
+                            {  <li class="active">@Html.ActionLink("Create New", "Create")</li> }
+                        </ul>
+                    </div>
+            </div>
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+<thead>
+    <tr>
+        <th>
+            Vehicle Model Name
+        </th>
+        <th>
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleModelName)
+            </td>
+            <td>
+              @if ((bool)core.GetUserAccess(30, User.Identity.Name).Edit)
+              {  @Html.ActionLink("Edit", "Edit", new { id = item.ID })  }
+               @if ((bool)core.GetUserAccess(30, User.Identity.Name).Delete)
+               {<text> | </text>  @Html.ActionLink("Delete", "Delete", new { id = item.ID }) }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

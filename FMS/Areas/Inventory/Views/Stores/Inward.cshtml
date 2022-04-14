@@ -1,0 +1,170 @@
+﻿@model IEnumerable<FMS.Models.InventoryStockRegister>
+@using FMS.Areas.Inventory.Controllers;
+@using FMS.Models;
+@{
+    ViewBag.Title = "Inward";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+   
+    StoresController obStores = new StoresController();     
+}
+<h2>List of Inwards</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-arrow-left-2"></i><a href="@Url.Action("Index", "Home", new { area = "" })" class="ctrlGoBack button_bg">
+                Go Back</a> </li>
+            @if ((bool)core.GetUserAccess(63, User.Identity.Name).Add)
+            { <li class="active"> <a id="FiscialYears" href="@Url.Action("InwardCreate", "Stores")">Inward Entry</a> </li> }
+            
+        </ul>
+    </div>
+</div>
+<div class="col-sm-12">
+
+@if (Model.Count() > 0)
+{
+
+    <table class="table table-striped table-hover table-full-width dataTable" id="dt_a">
+        <thead>
+            <tr>
+                <th>
+                    Receipt No.
+                </th>
+                <th>
+                    Entry Dt.
+                </th>
+                <th>
+                    Received Dt.
+                </th>
+                <th>
+                    Received By
+                </th>
+                <th>
+                    Items
+                </th>
+                <th>
+                    Total Stock
+                </th>
+                <th>
+                    Issued Qty.
+                </th>
+                <th>
+                    QOH
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="#" id="@item.ID" data-toggle="modal" onclick="ViewStockModal('@item.ID')" style="color:Red;text-decoration:underline;">@item.ReceiptNO</a>
+                    </td>
+                    <td>
+                        @item.EntryDt.Value.ToShortDateString()
+                    </td>
+                    <td>
+                        @item.ReceivedDt.Value.ToShortDateString()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReceivedBy)
+                    </td>
+                    <td>
+                        @obStores.GetStockRegisterList((long)item.ID)
+                    </td>
+                    <td>
+                        @obStores.InwardStockDetailsByStockId((long)item.ID)
+                    </td>
+                    <td>
+                        @item.InventoryStockRegDetails.Sum(a => a.IssuedSlod)
+                    </td>
+                    <td>
+                        @item.InventoryStockRegDetails.Sum(a => a.ReceQty - (a.IssuedSlod == null ? 0 : a.IssuedSlod))
+                    </td>
+                    <td>
+                        @if ((bool)core.GetUserAccess(63, User.Identity.Name).Edit)
+                        { <a href="@Url.Action("InwardEdit", "Stores", new { id = item.ID })" class="cls_edit" title="Edit"></a> }
+                        @if ((bool)core.GetUserAccess(63, User.Identity.Name).Delete)
+                        {
+                            <a href="#" onclick="DeleteInward('@item.ID')"   class="cls_delete" title="Delete">
+                            </a>
+                        }
+                    </td>
+                </tr>
+}
+        </tbody>
+    </table>
+
+}
+else
+{
+    <h3>
+        Inward stock was not found.
+    </h3> 
+}
+
+</div>
+
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 35%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+<script type="text/javascript">
+    $('#loading').hide();
+    function ViewStockModal(id) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 520,
+                 height: 350
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 GetStockDetails(id);
+             }
+         });
+    }
+    function GetStockDetails(id) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("GetStockDetails", "Stores", new { area = "Inventory" })?Id=' + id,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').fadeOut('slow');
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function DeleteInward(Id) {
+        if (confirm('Are sure want to delete this item from list?')) {
+            $.post('@Url.Action("InwardDelete", "Stores", new { area = "Inventory" })?id=' + Id, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    window.location.href = '@Url.Action("Inward", "Stores", new { area = "Inventory" })';
+                }
+                else {
+                    alert(data.msg);
+                }
+            });
+        }
+    }
+    function GetPurchaseOrderDetails(PORefNo) {
+        window.location.href = '@Url.Action("GetPurchaseOrderDetailsByRefNo", "Stores", new { area = "Inventory" })?RefNo=' + PORefNo;
+    } 
+</script>

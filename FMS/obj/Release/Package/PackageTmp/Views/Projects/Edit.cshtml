@@ -1,0 +1,400 @@
+﻿@model FMS.Models.tbl_projects
+@{
+    ViewBag.Title = "Edit Project";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Edit Project</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("List of Projects", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("Edit", "Projects", FormMethod.Post, new { @id = "frmProjects", @enctype = "multipart/form-data" }))
+{
+ 
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Edit Project</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+                    <tr>
+                <td colspan="2">
+                    <span id="errormsg" class="clsmark"></span>
+                </td>
+            </tr>
+             <tr>
+                    <td>
+                        Client <span class="symbol required">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.LoadClients, "-Select Client-", new { @style = "width:220px" })
+                        <span id="errClientId" style="display: none; color: Red">Please Select Client</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Project Name <span class="symbol required">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("ProjectName", Model.ProjectName, new { @maxlength = 50, @style = "width:220px;", @class = "isName1" })
+                        <span id="errProjectName" style="display: none; color: Red">Please Enter ProjectName</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Project Id <span class="symbol required">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("ProjectCode", Model.ProjectCode, new { @maxlength = 30, @style = "width:220px;" })
+                        <span id="errProjectCode" style="display: none; color: Red">Please Enter ProjectCode</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Billing Type <span class="symbol required">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("BillingTypeId", (IEnumerable<SelectListItem>)ViewBag.LoadBillTypes, "-Select Billing Type -", new { @style = "width:220px" })
+                        <span id="errBillingTypeId" style="display: none; color: Red">Please Enter BillingType</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Spoc Name : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("SpocName", Model.SpocName, new { @maxlength = 250, @style = "width:220px;", @class = "isNames" })
+                        <span style="color: Red">@*<small><i>Multiple names separated by (,) </i></small>*@</span>
+                        <span id="errSpocName" style="display: none; color: Red">Please enter Spoc Name</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Spoc Mobile : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("SpocMobile", Model.SpocMobile, new { @maxlength = 32, @style = "width:220px;", @placeholder = "ex:9999999999", @class = "isMobileNumber" })
+                        @*<span style="color: Red"><small><i>Multiple mobile separated by (,) </i></small>
+                        </span>*@<span id="errSpocMobile" style="display: none; color: Red">Please enter Spoc
+                            Mobile Number in digits</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Spoc Email Id : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("SpocMailId", Model.SpocMailId, new { @maxlength = 250, @style = "width:220px;", @placeholder = "ex:abc@gmail.com" ,@class = "isValidEmailAddress1"})
+                        @*<span style="color: Red"><small><i>Multiple mail separated by (,) </i></small></span>*@
+                        <span id="errSpocMailId" style="display: none; color: Red">Please enter Spoc Email Id</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Manager Name : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("MgrName", Model.MgrName, new { @maxlength = 250, @style = "width:220px;", @class = "isNames" })
+                       @* <span style="color: Red"><small><i>Multiple names separated by (,) </i></small></span>*@
+                        <span id="errMgrName" style="display: none; color: Red">Please enter Manager Name</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Manager Mobile Number : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("MgrMobile", Model.MgrMobile, new { @maxlength = 32, @style = "width:220px;", @placeholder = "ex:9999999999", @class = "isMobileNumber" })
+                       @* <span style="color: Red"><small><i>Multiple mobile separated by (,) </i></small>
+                        </span>*@<span id="errMgrMobile" style="display: none; color: Red">Please enter Manager
+                            Mobile Number in digits</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Manager Email Id : <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("MgrMailId", Model.MgrMailId, new { @maxlength = 250, @style = "width:220px;", @placeholder = "ex:abc@gmail.com", @class = "isValidEmailAddress1" })
+                        @*<span style="color: Red"><small><i>Multiple mail separated by (,) </i></small></span>*@
+                        <span id="errMgrMailId" style="display: none; color: Red">Please enter Manager Email
+                            Id </span>
+                    </td>
+                </tr>
+                <tr>
+                <td colspan="2">
+                    <input type="button" value="Save" id="btnSubmit" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+<script type="text/javascript" language="javascript">
+    //Validation for Manager Mobile Number by sarath 26-01-16
+    $("#MgrMobile").change(function () {
+        var result = isMobileNumber(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Invalid Manager Mobile No..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+
+
+    //Validation for Spoc Mobile Number by sarath  26-01-16 
+
+
+    $("#SpocMobile").change(function () {
+        var result = isMobileNumber(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Invalid Spoc Mobile No..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+
+    $("#ProjectCode").change(function () {
+        var result = isAlphaNumeric(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Project Id should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $("#SpocName").change(function () {
+        var result = isNames(this.value)
+        $("#SpanValidateMsg").hide();
+        if (this.id == "SpocName") {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Spoc Name should be alphabets and seperated by commas.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+
+    $("#ProjectName").change(function () {
+        var result = isName1(this.value)
+        $("#SpanValidateMsg").hide();
+        if (this.id == "SpocName") {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Project Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Project Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+
+
+
+    $("#MgrName").change(function () {
+        var result = isNames(this.value)
+        $("#SpanValidateMsg").hide();
+        if (this.id == "SpocName") {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Manager Name should be alphabets and seperated by commas.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+
+    //Validation for Manager Mail Id by sarath 26-01-16
+    $("#SpocMailId").change(function () {
+        var result = isValidEmailAddress1(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Please enter Spoc mail Id");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+
+    //Validation for Manager Mail Id by sarath 26-01-16
+
+    $("#MgrMailId").change(function () {
+        var result = isValidEmailAddress1(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Invalid Manager mail Id");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+
+
+    $('#btnSubmit').click(function () {
+        if (ValidationForErrorMsg()) {
+
+            $.post('@Url.Action("Edit", "Projects", new { area = "" })', $("#frmProjects").serialize(), function (data) {
+                alert(data.msg);
+                if (data.success) {
+                    window.location.href = '@Url.Action("Index", "Projects", new { area = "" })';
+                    alert("Project Added Successfully");
+                }
+
+                else {
+                    alert("Error occured");
+
+                }
+
+            });
+        }
+
+        function ValidationForErrorMsg() {
+            var clientId = $('#ClientId').val();
+            var projectName = $('#ProjectName').val();
+            var projectCode = $('#ProjectCode').val();
+            var billingType = $('#BillingTypeId').val();
+            var spocname = $('#SpocName').val();
+            var spocmobile = $('#SpocMobile').val();
+            var spocmailid = $('#SpocMailId').val();
+            var mgrname = $('#MgrName').val();
+            var mgrmobile = $('#MgrMobile').val();
+            var mgrmailid = $('#MgrMailId').val();
+            if (clientId == '') {
+                $('#errClientId').show();
+                return false;
+            }
+            if (projectName == '') {
+                $('#errProjectName').show();
+                return false;
+            }
+
+            if (projectCode == '') {
+                $('#errProjectCode').show();
+                return false;
+            }
+            if (billingType == '') {
+                $('#errBillingTypeId').show();
+                return false;
+            }
+            if (spocname == '') {
+                $('#errSpocName').show();
+                return false;
+            }
+            if (spocmobile == '') {
+                $('#errSpocMobile').show();
+                return false;
+            }
+            if (spocmailid == '') {
+                $('#errSpocMailId').show();
+                return false;
+            }
+            if (mgrname == '') {
+                $('#errMgrName').show();
+                return false;
+            }
+            if (mgrmobile == '') {
+                $('#errMgrMobile').show();
+                return false;
+            }
+            if (mgrmailid == '') {
+                $('#errMgrMailId').show();
+                return false;
+            }
+            return true;
+        }
+    });
+
+
+    //Validation for Project Name Dupliucation by Sarath
+    $("#ProjectName").change(function () {
+        var ProjectName = $(this).val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("VerifyProjectName", "Projects", new { area = "" })',
+            data: "ProjectName=" + ProjectName + "",
+            dataType: "html",
+            success: function (data) {
+                if (data == 'True') {
+
+                    $('#errormsg').html('Project Name is already exists');
+                    $('#ProjectName').val(''); $('#ProjectName').focus();
+                    return false;
+                }
+                else {
+                    $("#errormsg").hide();
+
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+
+    });
+
+    // Validation for Project Code Duplication by Sarath
+    $('#ProjectCode').change(function () {
+        var ProjectCode = $(this).val();
+        $.ajax({
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("VerifyProjectCode", "Projects", new { area = "" })',
+            data: "ProjectCode=" + ProjectCode + "",
+            dataType: "html",
+            success: function (data) {
+                if (data == 'True') {
+
+                    $('#errormsg').html('Project Id is already exists');
+                    $('#ProjectCode').val(''); $('#ProjectCode').focus();
+                    return false;
+                }
+                else {
+                    $("#errormsg").hide();
+
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+
+    });
+</script>

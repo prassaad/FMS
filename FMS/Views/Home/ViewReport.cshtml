@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "View Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string linkid = ViewBag.linkId;
+}
+@using FMS.Models
+<style type="text/css">
+    .tbldashboard
+    {
+        width: 100% !important;
+        margin-bottom: 18px;
+        padding: 0px;
+        border-collapse: separate;
+        font-size: 13px;
+        border-radius: 4px;
+    }
+</style>
+<div id="rep_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+<h2 class="nonPrintable">
+    View DashBoard Report
+</h2>
+<div class="bread_title nonPrintable">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(12, User.Identity.Name).List)
+            {<li class="lastactive"><a href="@Url.Action("DashBoard", "Home")">DashBoard</a> </li>}
+        </ul>
+    </div>
+</div>
+
+<table class="tblboarder tbldashboard">
+    <tr>
+        <td>
+            <div id="ClientWiseTripView">
+            </div>
+        </td>
+    </tr>
+</table>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="divlog_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/loading-icon.gif" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script type="text/javascript" language="javascript">
+
+    window.onload = function () {
+        $("#rep_loading").fadeOut('slow');
+        $("#rep_loading").hide();
+//        if ($('#ClientWiseTripView').html() != '') {
+//            $("#rep_loading").fadeOut('slow');
+//        }
+    }
+
+    $(document).ready(function () {
+        if ('@linkid' == 'link1') {
+            GetClientWiseTripView();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link2') {
+            ShowAlerts();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link3') {
+            DriverUtilization();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link4') {
+            DieselAmountsPendingReport();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link5') {
+            GetMonthlyProfitNLoss();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link6') {
+            InActiveDutyLogSheet();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link7') {
+            TaxDeductionsReport();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link8') {
+            VehServiceAlerts();
+            $("#rep_loading").hide();
+        }
+        else if ('@linkid' == 'link9') {
+            VehServicePendingAlerts();
+            $("#rep_loading").hide();
+        }
+    });
+    
+    function GetClientWiseTripView() {
+        $('#dash_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            url: "/Home/ClientWiseTripView",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#dash_loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    function ShowAlerts() {
+        $('#dash_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Home/Alerts",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#dash_loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function InActiveDutyLogSheet() {
+        $('#loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Home/InActiveDutyLogSheet",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+        $('#loading').fadeOut('slow');
+    }
+    function DriverUtilization() {
+        $('#dash_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Home/DriverUtilizationReport",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#dash_loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function DieselAmountsPendingReport() {
+        $('#dash_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Reports/DieselAmountsPendingReport",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#dash_loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetMonthlyProfitNLoss() {
+        $('#dash_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Home/GetMonthlyClientWiseProfitNLoss",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#dash_loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function TaxDeductionsReport() {
+        $('#loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Reports/TaxDeductionReport",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function VehServiceAlerts() {
+        $('#loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Reports/VehServiceAlerts",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function VehServicePendingAlerts() {
+        $('#loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Reports/VehServicePendingAlerts",
+            dataType: "html",
+            success: function (data) {
+                $("#ClientWiseTripView").html(data);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+</script>

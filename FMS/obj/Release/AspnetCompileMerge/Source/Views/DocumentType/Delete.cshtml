@@ -1,0 +1,24 @@
+﻿@model FMS.Models.tbl_documents
+
+@{
+    ViewBag.Title = "Delete Document type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Document type</h2>
+
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Document types", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+<h3>Are you sure you want to delete this @Model.DocumentType ?</h3>
+
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}

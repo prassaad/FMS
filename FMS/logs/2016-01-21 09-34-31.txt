@@ -1,0 +1,4 @@
+[2016-01-21 09:34:31.3078] [127.0.0.1] [ERROR] [An object with the same key already exists in the ObjectStateManager. The existing object is in the Modified state. An object can only be added to the ObjectStateManager again if it is in the added state.] [superadmin] [   at System.Data.Objects.ObjectContext.VerifyRootForAdd(Boolean doAttach, String entitySetName, IEntityWrapper wrappedEntity, EntityEntry existingEntry, EntitySet& entitySet, Boolean& isNoOperation)
+   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.AdhocLogEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\Abdhul\FMS\Controllers\CardAssignmentController.cs:line 1037]

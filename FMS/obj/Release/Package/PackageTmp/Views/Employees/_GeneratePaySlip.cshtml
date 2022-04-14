@@ -1,0 +1,338 @@
+﻿@model FMS.Models.EmployeeManagement
+@{
+    decimal TotEarnings = 0;
+    decimal TotDeductions = 0;             
+}
+<link href="../../Content/invoice.print.css" rel="stylesheet" type="text/css" media="print" />
+          
+<style type="text/css">
+     #printable { display: none; }
+    @@media print
+    {
+       #printable { display: block; }
+        fieldset
+        {
+          width: 80% ! important;
+        }
+        #div_address
+        {
+        	margin-left: 16% ! important; float: left;
+        }
+        #div_logo
+        {
+        	float: right;margin-right:2%;
+        }
+    }
+    .cls_address
+    {
+        width: 100%;
+    }
+    fieldset
+    {
+        width: 70%;
+        text-align: center;
+    }
+    table th td
+    {
+        border-top: 1px solid #AFAFAF;
+    }
+    .clslabel
+    {
+        font-weight: bold;
+        color: #000;
+        float: none !important;
+    }
+    .clsspan
+    {
+        font-weight: bold;
+        color: #000066;
+        margin-left: 0px !important;
+        float: none !important;
+    }
+    .cls_header th
+    {
+    	background-color:#889192 ! important;
+    	color:White;
+    }
+</style>
+<center>
+    @if (Model.employees != null)
+    {
+        if (Model.empPayBill.Approved != null)
+        {
+        <div class="nonPrintable" id="printIcon" style="float:left;">
+            Click here to print:<a href="#" onclick="javascript:ClickHereToPrint('divGeneratePaySlip');">
+                <img alt="Print Report" src="../../Content/images/printer.jpeg" />
+            </a>
+        </div>    
+        <div id="divGeneratePaySlip">
+        <fieldset>
+        <legend>Pay Slip</legend>
+        <div class="cls_address">
+            <h3 style="font-size: 25px;color:#0DA5E0;">
+                @FMS.ApplicationSettings.OrgName
+            </h3>
+        </div>
+        <div style="margin-left: 39%; float: left;" id="div_address">
+            <h3>
+                @FMS.ApplicationSettings.Address1 ,
+                <br />
+                @FMS.ApplicationSettings.Address2 ,
+                <br />
+                EMAIL : @FMS.ApplicationSettings.Email
+                <br />
+                PHONE: @FMS.ApplicationSettings.Phone
+            </h3>
+        </div>
+        <div style="float: left;margin-right:26%;" id="div_logo">
+            <h3>
+                <img src="../../Content/images/logo.png" />
+            </h3>
+        </div>
+        
+        <div class="cls_address">
+            <h2>
+               <b> Pay Slip for the period of @(ViewBag.Month) @DateTime.Now.Year </b>
+            </h2>
+        </div>
+        <table class="table table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Employee Id
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.EmpNo</span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        Name</label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.FirstName @Model.employees.LastName </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Department</label>
+                </td>
+                <td>
+                    <span class="clsspan"> @Model.employees.tbl_departments.DisplayName </span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        Designation
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.tbl_designations.DisplayName</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Date of Joining
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.DOJ.Value.ToString("dd/MM/yyyy")</span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        PF Account Number
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.EPFNo</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Days Worked
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan"> @Model.empPayBill.TotalPresent </span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        ESI Account Number
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.ESIRegNo</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Bank A/c No.
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.BankAccNo </span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        Father's/Husband's Name
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">@Model.employees.FatherName</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="clslabel">
+                        Earned Leave
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">-</span>
+                </td>
+                <td>
+                    <label class="clslabel">
+                        Casual Leave
+                    </label>
+                </td>
+                <td>
+                    <span class="clsspan">-</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border-top: none;">
+                    <table class="table-striped table-condensed dTableR dataTable">
+                        <tr class="cls_header">
+                            <th>
+                                  Earnings 
+                            </th>
+                            <th style="text-align:right">
+                                Amount (in Rs)  
+                            </th>
+                        </tr>
+                        @{ TotEarnings = 0; }
+                        @foreach (var item in Model.customList.Where(a => a.Text2.ToUpper() == "EARNINGS").ToList())
+                        {
+                            <tr>
+                                <td>
+                                <label class="clslabel">     @item.Text1 </label>
+                                </td>
+                                <td style="text-align:right;">
+                                <span class="clsspan">       @item.Value2 </span>
+                                </td>
+                            </tr>
+                                                        TotEarnings += (decimal)item.Value2;
+                        }
+                        <tr>
+                            <td>
+                                <label class="clslabel">  Total Earnings: </label>
+                            </td>
+                           <td style="text-align:right;">
+                                <span class="clsspan">  @TotEarnings </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td colspan="2" style="border-top: none;">
+                    <table class="table-striped table-condensed dTableR dataTable">
+                       <tr class="cls_header">  
+                            <th>
+                                 Deductions  
+                            </th>
+                            <th style="text-align:right">
+                                  Amount (in Rs)  
+                            </th>
+                        </tr>
+                        @{ TotDeductions = 0; }
+                        @foreach (var item in Model.customList.Where(a => a.Text2.ToUpper() == "DEDUCTIONS").ToList())
+                        {
+                            <tr>
+                                <td>
+                                <label class="clslabel">  @item.Text1 </label>
+                                </td>
+                                <td style="text-align:right;">
+                                 <span class="clsspan">  @item.Value2 </span>
+                                </td>
+                            </tr>
+                                                    TotDeductions += (decimal)item.Value2;
+                        }
+                        <tr>
+                            <td>
+                                <label class="clslabel">  Total Deductions: </label>
+                            </td>
+                           <td style="text-align:right;">
+                                <span class="clsspan">  @TotDeductions </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                  <label class="clslabel"> Net Pay(Rounded) </label>
+                </td>
+                <td style="text-align:right;">
+                    <span class="clsspan">
+                        @Html.Encode(String.Format("{0:N}", Math.Round(TotEarnings - TotDeductions, 0)))
+                    </span>
+                </td>
+            </tr>
+               <tr>
+                <td>
+                    
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                     
+                </td>
+            </tr>  
+             <tr>
+                <td>
+                    Employer's Signature
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    Employee's Signature 
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+        </div>    
+        }
+        else{
+          <h2 style="text-align:center">Pay slip was not approved.</h2>      
+        }
+    }
+    else
+    {
+        <h2 style="text-align:center">No pay slip was generated.</h2>
+    }
+</center>
+<script>
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            self.print();
+        }
+    }
+</script>

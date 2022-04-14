@@ -1,0 +1,233 @@
+﻿@model FMS.Models.tbl_ehs_details
+@{
+    Session["EHSPenaltyList"] = null;
+}
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+<style type="text/css">
+ .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+     .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+     .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+</style>
+<div class="clsmodalheader">Add EHS Penalty Details</div>
+@using (Html.BeginForm("Create", "EHSPenalty", FormMethod.Post, new { id = "frmEHSPenalty", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+     <div style="overflow: auto;z-index:9999;height:350px;" id="divEHSPenalityDet">
+         <table class="table-striped table-condensed dTableR dataTable">
+             <tr>
+                 <td colspan="2" style="height: 12px; padding-top: 10px;">
+                     <span id="SpanValidateMsg" style="color: Red; display: none; font-weight: bold;">
+                     </span>
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                    Client <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     @Html.TextBoxFor(model => model.ClientID, new { @class = "txtAutoComplete", @tabindex = 1 })
+                     <input type="hidden" id="cid" name="cid" />
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                     Vehicle Reg# <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     @Html.TextBoxFor(model => model.VehicleID, new { @class = "txtInput", @tabindex = 2 })
+                     <input type="hidden" id="vid" name="vid" />
+                 </td>
+             </tr>
+             <tr>
+                <td>
+                    Date <span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CreatedDate, new { @class = "txtInput" , @tabindex = 3  })
+                </td>
+             </tr>
+             <tr>
+             <td>
+                 EHS    <span style="color: Red;">*</span>
+             </td>
+             <td>
+                @Html.DropDownList("EHSCodeID", null, "--Select EHS--", new { @class = "txtInput", @tabindex = 3 })
+             </td>
+             </tr>
+             <tr>
+                <td>
+                    EHS Amount<span style="color: Red;">*</span>
+                </td>
+                <td>
+                   @Html.TextBoxFor(model => model.EHSAmt, new { @class = "txtInput", @tabindex = 4 })     
+                </td>
+             </tr>
+             <tr>
+                 <td>
+                     Remark
+                 </td>
+                 <td>
+                     @Html.TextAreaFor(model => model.Remark, new { @class = "txtInput", @tabindex = 5 })
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                 </td>
+                 <td>
+                     <input type="button" value="Add EHS Penalty" id="btnCreateEHSPenalty" tabindex="6" />
+                 </td>
+             </tr>
+         </table>
+</div>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    var i = 0;
+    // Auto Complete for Vehicle Reg Number
+    $("#ClientID").autocomplete("/LogsheetManagement/getAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: selectItem });
+    $("#VehicleID").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+
+    $('#CreatedDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function () {
+        }
+    });
+
+    function selectItem(li) {
+        $('#cid').val(0);
+        if (li == null) $('#cid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+        $('#cid').val(sValue);
+    }
+    function OnselectItem(li) {
+        $('#vid').val(0);
+        if (li == null) $('#vid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+        $('#vid').val(sValue);
+    }
+    // button click event for btnCreatePenalty
+    $("#btnCreateEHSPenalty").click(function () {
+        if (!ValidateFields()) {
+            return;
+        }
+        // Call Ajax Post Method Here 
+        var CID = $("#cid").val();
+        var VID = $("#vid").val();
+        var frmColl = $("#frmEHSPenalty").serialize();
+        $("#div_loading").show();
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "POST",
+                  url: "../EHSPenalty/AddNewEHSPenaltyDetails",
+                  dataType: "html",
+                  data: "frm=" + frmColl + "&cid=" + CID + "&vid=" + VID,
+                  success: function (result, textStatus, jqXHR) {
+                      $('#divEHSPenaltyList').html('');
+                      $('#divEHSPenaltyList').html(result);
+                      if (i < 10) {
+                          if (confirm('Are you want to Add one more EHS Entry in the List?')) {
+                              i = i + 1;
+                              ClearAllFields();
+                              $("#div_loading").hide();
+                              $("#div_loading").fadeOut('slow');
+
+                          }
+                          else {
+                              document.getElementById("frmEHSPenalty").submit();
+                              i = 0;
+                              ClearAllFields();
+                              $("#div_loading").hide();
+                              $("#div_loading").fadeOut('slow');
+                          }
+                      }
+                      else {
+                          alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                          document.getElementById("frmEHSPenalty").submit();
+                          i = 0;
+                      }
+                  },
+                  error: function (error) {
+                      // alert(error);
+                  }
+              });
+
+    });
+    // Validation Method
+    function ValidateFields() {
+        var clientId = $('#ClientID').val();
+        var vehicleId = $("#VehicleID").val();
+        var EHSCode = $("#EHSCodeID").val();
+        var Amt = $("#EHSAmt").val();
+        var DtCreated = $('#CreatedDate').val();
+
+        if (clientId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search client.');
+            $("#ClientID").focus();
+            return false;
+        }
+        if (vehicleId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle reg number.');
+            $("#VehicleID").focus();
+            return false;
+        }
+        if (DtCreated == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select date.');
+            $("#CreatedDate").focus();
+            return false;
+        }
+        if (EHSCode == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select EHS.');
+            $("#EHSCodeID").focus();
+            return false;
+        }
+        if (Amt == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter amount');
+            $("#EHSAmt").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        return true;
+    }
+    // Clear All Fields
+    function ClearAllFields() {
+        $("#cid").val('');
+        $("#vid").val('');
+        $('#ClientID').val('');
+        $("#VehicleID").val('');
+        $("#EHSCodeID").val('');
+        $("#EHSAmt").val('');
+        $("#Remark").val('');
+    }
+</script>   

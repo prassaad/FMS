@@ -1,0 +1,55 @@
+﻿@model FMS.Models.tbl_locations
+@{
+    ViewBag.Title = "Edit Location";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Edit Location</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of locations", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+ 
+    @Html.ValidationSummary(true)
+   
+    <fieldset>
+        <legend>Edit Location</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                  @*  @Html.HiddenFor(model => model.ID)*@
+                    Location : <span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Location)
+                    @Html.ValidationMessageFor(model => model.Location)
+                </td>
+                <tr>
+                <td>
+                @*@Html.HiddenFor(model=>model.RouteId)*@
+                Route:<span style="color:Red;">*</span>
+                </td>
+                <td>
+                @Html.EditorFor(model=>model.RouteId)
+                @Html.ValidationMessageFor(model=>model.RouteId)
+                </td>
+                </tr>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}

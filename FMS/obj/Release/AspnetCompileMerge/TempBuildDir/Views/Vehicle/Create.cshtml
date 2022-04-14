@@ -1,0 +1,184 @@
+﻿@model FMS.Models.tbl_vendor_details
+
+@{
+    ViewBag.Title = "Add Vendor Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Add Vendor</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                         <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive"> @Html.ActionLink("List of Vendors","Index") </li>
+                        </ul>
+                    </div>
+            </div>
+@using (Html.BeginForm("Create", "Vendor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+<br />
+<fieldset>
+<legend>Vendor Details</legend>
+    <table class="table-striped table-condensed dTableR dataTable">
+     <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                First Name :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.FirstName, new { @class = "isName" })
+                @Html.ValidationMessageFor(model => model.FirstName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Last Name :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.LastName, new { @class = "isName" })
+                @Html.ValidationMessageFor(model => model.LastName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Address :
+            </td>
+            <td>
+                @Html.TextAreaFor(a => a.Address,  new { @cols=36 })
+                @Html.ValidationMessageFor(model => model.Address)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact Number :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.ContactNumber, new { @maxlength="10"})
+                @Html.ValidationMessageFor(model => model.ContactNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PAN Card Number :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.PanCardNumber)
+                @Html.ValidationMessageFor(model => model.PanCardNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Photo :
+            </td>
+            <td>
+                <input type="file" name="PhotoUrl" id="PhotoUrl"/> 
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+              <h2>Bank Details:</h2>  
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Holder Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountHolderName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Bank Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.BankName) 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Branch :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.Branch)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Type :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountType) 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                IFSC Code :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.IFSCCode) 
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Submit" /> 
+            </td>
+        </tr>
+    </table>
+</fieldset>
+}
+<script type="text/javascript">
+    $("#ContactNumber").change(function () {
+        var result = isValidMobileNumber(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Contact number should be digit..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $("#PanCardNumber").change(function () {
+        var result = isAlphaNumeric(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Pan card number should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $(".isName").change(function () {
+        var result = IsPureCharsAndSpace(this.value)
+        $("#SpanValidateMsg").hide();
+        if (this.id == "FirstName") {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("First Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Last Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+</script>

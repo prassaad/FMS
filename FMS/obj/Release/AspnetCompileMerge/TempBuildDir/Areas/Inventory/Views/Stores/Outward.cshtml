@@ -1,0 +1,130 @@
+﻿@model IEnumerable<FMS.Models.InventoryIssuedMaster>
+@using FMS.Areas.Inventory.Controllers;
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Outwards";
+   Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    StoresController obStores = new StoresController();
+    FMSDBEntities db = new FMSDBEntities();   
+}
+ <h2>
+        List of Outwards</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-arrow-left-2"></i><a href="@Url.Action("Index", "Home", new { area = "" })" class="ctrlGoBack button_bg">
+                Go Back</a></li>
+           @if ((bool)core.GetUserAccess(64, User.Identity.Name).Add)
+           {  <li class="lastactive">
+                <input type="button" id="btnAddNewOutward" class="btn btn-primary btn-xs" value="New Outward Entry"
+                    onclick="AddNewOurwardEntry()" style="margin-top:-10px;" /></li> }
+        </ul>
+    </div>
+</div>
+<div class="col-sm-12">
+   
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-striped table-hover table-full-width dataTable"
+            id="dt_a">
+            <thead>
+                <tr>
+                    <th>
+                        Issue No.
+                    </th>
+                    <th>
+                        Issued Dt.
+                    </th>
+                    <th>
+                        Issue Qty.
+                    </th>
+                    <th>
+                        Items
+                    </th>
+                    <th>
+                        Vehicle Reg#
+                    </th>
+                    <th>
+                        Driver
+                    </th>
+                    <th>
+                         
+                    </th>
+                     
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                       <span class="label label-important"> @item.IssueNo </span>
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", item.IssueDt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IssueQty)
+                    </td>
+                    <td>
+                        @obStores.GetIssuedDetList(item.IssueNo)
+                    </td>
+                    <td>
+                        @(item.tbl_vehicles.VehicleRegNum)
+                    </td>
+                    <td>
+                       @* <a href="#" id="btnIndentRef" onclick="GetIndentDetails('@item.Id')"style="text-decoration:underline;color:Red;">@item.IndentRefNo</a>*@
+                       @item.tbl_drivers.FirstName @item.tbl_drivers.LastName 
+                    </td>
+                    <td>
+                     @if ((bool)core.GetUserAccess(64, User.Identity.Name).Edit)
+                     { <a href="#" id="btnIssueItemView" onclick="GetIssueDetails('@item.Id','@item.Status')">
+                        Edit
+                        </a>
+                     }
+                    </td>
+                </tr>
+  
+        }
+        </table>
+}
+    else
+    {
+        <h3>
+            Outward stock was not found.
+        </h3> 
+}
+</div>
+ 
+<script type="text/javascript">
+    function AddNewOurwardEntry() {
+        window.location.href = '@Url.Action("OutwardCreate", "Stores", new { area = "Inventory" })';
+    }
+    $('#loading').hide();
+    function GetIndentDetails(Id) {
+        window.location.href = '@Url.Action("GetIndentDetails","Stores",new{area="Inventory"})?IssueId=' + Id;
+    }
+    function GetIssueDetails(id, Status) {
+       // if (Status.toLowerCase() == "edit") {
+            window.location.href = '@Url.Action("OutwardEdit","Stores",new{area="Inventory"})?Id=' + id;
+      //  }
+//        else {
+//            window.location.href = '@Url.Action("ViewIssuedItem","Stores",new{area="Inventory"})?IssueId=' + id;
+//        }
+    }
+    // For Delete
+    function DeleteOutward(id) {
+        if (confirm('Are sure want to delete this item from list?')) {
+            $.post('@Url.Action("OutwardDelete", "Stores", new { area = "Inventory" })?id=' + id, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    window.location.href = '@Url.Action("Outward", "Stores", new { area = "Inventory" })';
+                }
+                else {
+                    alert(data.msg);
+                }
+            });
+
+        }
+    }
+
+</script>

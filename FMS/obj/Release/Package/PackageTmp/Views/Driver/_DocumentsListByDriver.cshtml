@@ -1,0 +1,249 @@
+﻿@model IEnumerable<FMS.Models.tbl_doc_driver_nodes>
+@using FMS.Models;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+}
+<div id="divViewDocs">
+<div style="margin-left:70%;padding-bottom:10px;">
+    <input type="button" id="btnsendMail" onclick="SendDocmentsASMail()" value="Send a Mail"/>  <input type="button" id="btnAudit" onclick="AuditDocments()" value="Audit"/>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmViewDocs", enctype = "multipart/form-data" }))
+{
+    <div id="divEMailDet" style="display: none">
+        <table class="table table-condensed dTableR dataTable">
+            <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+                 <input type="button" id="btnhide" onclick="HideMailDetalisDiv()" value="Hide" style="float:right;" />
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    Email ID:<span style="color: Red;">*</span>
+                     <input type="hidden" id="hdnDriverID" name="hdnDriverID" value="@ViewBag.DriverID" />
+                </td>
+                <td>
+             
+                    <input type="text" id="mail" name="mail" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Subject:<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <input type="text" id="txtSubject" name="txtSubject"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Message:
+                </td>
+                <td>
+                    <textarea id="txtBody" name="txtBody" cols="20" rows="3"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>   
+    <table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+        <thead>
+            <tr>
+                <th> @Html.CheckBox("chkdocAll", false)Check All
+                </th>
+                <th>
+                    Document Type
+                   
+                </th>
+                <th>
+                    Document
+                </th>
+               <th>Audit</th>
+                <th></th> <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.CheckBox("chkdoc_" + item.ID, false)
+                        @{
+                        string ext = item.DocPath.Split('.')[1];
+                           }
+                    </td>
+                    <td>
+                        @objcore.GetDocumentType((long)item.DocTypeID)
+                    </td>
+                    <td>
+                        @if (item.DocPath != null)
+                        {
+                             if (ext == "pdf")
+                             {
+                                  <img src="../../Content/images/pdf-icon.png" width="40" height="40" alt="Photo" />
+                             }
+                             else if (ext == "docx")
+                             {
+                                  <img src="../../Content/images/Word-doc-icon.png" width="40" height="40" alt="Photo" />
+                             }
+                             else if (ext == "txt")
+                             {
+                                  <img src="../../Content/images/text-doc-icon.png" width="40" height="40" alt="Photo" />
+                             }
+                             else
+                             {
+                              <img src="../../Content/Documents/Driver/@item.DocPath" width="40" height="40" alt="Photo" />
+                             }
+                        }
+                        else
+                        {
+                            <img src="../../Content/uploadimages/user-avatar.jpg" width="40" height="40" alt="Photo" />
+                        }
+                    </td>
+                    <td>  @if (item.Audited ==true)
+                        {
+                            <span class="system positive">Yes</span>
+                       }
+                        else
+                        {
+                            <span class="system negative">No</span>
+                        }
+                        </td>
+                    <td>
+                        <p>
+                            @if (item.DocPath != null)
+                            {
+                                if (ext == "pdf")
+                                {
+                                 <a href="@Url.Action("ViewDocument", "Home", new { @foldername = "Driver", @filename = item.DocPath })" target="_blank">Click here</a>   
+                                }
+                                else
+                                {
+                                <a href="/Content/Documents/Driver/@item.DocPath" target="_blank">Click here</a>}
+                            }
+                        </p>
+                    </td>
+                     <td>  <a href="#" onclick="DeleteDriverDocuments(@item.ID)">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+</div>
+
+<script type="text/javascript">
+    function SendDocmentsASMail() {
+        $("#divEMailDet").show();
+        var frmColl = $("#frmViewDocs").serialize();
+        var DriverID = $("#hdnDriverID").val();
+        var Email = $("#mail").val();
+        var Subject = $("#txtSubject").val();
+        var msg = isValidEmailAddress(Email);
+        if (msg) {
+            if (Subject == "") {
+                var r = confirm('Are you want to sure send mail without subject?');
+                if (r == true) {
+                    if ($('input[type=checkbox]:checked').length != 0) {
+                        $("#div_loading").fadeIn('slow');
+                        $("#SpanValidateMsg").hide();
+                        $.ajax({
+                            type: "POST",
+                            url: "/Driver/SendMail",
+                            data: "frm=" + frmColl + "&DriverID=" + DriverID,
+                            dataType: "html",
+                            success: function (result) {
+                                $('#divViewDocs').html(result);
+                                $("#div_loading").fadeOut('slow');
+                            },
+                            error: function (error) {
+                                //            alert(error);
+                            }
+                        });
+                    }
+                    else { alert('Please select atleast one document.'); }
+                }
+                else
+                {
+                    $("#SpanValidateMsg").show();
+                    $("#SpanValidateMsg").html("please enter email subject.");
+                    $("#txtSubject").focus();
+                }
+            }
+            else {
+                if ($('input[type=checkbox]:checked').length != 0) {
+                    $("#div_loading").fadeIn('slow');
+                    $("#SpanValidateMsg").hide();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Driver/SendMail",
+                        data: "frm=" + frmColl + "&DriverID=" + DriverID,
+                        dataType: "html",
+                        success: function (result) {
+                            $('#divViewDocs').html(result);
+                            $("#div_loading").fadeOut('slow');
+                        },
+                        error: function (error) {
+                            //            alert(error);
+                        }
+                    });
+                }
+                else {
+                    alert('Please select atleast one document.');
+                }
+            }
+        }
+        else {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("please enter valid email id.");
+            $("#mail").focus();
+        }
+    }
+    function HideMailDetalisDiv() {
+        $("#divEMailDet").hide();
+    }
+    $("#chkdocAll").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+    function DeleteDriverDocuments(ID) {
+        var r = confirm('Are you sure you want to delete this document.?');
+        if (r == true) {
+            $("#div_loading").fadeIn('slow');
+            $.ajax({
+                type: "GET",
+                url: "/Driver/DeleteDriverDocuments",
+                data: "ID=" + ID,
+                dataType: "html",
+                success: function (result) {
+                    $('#divViewDocs').html(result);
+                    $("#div_loading").fadeOut('slow');
+                },
+                error: function (error) {
+                    //            alert(error);
+                }
+            });
+        }
+    }
+    function AuditDocments() {
+        var frmColl = $("#frmViewDocs").serialize();
+        var DriverID = $("#hdnDriverID").val();
+        if ($('input[type=checkbox]:checked').length != 0) {
+            $("#div_loading").fadeIn('slow');
+            $.ajax({
+                type: "POST",
+                url: "/Driver/AuditDocments",
+                data: "frm=" + frmColl + "&DriverID=" + DriverID,
+                dataType: "html",
+                success: function (result) {
+                    $('#divViewDocs').html(result);
+                    $("#div_loading").fadeOut('slow');
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            alert('Please select atleast one document.');
+        }
+    }
+</script>

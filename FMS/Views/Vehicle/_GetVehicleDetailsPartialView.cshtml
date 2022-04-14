@@ -1,0 +1,36 @@
+﻿@model FMS.Models.GeneralClassFields
+
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <td>
+            @Model.Text1
+        </td>
+        <td>
+            @Model.Text2     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="@Url.Action("Details", "Vehicle", new { id = @Model.ID })" style="color:Red;text-decoration:underline;" target="_blank">View</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Vendor Name
+        </td>
+        <td>
+            @Model.Text3
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Driver Name
+        </td>
+        <td>
+            @Model.Text4
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Mobile
+        </td>
+        <td>
+            @Model.Text5
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,3 @@
+[2016-02-06 10:16:53.9330] [127.0.0.1] [ERROR] [String was not recognized as a valid DateTime.] [superadmin] [   at System.DateTimeParse.Parse(String s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at FMS.Controllers.CardAssignmentController.SaveBulkCardAssignments(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 334]

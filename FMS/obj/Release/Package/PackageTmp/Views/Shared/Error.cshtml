@@ -1,0 +1,19 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@using System
+@{
+    ViewBag.Title = "Error";
+}
+
+<h2>
+    Sorry, an error occurred while processing your request.
+</h2>
+@*
+<h3>
+    Technical Information
+</h3>
+
+<p>
+    @{ Exception ex = HttpContext.Current.Server.GetLastError(); }
+    @(ex.Message.ToString())
+</p>
+*@

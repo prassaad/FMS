@@ -1,0 +1,69 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+    FMS.Controllers.HomeController objHome = new FMS.Controllers.HomeController();   
+}
+<style type="text/css">
+    .clienttripsuper_super-sub-menu li 
+	{
+		background-color:#fff  ! important;
+		color:#3D2B1F  ! important;  
+	}
+	.feecollsuper-sub-menu
+	{
+		font-size:12px;
+	}
+</style>
+@foreach (var item in Model)
+{
+    var supersupermenuId = "clienttripsupersupersubmenu_" + item.ID +"_"+item.Text1;
+    var aid = item.ID + "_" + item.Text1.ToUpper();
+    <li id="clienttripsuper-sub-menu"><a href="#" id="@aid"><span style="float: left;
+        width: 50%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @item.Text1</span> <span style="width: 50%; text-align: center;">@item.Value1</span></a>
+        <ul id="@supersupermenuId"
+        class="clienttripsuper_super-sub-menu" style="display:none;">
+        </ul>
+    </li>
+    
+ }
+<input type="hidden" id="fromlogdate" value="@ViewBag.fromDate" />
+<input type="hidden" id="tologdate" value="@ViewBag.toDate " />
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        var fromlogdate = $("#fromlogdate").val();
+        var tologdate = $("#tologdate").val();
+        $('.clienttripsuper-sub-menu li a').click(function () {
+            var openMe = $(this).next();
+            var IdArray = $(this).attr('id').split('_');
+            var mySiblings = $(this).parent().siblings().find('ul');
+            if (openMe.is(':visible')) {
+                openMe.slideUp('normal');
+            } else {
+                mySiblings.slideUp('normal');
+                openMe.slideDown('normal');
+                CW_TripsByTime(IdArray[0], IdArray[1], fromlogdate, tologdate);
+            }
+        });
+
+    });
+    //function to load data  by selection on Client and Trips and logins
+    function CW_TripsByTime(ClientId,Logs,fromlogdate, topaiddate) {
+        if ($('#clienttripsupersupersubmenu_' + ClientId +'_'+ Logs +' li').length == 0) {
+            $('#m_loading').show();
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Home/CW_TripsByTime",
+                data: "ClientId=" + ClientId + "&Logs=" + Logs + "&fromDate=" + fromlogdate + "&toDate=" + topaiddate,
+                dataType: "html",
+                success: function (data) {
+                    $('#clienttripsupersupersubmenu_' + ClientId + '_' + Logs + '').html(data);
+                    $('#m_loading').fadeOut('slow');
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+    }
+</script>

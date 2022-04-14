@@ -1,0 +1,24 @@
+﻿@model FMS.Models.tbl_diesel_tracking
+
+@{
+    ViewBag.Title = "Delete Diesel Book";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Diesel Book</h2>
+
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Diesel Tracking", "Index")</li>
+        </ul>
+    </div>
+</div>
+
+<h3>Are you sure you want to delete this @Model.DieselTokenNum  Diesel Book number?</h3>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}

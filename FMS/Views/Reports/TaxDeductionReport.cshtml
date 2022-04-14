@@ -1,0 +1,49 @@
+﻿<h2>
+    Deduction Report (Vendor Invoice) </h2>
+<form id="frmGetTaxDeductionReport" enctype="multipart/form-data" method="post">
+<table>
+    <tr>
+        <td>
+           Year 
+        </td>
+        <td>
+           @Html.DropDownList("YearsId", (IEnumerable<SelectListItem>)ViewBag.Years, "-Select-", new { @style = "width:180px;" }) 
+        </td> 
+        <td>
+            <input type="button" value="Get Report" id="btnGetTaxDeductionReport" /> 
+        </td>
+    </tr>
+</table>
+</form>
+<div id="TaxDeductionDivData">
+</div>
+<script type="text/javascript">
+    $('#loading').hide();
+
+    $('#btnGetTaxDeductionReport').click(function () {
+        $('#loading').fadeIn('slow');
+        var YearId = $('#YearId').val();
+        $.post("/Reports/TaxDeductionReport", $("#frmGetTaxDeductionReport").serialize(), function (result) {
+            $("#TaxDeductionDivData").html(result);
+            $('#loading').fadeOut('slow');
+        });
+    });
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            self.print();
+        }
+    }
+     
+  </script>

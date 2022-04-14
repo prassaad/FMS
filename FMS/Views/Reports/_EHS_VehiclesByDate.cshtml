@@ -1,0 +1,89 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+    string date = ViewBag.Date;
+    decimal EHSAmtByDate = 0;
+}
+<style type="text/css">
+    .Ehssuper-sub-menu li
+    {
+        background-color: #ABC9DF !important;
+        color: #fff !important;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    #Ehssub-menu a
+    {
+        text-decoration: none;
+        border-bottom: 1px solid #ccc;
+        font: bold 1.1em/2em Arial, sans-serif;
+        color: #fff;
+        padding: 0 10px;
+        display: block;
+        cursor: pointer;
+    }
+  
+</style>
+    @foreach (var item in Model)
+    {
+        var supermenuId = "Ehssupersubmenu_" + item.ID+ "_"+date;
+        var Id = item.ID + "_" + date;
+        <li id="Ehssub-menu"><a href="#" id="@Id" onclick="EHSPenaltybyDateVehicle('@item.ID','@date')">
+       <span style="float: left; width: 34%;font-size:12px;">
+             &nbsp;&nbsp&nbsp&nbsp&nbsp @item.Text1.ToUpper()</span>
+             <span style="float: right;width: 43%; text-align: right;font-size:12px;">
+                 @Html.Encode(String.Format("{0:N}", item.Value2))</span>
+             <span style="float: right; width: 23%; text-align: right;"></span></a>
+               @{
+                  EHSAmtByDate += item.Value2;
+             }
+            <ul class="Ehssuper-sub-menu" id="@supermenuId" style="display: none;">
+            </ul>
+        </li>
+    }
+        <table style="width:100%;">
+    <tr  class="tfooter_total">
+        <td  style="width:34%;">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sub-Total:
+        </td>
+         <td style="text-align: right; font-size: 12px;width:23%;">
+        </td>
+        <td style="text-align: right;width:43%;padding-right:10px;">
+          @Html.Encode(String.Format("{0:N}", EHSAmtByDate))
+        </td>
+    </tr>
+</table>
+    <script type="text/javascript" language="javascript">
+     function EHSPenaltybyDateVehicle(VehicleID, Date) {
+            var openMe = $("#" + VehicleID + "_" + Date).next();
+            var mySiblings = $("#" + VehicleID + "_" + Date).parent().siblings().find('ul');
+                if (openMe.is(':visible')) {
+                    openMe.slideUp('normal');
+                } else {
+                    mySiblings.slideUp('normal');
+                    openMe.slideDown('normal');
+                    EHS_PenalityByDateAndVehilce(VehicleID, Date);
+                }
+            }
+   //function to load data  by selection on Vehicle and date
+            function EHS_PenalityByDateAndVehilce(VehicleId, date) {
+            if ($('#Ehssupersubmenu_' + VehicleId + '_' + date + ' li').length == 0) {
+              $('#m_loading').show();
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Reports/EHS_PenalityByDateAndVehilce",
+                    data: "VehicleId=" + VehicleId + "&Date=" + date,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#Ehssupersubmenu_' + VehicleId +'_'+date+'').html(data);
+                        $('#m_loading').fadeOut('slow');
+
+                    },
+                    error: function (error) {
+                        // alert(error);
+                    }
+                });
+            }
+        }
+</script>

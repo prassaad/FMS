@@ -1,0 +1,141 @@
+﻿@model IEnumerable<FMS.Models.tbl_PurchaseOrders>
+@using FMS.Areas.Inventory.Controllers;
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Purchase Orders";
+   Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    StoresController obStores = new StoresController();
+    FMSDBEntities db = new FMSDBEntities();   
+}
+<h2>List of Purchase Orders</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-arrow-left-2"></i><a href="@Url.Action("Index", "Home", new { area = "" })" class="ctrlGoBack button_bg">
+                Go Back</a></li>
+            <li>
+                <input type="button" id="btnNewPurchaseOrder" class="btn btn-primary btn-xs" value="New Purchase Order Entry"
+                    onclick="AddNewPurchaseOrderEntry()" style="margin-top:-5px;" /></li>
+        </ul>
+    </div>
+</div>
+<div class="col-sm-12">
+    @if (Model.Count() > 0)
+    {
+        <table id="dt_a" class="table table-striped table-hover table-full-width dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        RefNo
+                    </th>
+                    <th>
+                        Supplier
+                    </th>
+                    <th>
+                        Order Date
+                    </th>
+                    <th>
+                        Expected Date
+                    </th>
+                    <th>
+                        Un Taxed Amount
+                    </th>
+                    <th>
+                        Total
+                    </th>
+                    <th>
+                        Terms&Conditions
+                    </th>
+                    <th>
+                        Source Ref.No#
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="#" id="btnOrderItemView" onclick="GetPurchaseOrderDetails('@item.Id','@item.Status')"style="text-decoration:underline;color:Red;">@item.RefNo</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tbl_SuppliersMaster.SupplierName)
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", item.OrderDt)
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", item.ExpectedDt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnTaxed)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Total)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Terms_Conditions)
+                        </td>
+                        <td>
+                            <a href="#" id="btnIndentRef" onclick="GetIndentDetails('@item.Id')"style="text-decoration:underline;color:Red;">@item.Source</a>
+                        </td>
+                        <td>
+                            @if (item.Status.ToUpper() == "EDIT")
+                            {
+                                <span class="label label-important">Edit</span>
+                        }
+                            else if (item.Status.ToUpper() == "PODRAFT")
+                            {
+                                <span class="label label-pending">PO. Draft</span>
+                        }
+                            else if (item.Status.ToUpper() == "RFQ")
+                            {
+                                <span class="label label-pending">RFQ</span>
+                        }
+                            else if (item.Status.ToUpper() == "BIDRECEIVED")
+                            {
+                                <span class="label label-success">Bid Received</span>
+                        }
+                            else if (item.Status.ToUpper() == "CONFIRMORDER")
+                            {
+                                <span class="label label-warning">Confirm Order</span>
+                        }
+                            else if (item.Status.ToUpper() == "DONE")
+                            {
+                                <span class="label label-success">Done</span>
+                        }
+                        </td>
+                    </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h3>
+            Purchase orders are not found.
+        </h3> 
+    }
+</div>
+
+
+<script type="text/javascript">
+    function AddNewPurchaseOrderEntry() {
+        window.location.href = '@Url.Action("PurchaseOrderCreate", "PurchaseOrders", new { area = "Inventory" })';
+    }
+    function GetPurchaseOrderDetails(id, Status) {
+        if (Status.toLowerCase() == "edit") {
+            window.location.href = '@Url.Action("PurchaseOrderEdit","PurchaseOrders",new{area="Inventory"})?Id=' + id;
+        }
+        else {
+            window.location.href = '@Url.Action("ViewPurchaseOrders","PurchaseOrders",new{area="Inventory"})?Id=' + id;
+        }
+    }
+    function GetIndentDetails(Id) {
+        window.location.href = '@Url.Action("GetIndentDetails","PurchaseOrders",new{area="Inventory"})?Id=' + Id;
+    }
+</script>
+

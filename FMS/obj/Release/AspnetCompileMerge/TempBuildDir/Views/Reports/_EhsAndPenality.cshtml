@@ -1,0 +1,101 @@
+﻿@model IEnumerable<DateTime>
+ @{
+     FMS.Controllers.ReportsController objReport=new FMS.Controllers.ReportsController();
+       decimal TotEHSPenAmt = 0;
+}
+ <style type="text/css">
+    .Ehssub-menu li
+      {
+          background-color: #78AED6 !important;
+          color: #fff !important;
+      }
+</style>
+<link href="../../Content/Accordion.css" rel="stylesheet" type="text/css" />
+<div style= "width: 100%;text-align:center;">
+<h2>Total Amount:  @ViewBag.TotAmount</h2><br />
+
+</div>
+<div style="width: 100%; margin-bottom: 10px;">
+    <span style="float: left; width: 50%; font-size: 14px; font-weight: bold;">Date</span>
+    <span style="width: 50%; float: right; text-align: right; font-size: 14px; font-weight: bold;">
+        EHS/Penalty Amt</span>
+</div>
+
+<div>
+    <div class="page-content">
+        <ul id="EhsAndPenality" class="accordion">
+            @foreach (var Item in Model)
+            {
+                var submenuId = "Ehssubmenu_"+ @Item.Date.ToShortDateString();
+                decimal Amt = 0;
+                List<FMS.Models.GeneralClassFields> AmtbyDt = null;
+                AmtbyDt = objReport.GetEHSPenaltyTotalAmtByEachDate(@Item);
+                Amt = AmtbyDt.Sum(a => a.Value2);
+                <li><a href="#" id="@Item.Date.ToShortDateString()"> <span style="float: left; width: 34%;font-size:12px;"> @Html.Encode(String.Format("{0:dd/MM/yyyy}", @Item))</span> 
+                <span style="float: right;width: 43%; text-align: right;font-size:12px;">
+                  @Html.Encode(String.Format("{0:N}", Amt))</span>
+                  <span style="float: right; width: 23%; text-align: right;"></span></a>
+                   @{
+                TotEHSPenAmt += Amt;
+             }
+                <ul class="Ehssub-menu" id="@submenuId" style="display: none;">
+                </ul>
+                </li>
+            }
+        </ul>
+    </div>
+     <table style="width: 100%;">
+        <tr class="tfooter_total">
+            <td style="width: 34%;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total:
+            </td>
+            <td style="text-align: right; font-size: 12px; width: 23%;">
+            </td>
+            <td style="text-align: right; width: 43%; padding-right: 10px;">
+                @Html.Encode(String.Format("{0:N}", TotEHSPenAmt))
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+ $(document).ready(function () {
+
+        $('#EhsAndPenality ul').hide();
+        $('#EhsAndPenality li a').click(function () {
+
+            var openMe = $(this).next();
+            var thisvalue = $(this).attr('id')
+            var Me = $("#" + thisvalue).next();
+            var mySiblings = $("#" + thisvalue).parent().siblings().find('ul');
+           
+            if (Me.is(':visible')) {
+                Me.slideUp('normal');
+            } else {
+                mySiblings.slideUp('normal');
+                Me.slideDown('normal');
+                EHS_VehiclesByDate(thisvalue);
+            }
+        });
+    });
+    function EHS_VehiclesByDate(date) {
+        if ($('#Ehssubmenu_' + date + ' li').length == 0) {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Reports/EHS_VehiclesByDate",
+                data: "Date=" + date,
+                dataType: "html",
+                success: function (data) {
+
+                    $('#Ehssubmenu_' + date + '').html(data);
+                    if ($('#Ehssubmenu_' + date + ' li').length == 0) {
+                        alert("No data available.")
+                    };
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+    }
+</script>

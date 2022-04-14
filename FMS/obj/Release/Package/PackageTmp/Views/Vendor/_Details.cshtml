@@ -1,0 +1,107 @@
+﻿@model FMS.Models.tbl_vendor_details
+ 
+    <table class="table table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td>
+                Name :
+            </td>
+            <td>
+                @Html.Encode(Model.FirstName + " " + Model.LastName).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Address :
+            </td>
+            <td>
+                @Html.Encode(Model.Address).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact Number :
+            </td>
+            <td>
+                @Html.Encode(Model.ContactNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PAN Card Number :
+            </td>
+            <td>
+                @Html.Encode(Model.PanCardNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Photo :
+            </td>
+            <td>
+                @if (Model.PhotoUrl != null)
+                {
+                    <img src="../../Content/uploadimages/@Model.PhotoUrl" width="80" height="80" alt="Photo" />
+                    }
+                else
+                {
+                    <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                    }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>
+                    Bank Details:</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Holder Name :
+            </td>
+            <td>
+                @Html.Encode(Model.AccountHolderName).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Bank Name :
+            </td>
+            <td>
+                @Html.Encode(Model.BankName).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Branch :
+            </td>
+            <td>
+                @Html.Encode(Model.Branch).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Number :
+            </td>
+            <td>
+                @Html.Encode(Model.AccountNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Type :
+            </td>
+            <td>
+                @Html.Encode(Model.AccountType).ToString().ToUpper() 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                IFSC Code :
+            </td>
+            <td>
+                @Html.Encode(Model.IFSCCode)
+            </td>
+        </tr>
+    </table> 
+ 
+ 

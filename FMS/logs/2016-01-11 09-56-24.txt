@@ -1,0 +1,2 @@
+[2016-01-11 09:56:24.8647] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at System.Collections.Generic.List`1.Enumerator.MoveNext()
+   at FMS.Controllers.CardAssignmentController.BulkCardEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Controllers\CardAssignmentController.cs:line 757]

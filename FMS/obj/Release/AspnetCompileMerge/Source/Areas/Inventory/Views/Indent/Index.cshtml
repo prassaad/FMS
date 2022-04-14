@@ -1,0 +1,213 @@
+﻿@model IEnumerable<FMS.Models.tbl_inv_indents>
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Indents";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml"; 
+    FMSDBEntities db = new FMSDBEntities();
+}
+<h2>
+    List of Indents</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-arrow-left-2"></i><a href="@Url.Action("Index", "Home", new { area = "" })" class="ctrlGoBack button_bg">
+                Go Back</a></li>
+            <li>
+                <input type="button" id="btnAddNewIndent" class="btn btn-primary btn-xs" value="Add New Indent"
+                    onclick="AddNewIndent()" style="margin-top: -12px;" /></li>
+        </ul>
+    </div>
+</div>
+
+@if (Model.ToList().Count > 0)
+{
+    <div class="col-md-12">
+        <table id="dt_a" class="table table-striped table-hover table-full-width dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Indent Ref.No#
+                    </th>
+                    <th>
+                        Vehicle
+                    </th>
+                    <th>
+                        Department
+                    </th>
+                    <th>
+                        User name
+                    </th>
+                    <th>
+                        Indent Dt
+                    </th>
+                    <th>
+                        Req. Dt
+                    </th>
+                    <th>
+                        Purchases For
+                    </th>
+                    <th>
+                        Priority
+                    </th>
+                    <th>
+                        Indent Type
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a id="btnIndentView" href="#" onclick="ViewIndent('@item.Id','@item.Status')"style="text-decoration:underline;color:Red;">@(item.IndRefNo)</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tbl_vehicles.VehicleRegNum)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tbl_departments.DisplayName)
+                        </td>
+                        <td>
+                            @{
+                string UserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == item.IndUserId).UserName;
+                            }
+                            @UserName
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", item.DtOfInd)
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", item.RequiredDt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PurchasesFor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Priority)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IndentType)
+                        </td>
+                        <td>
+                            @if (item.Status.ToUpper() == "APPROVED")
+                            {
+                                <span class="label-success">Approved</span>
+                        }
+                            else if (item.Status.ToUpper() == "REJECTED")
+                            {
+                                <span class="label-important">Rejected</span>
+                        }
+                            else if (item.Status.ToUpper() == "EDIT")
+                            {
+                                <span class="label-pending">Edit</span>
+                        }
+                            else if (item.Status.ToUpper() == "CONFIRM")
+                            {
+                                <span class="label-pending">Confirm</span>
+                        }
+                            else if (item.Status.ToUpper() == "INPROGRESS")
+                            {
+                                <span class="label-warning">In Progress</span>
+                        }
+                            else if (item.Status.ToUpper() == "RECEIVED")
+                            {
+                                <span class="label-success">Received</span>
+                        }
+                            else if (item.Status.ToUpper() == "WAITINGFORAPPROVAL")
+                            {
+                                <span class="label-warning">Waiting for Approval</span>
+                        }
+                        </td>
+                    </tr>
+            }
+            </tbody>
+        </table>
+        <input type="hidden" id="hdnId" name="hdnId" />
+    </div>
+}
+else
+{
+    <h3>
+        No indents was found to display.  
+    </h3>
+}
+<script type="text/javascript">
+
+    function AddNewIndent() {
+            window.location.href = '@Url.Action("Create", "Indent", new { area = "Inventory" })';
+        }
+        function ViewIndent(IndentId, Status) {
+            if (Status.toLowerCase() == "edit") {
+                window.location.href = '@Url.Action("Edit", "Indent", new { area = "Inventory" })?Id=' + IndentId + '';
+            }else {
+              window.location.href = '@Url.Action("ViewIndent", "Indent", new { area = "Inventory" })?Id=' + IndentId + '';
+            }
+        }
+    function ApproveIndent() {
+        var IndentId = $('#hdnId').val();
+        if (!confirm('Are you sure want to approve this indent?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("Approve", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay =1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("Index", "Indent", new { area = "Inventory" })';
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function CancelIndent() {
+        var IndentId = $('#hdnId').val();
+        $("#loading").fadeIn('slow');
+        $.post('@Url.Action("CancelIndent", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+            if (data.success) {
+                alert(data.msg);
+                var delay =1000; //1 seconds
+                setTimeout(function () {
+                    //your code to be executed after 1 seconds
+                    window.location.href = '@Url.Action("Index", "Indent", new { area = "Inventory" })';
+                }, delay);
+                $("#loading").fadeOut('slow');
+            }
+            else {
+                alert(data.msg);
+                $("#loading").fadeOut('slow');
+            }
+        });
+    }
+    function DeleteIndent() {
+        var IndentId = $('#hdnId').val();
+        $("#loading").fadeIn('slow');
+        $.post('@Url.Action("RejectIndent", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+            if (data.success) {
+                alert(data.msg);
+                var delay = 1000; //1 seconds
+                setTimeout(function () {
+                    //your code to be executed after 1 seconds
+                    window.location.href = '@Url.Action("Index", "Indent", new { area = "Inventory" })';
+                }, delay);
+                $("#loading").fadeOut('slow');
+            }
+            else {
+                alert(data.msg);
+                $("#loading").fadeOut('slow');
+            }
+        });
+    }
+  
+    
+</script>

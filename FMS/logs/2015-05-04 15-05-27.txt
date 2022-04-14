@@ -1,0 +1,15 @@
+[2015-05-04 15:05:27.4385] [127.0.0.1] [ERROR] [This function can only be invoked from LINQ to Entities.] [superadmin] [   at System.Data.Objects.EntityFunctions.TruncateTime(Nullable`1 dateValue)
+   at FMS.Controllers.ReportsController.<>c__DisplayClass9e.<VehicleMileAge>b__9b(<>f__AnonymousType3f`2 m) in D:\ProjectRelatedfiles\JMJ\FMS\Controllers\ReportsController.cs:line 1638
+   at System.Linq.Enumerable.WhereListIterator`1.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at FMS.Controllers.ReportsController.VehicleMileAge(String VehicleID, FormCollection frm) in D:\ProjectRelatedfiles\JMJ\FMS\Controllers\ReportsController.cs:line 1637
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

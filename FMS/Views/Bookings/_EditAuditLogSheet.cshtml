@@ -1,0 +1,217 @@
+﻿@model FMS.Models.tbl_log_sheets
+@using FMS.Models;           
+@{
+    tbl_bookings bookingDet = ViewBag.BookingDet as tbl_bookings;     
+}
+<style type="text/css">
+   .btnnewlog:focus {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+}    
+</style>
+<form id="frmlogSheet" enctype="multipart/form-data" method="post">
+
+    @{ Html.RenderPartial("_GetBookingDetails", bookingDet); }
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2">
+                <span id="SpanValidateMsg" style="color: Red; font-size: 14px; font-weight: bold;">
+                </span>
+                <p style="color: Red; font-style: italic;">
+                    @(ViewBag.message)
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Tariff Amount <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("GrossAmt", Model.GrossAmt, new { @style = "width:220px;", @maxlength = 8, @placeholder = "Enter Amount", @onkeypress = "return numberValidatedot(event);", @tabindex = 1, @class = "calcTotal" })
+                @Html.Hidden("Id", Model.ID)
+                <input type="hidden" id="BookingId" name="BookingId" value="@ViewBag.BookingId" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Extra KM(s)
+            </td>
+            <td>
+                @Html.TextBox("ExtraKM", Model.ExtraKM, new { @style = "width:80px;", @maxlength = 8, @placeholder = "KM", @onkeypress = "return numberValidate(event);", @tabindex = 2, @class = "calcTotal clskm" })
+                X
+                @Html.TextBox("ExtraKMRate", Model.ExtraKMRate, new { @style = "width:50px;", @maxlength = 5, @placeholder = "Rate", @onkeypress = "return numberValidatedot(event);", @tabindex = 3, @class = "calcTotal clskm" })
+                &nbsp; =
+                @Html.TextBox("ExtraTotalKM", "", new { @style = "width:120px", @maxlength = 8, @placeholder = "Total", @onkeypress = "return numberValidatedot(event);", @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Extra Hr(s)
+            </td>
+            <td>
+                @Html.TextBox("ExtraHr", Model.ExtraHr, new { @style = "width:80px;", @maxlength = 8, @placeholder = "Hour", @onkeypress = "return numberValidate(event);", @tabindex = 4, @class = "calcTotal clshr" })
+                X
+                @Html.TextBox("ExtraHrRate", Model.ExtraHrRate, new { @style = "width:50px;", @maxlength = 5, @placeholder = "Rate", @onkeypress = "return numberValidatedot(event);", @tabindex = 5, @class = "calcTotal clshr" })
+                &nbsp; =
+                @Html.TextBox("ExtraTotalHr", "", new { @style = "width:120px", @maxlength = 8, @placeholder = "Total", @onkeypress = "return numberValidatedot(event);", @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Toll Plaza & Parking Charges
+            </td>
+            <td>
+                @Html.TextBox("TollChrg", Model.TollChrg, new { @style = "width:220px;", @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 6, @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Driver bhatta
+            </td>
+            <td>
+                @Html.TextBox("ParkingChrg", Model.ParkingChrg, new { @style = "width:220px;", @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 7, @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Fuel Hike
+            </td>
+            <td>
+                @Html.TextBox("FuelHike", Model.FuelHike, new { @style = "width:220px;", @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 8, @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Client Payable Amount <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("NetAmount", Model.NetAmount, new { @style = "width:220px;", @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 9, @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Vendor Payable Amount <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("FinalNetAmt", Model.FinalNetAmt, new { @style = "width:220px;", @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 10, @class = "calcTotal" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" style="margin-top: 5px;" id="btnSave" class="btnnewlog" value="Save"
+                    tabindex="11" onfocus="focus();" />
+            </td>
+        </tr>
+    </table>
+
+</form>
+<script type="text/javascript" language="javascript">
+        // On Page load
+        $('#div_loading').hide();
+        $('#GrossAmt').select();
+        $('#ExtraTotalKM').val('@Model.ExtraKM' * '@Model.ExtraKMRate');
+        $('#ExtraTotalHr').val('@Model.ExtraHr' * '@Model.ExtraHrRate');
+        $('#ExtraTotalKM').attr('style', 'background-color:#ddd;width:120px;');
+        $('#ExtraTotalKM').attr('readonly', true);
+        $('#ExtraTotalHr').attr('style', 'background-color:#ddd;width:120px;');
+        $('#ExtraTotalHr').attr('readonly', true);
+        $('#NetAmount').attr('style', 'background-color:#ddd;width:220px;');
+        $('#NetAmount').attr('readonly', true);
+
+        // Validate Numeric
+        function numberValidate(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+            { return true; } else { return false; }
+        }
+        // Validate Amount with dot
+        function numberValidatedot(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+            { return true; } else { return false; }
+        }
+        // Form Validation
+        function ValidateFields() {
+            var Amount = $('#GrossAmt').val();
+            var ExtraKM = $('#ExtraKM').val();
+            var ExtraKMRate = $('#ExtraKMRate').val();
+            var ExtraHr = $('#ExtraHr').val();
+            var ExtraHrRate = $('#ExtraHrRate').val();
+            var NetAmount = $('#NetAmount').val();
+            var FinalNetAmt = $('#FinalNetAmt').val();
+
+            if (Amount == '' || Amount == '0') {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter amount.');
+                $("#GrossAmt").focus(); $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+            if (NetAmount == '' || NetAmount == '0') {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter net amount.');
+                $("#NetAmount").focus(); $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+            if (FinalNetAmt == '' || FinalNetAmt == '0') {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter final audit amount.');
+                $("#FinalNetAmt").focus(); $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+            $("#SpanValidateMsg").empty();
+            return true;
+        }
+        // Calc Net Amount event on keypress
+        $('.calcTotal').keypress(function () {
+            CalculateNetAmount();
+        });
+        // Calc Net Amount event on change 
+        $('.calcTotal').change(function () {
+            CalculateNetAmount();
+        });
+        // Calc extra km rate event on keypress
+        $('.clskm').keypress(function () {
+            var ExtraKM = isNaN(parseInt($('#ExtraKM').val())) ? 0 : parseInt($('#ExtraKM').val());
+            var ExtraKMRate = isNaN(parseFloat($('#ExtraKMRate').val())) ? 0 : parseFloat($('#ExtraKMRate').val());
+            $('#ExtraTotalKM').val(ExtraKM * ExtraKMRate);
+            $('#ExtraTotalKM').attr('style', 'background-color:#ddd;width:120px;');
+            $('#ExtraTotalKM').attr('readonly', true);
+        });
+        // Calc extra hour rate event on keypress
+        $('.clshr').keypress(function () {
+            var ExtraHr = isNaN(parseInt($('#ExtraHr').val())) ? 0 : parseInt($('#ExtraHr').val());
+            var ExtraHrRate = isNaN(parseFloat($('#ExtraHrRate').val())) ? 0 : parseFloat($('#ExtraHrRate').val());
+            $('#ExtraTotalHr').val(ExtraHr * ExtraHrRate);
+            $('#ExtraTotalHr').attr('style', 'background-color:#ddd;width:120px;');
+            $('#ExtraTotalHr').attr('readonly', true);
+        });
+        // Calc. net amount
+        function CalculateNetAmount() {
+            var Amount = isNaN(parseFloat($('#GrossAmt').val())) ? 0 : parseFloat($('#GrossAmt').val());
+            var ExtraTotalKM = isNaN(parseFloat($('#ExtraTotalKM').val())) ? 0 : parseFloat($('#ExtraTotalKM').val());
+            var ExtraTotalHr = isNaN(parseFloat($('#ExtraTotalHr').val())) ? 0 : parseFloat($('#ExtraTotalHr').val());
+            var TollChrg = isNaN(parseFloat($('#TollChrg').val())) ? 0 : parseFloat($('#TollChrg').val());
+            var ParkingChrg = isNaN(parseFloat($('#ParkingChrg').val())) ? 0 : parseFloat($('#ParkingChrg').val());
+            var FuelHike = isNaN(parseFloat($('#FuelHike').val())) ? 0 : parseFloat($('#FuelHike').val());
+            var NetAmount = isNaN(parseFloat($('#NetAmount').val())) ? 0 : parseFloat($('#NetAmount').val());
+            var FinalNetAmt = isNaN(parseFloat($('#FinalNetAmt').val())) ? 0 : parseFloat($('#FinalNetAmt').val());
+            $('#NetAmount').val(Amount + ExtraTotalHr + ExtraTotalKM + TollChrg + ParkingChrg + FuelHike);
+            $('#NetAmount').attr('style', 'background-color:#ddd;width:220px;');
+            $('#NetAmount').attr('readonly', true);
+            //$('#FinalNetAmt').val($('#NetAmount').val());
+        }
+
+        // Button click event
+        $('#btnSave').click(function () {
+            if (ValidateFields()) {
+                $.post('/Bookings/EditAuditLogSheet?Id=' + '@Model.ID', $('#frmlogSheet').serialize(), function (data) {
+                    alert(data.msg);
+                    if (data.success) {
+                        window.location.href = '/Bookings/Index';
+                    }
+                });
+            }
+        });
+</script>

@@ -1,0 +1,81 @@
+﻿@model FMS.Models.IPRule
+@{
+    ViewBag.Title = "Edit IP Rules";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+<h2>Edit IP [ @Model.IpAddr ] </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive">@Html.ActionLink("Back to IP Rules", "Index", "IPRules")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+        <table class="table table-bordered table-condensed table-striped">
+         <tr>
+            <td  colspan="2">
+                <span id="errormsg" style="color: Red; font-style: italic; font-size: medium;"></span>
+            </td>
+        </tr>
+            <tr>
+            <td>
+                IP Address  <small> (Internet) </small>
+            </td>
+            <td>
+                @Html.TextBox("IpAddr", Model.IpAddr, new { @id = "Ip", @required = "Please fill Ip Address", @maxlength = 50, Onkeypress = "return numberValidatedot(event)" })
+                @Html.ValidationMessageFor(model => model.IpAddr)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Concerning Location
+            </td>
+            <td>
+                @Html.TextBox("Location", Model.Location, new { @id = "Concerning", @required = "Please fill Concerning details", @maxlength = 50 })
+                @Html.ValidationMessageFor(model => model.Location)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Grant Access
+            </td>
+            <td>
+                @Html.CheckBox("Allow", Model.Allow)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </td>
+        </tr>
+    </table>
+
+}
+<script type="text/javascript">
+
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; }
+        else {
+            return false;
+        }
+    }
+    $("#Concerning").change(function () {
+        var title = isName(this.value);
+        if (title == false) {
+            $("#errormsg").show();
+            $("#errormsg").text("Your string has special characters. \n These are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+        else {
+            $("#errormsg").hide();
+            var val = $.trim($("#" + this.id).val());
+            $("#" + this.id).val(val);
+        }
+    });   
+</script>

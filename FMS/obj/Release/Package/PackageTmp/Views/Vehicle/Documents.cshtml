@@ -1,0 +1,139 @@
+﻿@model FMS.Models.tbl_doc_vehicle_nodes
+
+@{
+    ViewBag.Title = "Vehicle Documents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+  .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+     .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+</style>
+<h2>Vehicle Documents</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Vehicles", "Index", "Vehicle")</li>
+        </ul>
+    </div>
+</div>
+<div id="div_vehicleDocs">
+@using (Html.BeginForm("Documents", "Vehicle", FormMethod.Post, new { @id = "frmSaveDocs", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Vehicle Documents</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <p style="color: Red; font-style: italic;">
+                        @(ViewBag.message)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# : <span style="color: Red;">*</span>
+                    <input type="hidden" id="vid" name="vid" />
+                    <input type="hidden" id="hdnVevhicleID" name="hdnVevhicleID" value="" />
+                   <input type="hidden" id="hdnVehicleRegNum" name="hdnVehicleRegNum" value="@ViewBag.VehicleRegNum" />
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleID, new { @class = "txtAutoComplete", @tabindex = 1 })
+                    @Html.ValidationMessageFor(model => model.VehicleID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Doc. Type:<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("DocTypeID", null, "--Select Document Type--", new { @class = "txtInput", @tabindex = 2 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Upload File :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <input type="file" name="DocPath" id="DocPath" />
+                    @Html.ValidationMessageFor(model => model.DocPath)
+                </td>
+            </tr>
+            <tr>
+            <td></td>
+                <td>
+                    <input type="submit" id="btnSaveDocuments" value="Save" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+</div>
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+//    $(document).ready(function () {
+    var clientid = $("#hdnVevhicleID").val();
+    if (clientid != "") {
+        var VehicleRegNum = $("#hdnVehicleRegNum").val();
+        $("#VehicleID").val(VehicleRegNum);
+    }
+        $("#VehicleID").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+   // });
+    function OnselectItem(li) {
+        $('#vid').val(0);
+        if (li == null) $('#vid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            // GetVehicleDriver(sValue);
+        }
+        else { var sValue = li.selectValue };
+        $('#vid').val(sValue);
+        $("#hdnVevhicleID").val(sValue)
+       
+    }
+    $("#btnSaveDocuments").click(function () {
+        var txtVehicleRegNo = $("#VehicleID").val();
+        var ddDocTypeID = $("#DocTypeID").val();
+        var file = $("#DocPath").val();
+        if (txtVehicleRegNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle registration number.');
+            $("#VehicleID").focus();
+            return false;
+        }
+        if (ddDocTypeID == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select document type.');
+            $("#DocTypeID").focus();
+            return false;
+        }
+        if (file == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select your file.');
+            $("#DocPath").focus();
+            return false;
+        }
+        this.form.submit();
+    });
+</script>

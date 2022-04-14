@@ -1,0 +1,190 @@
+﻿@model SVS.Models.tbl_PurchaseOrderItemDetails
+@{
+    System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+}
+@using (Html.BeginForm())
+{
+   
+ <p>Product: <span style="color:Green;font-weight:bold;">@Model.InventoryItemsMaster.ItemText</span> </p>
+        <table  class="table table-striped table-condensed table-bordered">
+         <tr>
+            <td colspan="2">
+                <span id="ItemEditerrormsg" style="color: Red;" class="clsmark"></span> 
+            </td>
+        </tr>
+       
+   
+   
+    <tr>
+        <th>
+            Qty. <span class="clsmark">*</span>
+        </th>
+        <td>   @Html.Hidden("OrderDetId", Model.Id)
+               @Html.TextBox("txtQty", Model.Qty, new { @style = "width:40px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+        </td>
+    </tr>
+      <tr>
+        <th>
+            Tax. <span class="clsmark">*</span>
+        </th>
+        <td>
+               @Html.TextBox("Taxes", Model.Taxes, new { @style = "width:40px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+        </td>
+    </tr>
+     <tr>
+         <th>
+            Schedule Date
+         </th>
+         <td>
+               @Html.TextBox("ScheduleDt", String.Format(customCulture, "{0:dd/MM/yyyy}",Model.ScheduleDt), new { @style = "width:150px;", @class = "BoxBackground datetimepicker" }) 
+         </td>
+     </tr>
+    
+     <tr>
+        <td>
+            <span class="clsspan" id="SpanLabel">Avail Qty </span>
+        </td>
+        <td>
+            <span id="SpanAvailQty" class="clsmark"> @String.Format("{0:N}",(decimal)ViewBag.AvailQty)</span>
+        </td>
+    </tr>
+     <tr>
+            <td>
+                <span class="clsspan" >Amount</span> 
+            </td>
+            <td>
+                <span class="clsmark" id="ItemAmount"> @Model.UnitPrice</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                 <span class="clsspan" >Total Amt</span>
+            </td>
+            <td>
+                <span class="clsmark"  id="TotalAmount"> </span>
+            </td>
+        </tr>
+         <tr>
+            <td>
+                 <span class="clsspan" >Description</span>
+            </td>
+            <td>
+                   @Html.TextArea("Description", Model.Description, new { @maxlength = 250, @class = "validate", @style = "resize:none;", @rows = "3", @cols = "30" })
+            </td>
+        </tr>
+        <tr>
+          
+            <td colspan="2" style="text-align:center;">
+                <input type="button"  class="btn btn-primary"  value="Update" id="btnEditItem"/>
+                <input type="button" class="btn btn-light-grey" data-dismiss="modal" value="Close" />
+            </td>
+        </tr>
+    </table>
+}
+
+<script src="@Url.Content("~/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js")"></script>
+ <script type="text/javascript">
+     $(function () {
+         var Qty = parseInt($("#txtQty").val());
+         var ItemAmt = parseInt($('#ItemAmount').html());
+         $('#TotalAmount').html(Qty * ItemAmt);
+         var myDate = new Date();
+         var dd = myDate.getDate();
+         var mm = myDate.getMonth() + 1; //January is 0! 
+         var yyyy = myDate.getFullYear();
+         if (dd < 10) { dd = '0' + dd }
+         if (mm < 10) { mm = '0' + mm }
+         var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+         $(".datetimepicker").datepicker({
+             format: 'dd/mm/yyyy',
+             autoclose: true,
+             startDate: TodayDate
+         });
+     });
+     $("#txtQty").change(function () {
+         var Qty =parseInt($(this).val());
+         var AvailQty = $('#SpanAvailQty').html();
+         var ItemAmt =parseInt($('#ItemAmount').html());
+         $('#TotalAmount').html(Qty * ItemAmt);
+         var a = parseInt(Qty)
+         var b = parseInt(AvailQty)
+         if (Qty.charAt(0) == 0) { // or use Qty.slice(0, 1)
+             $(this).val("")
+             return;
+         }
+        
+     });
+     $('#btnEditItem').click(function () {
+         if ($.trim($('#txtQty').val()) == "") {
+             $("#ItemEditerrormsg").show();
+             $("#ItemEditerrormsg").text("Please enter quantity");
+             $('#txtQty').focus();
+             return;
+         }
+         if ($.trim($('#ScheduleDt').val()) == "") {
+             $("#ItemEditerrormsg").show();
+             $("#ItemEditerrormsg").text("Please enter Schedule Date");
+             $('#ScheduleDt').focus();
+             return;
+         }
+         var OrderDetId = $('#OrderDetId').val();
+         var Qty = $('#txtQty').val();
+         $("#ItemEditerrormsg").hide();
+         $("#loading").fadeIn('slow');
+         var Qty = $('#txtQty').val();
+         var Tax = $('#Taxes').val();
+         var Description = $('#Description').val();
+         var ScheduleDt = $('#ScheduleDt').val();
+         var IsEdit = $("#isEdit").val();
+         $.post('@Url.Action("EditOrderDetails","PurchaseOrders",new{area="Inventory"})?Id=' + OrderDetId + '&Qty=' + Qty + '&Tax=' + Tax + '&Description=' + Description + '&ScheduleDt=' + ScheduleDt, function (data) {
+             $('#loading').hide();
+             if (data.success) {
+                 alert(data.msg);
+                 var delay = 1000; //1 seconds
+                 setTimeout(function () {
+                     //your code to be executed after 1 seconds
+                     window.location.href = '@Url.Action("PurchaseOrderEdit", "PurchaseOrders", new { area = "Inventory" })?Id=' + data.Id;
+                 }, delay);
+                 $("#loading").fadeOut('slow');
+             }
+             else {
+                 alert(data.msg);
+                 $("#loading").fadeOut('slow');
+             }
+         });
+     });
+     $(".validate").change(function (e) {
+         if ($.trim(this.value) != "") {
+             var title = isName(this.value);
+             if (title == false) {
+                 $("#ItemEditerrormsg").show();
+                 $("#ItemEditerrormsg").text("Your string has special characters. \nThese are not allowed.");
+                 document.getElementById("" + this.id + "").value = '';
+                 $("#" + this.id).focus();
+             }
+             else {
+                 var title1 = DisableSpace(e);
+                 if (title1 == false) {
+                     $("#ItemEditerrormsg").show();
+                     $("#ItemEditerrormsg").text("Your string has spaces.\n These are not allowed.");
+                     document.getElementById("" + this.id + "").value = '';
+                     document.getElementById("" + this.id + "").focus();
+                 }
+                 else {
+                     $("#ItemEditerrormsg").hide();
+                 }
+             }
+         }
+         else {
+             $("#ItemEditerrormsg").text("Space should not be allowed.");
+             document.getElementById("" + this.id + "").value = '';
+             $("#" + this.id).focus();
+         }
+
+     });
+     function numberValidate(evt) {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8)
+         { return true; } else { return false; }
+     }
+ </script>

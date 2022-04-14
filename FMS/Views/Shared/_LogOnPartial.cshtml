@@ -1,0 +1,8 @@
+﻿@if (Session["UserName"] != null)
+{
+    <text>Welcome <strong>@User.Identity.Name</strong>!
+    [ @Html.ActionLink("Log Out", "LogOff", "Account") ]</text>
+}
+else {
+    @:[ @Html.ActionLink("Log In", "LogOn", "Account") ]
+}

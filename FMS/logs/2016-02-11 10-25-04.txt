@@ -1,0 +1,4 @@
+[2016-02-11 10:25:04.3995] [127.0.0.1] [ERROR] [Value cannot be null.
+Parameter name: entity] [superadmin] [   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.AdhocLogEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 1342]

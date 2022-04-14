@@ -1,0 +1,269 @@
+﻿@model IEnumerable<FMS.Models.tbl_veh_service_schedules>
+@using FMS.Models;
+@{
+    long VehicleId = ViewBag.VehicleId == null ? 0 : Convert.ToInt64(ViewBag.VehicleId);
+}
+<fieldset>
+<legend>Add Service Details</legend>
+<p>
+    <span id="error_msg" class="field-validation-error"></span>
+</p>
+<form id="frmService" method="post" enctype="multipart/form-data">
+<table class="table table-bordered" id="tbl_veh_service_list">
+    <thead>
+        <tr>
+            <th>
+                Service No.
+            </th>
+            <th>
+                Min Odo Meter Reading(s)
+            </th>
+            <th>
+                Max Odo Meter Reading(s)
+            </th>
+            <th>
+                Service Days
+            </th>
+           @* <th>
+                Date
+            </th>*@
+            <th>
+                Service Station
+            </th>
+            <th>
+                 <a id="add_newRow" style="color:White;" href="#" >Add New</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="tbody_vehService">
+        @foreach (var item in Model)
+        {
+            <tr id="tr_add_@(item.Id)">
+                <td>
+                    <input type="hidden" name="rowId_@(item.Id)" value="@(item.Id)"/>
+                    <input type="hidden" id="hdn_ssno_@(item.Id)" value="@(item.ServiceNo)" />
+                    <input type="hidden" id="hdn_serstat_@(item.Id)" value="@(item.ServiceStation)" /> 
+                    @Html.DropDownList("SS_NO_" + item.Id, (IEnumerable<SelectListItem>)ViewBag.SSNO, "-Select-", new { @style = "width:100px;" })
+                </td>
+                <td>
+                     @Html.TextBox("txt_odo_meter_" + item.Id, item.ODMeterReading, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);" , @class = "clsodometer" , @maxlength = 15 })
+                </td>
+                <td>
+                     @Html.TextBox("txt_odo_meter_max_" + item.Id, item.ODMeterMax, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);" , @class = "clsodometer" , @maxlength = 15 })
+                </td>
+                <td>
+                     @Html.TextBox("txt_ser_days_" + item.Id, item.ServiceDays, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);", @maxlength = 4 })
+                </td>
+               @* <td>
+                     @Html.TextBox("txt_date_" + item.Id, item.DueDt.Value.Date.ToShortDateString(), new { @style = "width:100px;", @onkeypress = "return numberValidate(event);", @class = "datePicker", @maxlength = 15 })
+                </td>*@
+                <td>
+                     @Html.DropDownList("txt_station_" + item.Id, (IEnumerable<SelectListItem>)ViewBag.ServiceStation,"--Select--", new { @style = "width:180px;", @maxlength = 50 })
+                </td>
+               <td style="text-align:center">
+                    <a href="javascript:void(0)" onclick='return delete_row("@item.Id");' style="color:Red;font-weight:bold;" >X</a>
+                </td>
+            </tr>
+        }
+        @{ 
+            Html.RenderPartial("~/Views/Vehicle/_AddTrService.cshtml", new tbl_veh_service_schedules()); }   
+    </tbody>
+</table>
+<input type="hidden" name="VehicleId" id="VehicleId" value="@VehicleId" />
+</form>
+<p style="float:right;">
+    <input type="button" id="btnServiceSave" class="btn btn-primary" value="Save" />
+</p>
+</fieldset>
+<script type="text/javascript">
+    // on PageLoad
+    $(".datePicker").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    SetServiceNumbers();
+
+    // Add Tr
+    $("#add_newRow").click(function (e) {
+
+        e.preventDefault();
+
+        // Verify Tbody Length
+        var tbodyLength = $('#tbl_veh_service_list tbody').find('tr').length;
+
+        if (tbodyLength > 0) {
+            // Validate Service Structure
+            if (ValidateServiceStructure()) {
+                $.ajax({
+                    url: '@Url.Action("AddServiceRow", "Vehicle")',
+                    beforeSend: function () {
+                        $('#loading').fadeIn('slow');
+                    },
+                    cache: false,
+                    success: function (html) {
+                        $("#tbody_vehService").append(html);
+                        $('#loading').fadeOut('slow');
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("AddServiceRow", "Vehicle")',
+                beforeSend: function () {
+                    $('#loading').fadeIn('slow');
+                },
+                cache: false,
+                success: function (html) {
+                    $("#tbody_vehService").append(html);
+                    $('#loading').fadeOut('slow');
+                }
+            });
+        }
+        $('#loading').fadeOut('slow');
+    });
+    function delete_row(idExt) {
+        $('#loading').fadeIn('slow');
+        $("#tbody_vehService #tr_add_" + idExt).remove();
+        $.post('/Vehicle/DeleteServiceRow?Id=' + idExt, function (data) {
+        });
+        VehServiceList('@VehicleId');
+        $('#loading').fadeOut('slow');
+    }
+
+    function SetServiceNumbers() {
+        var result = false;
+        $('#tbl_veh_service_list tbody tr').each(function () {
+            var id = $(this).attr('id').split('_')[2];
+            var ssNO = $('#hdn_ssno_' + id).val();
+            $('#SS_NO_' + id).val(ssNO);
+            $('#txt_station_' + id).val($('#hdn_serstat_' + id).val());
+        });
+    } 
+
+    function ValidateServiceStructure() {
+        var result = false;
+        $('#tbl_veh_service_list tbody tr').each(function () {
+            var id = $(this).attr('id').split('_')[2];
+            var serviceNo = $('#SS_NO_' + id).val();
+            var odoMeter = $('#txt_odo_meter_' + id).val();
+            var odoMeterMax = $('#txt_odo_meter_max_' + id).val();
+            var serviceDays = $('#txt_ser_days_' + id).val();
+            var serviceDt = $('#txt_date_' + id).val();
+
+            if (serviceNo == '') {
+                result = false;
+                $('#error_msg').html('Please select service number.');
+                $('#SS_NO_' + id).focus();
+                return false;
+            }
+            if (odoMeter == '') {
+                result = false;
+                $('#error_msg').html('Please enter min odo meter reading.');
+                $('#txt_odo_meter_' + id).focus();
+                return false;
+            }
+            if (odoMeterMax == '') {
+                result = false;
+                $('#error_msg').html('Please enter max odo meter reading.');
+                $('#txt_odo_meter_max_' + id).focus();
+                return false;
+            }
+            if (serviceDays == '' || serviceDays == 0) {
+                result = false;
+                $('#error_msg').html('Please enter service days');
+                $('#txt_ser_days_' + id).focus();
+                return false;
+            }
+            if (serviceDt == '') {
+                result = false;
+                $('#error_msg').html('Please select service date.');
+                $('#txt_date_' + id).focus();
+                $('div').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+            result = true;
+        });
+        if (result == true) {
+            $('#error_msg').empty();
+        }
+        return result;
+    }
+
+    $('#btnServiceSave').click(function () {
+        $('#loading').fadeIn('slow');
+        if (ValidateServiceStructure()) {
+            $.post('@Url.Action("AddNewServiceToVeh", "Vehicle")', $('#frmService').serialize(), function (data) {
+                alert(data.msg);
+                $('#loading').fadeOut('slow');
+                if (data.success) {
+                    window.location.href = '@Url.Action("EditVehicle", "Vehicle")?Id=' + '@VehicleId';
+                    $('#frmVehicleEdit').stepy('5');
+                }
+            });
+        }
+        else {
+            $('#loading').fadeOut('slow');
+            return false;
+        }
+    });
+    $('.clsodometer').change(function () {
+        $('#error_msg').empty();
+        var val = $(this).val();
+        var thisId = $(this).attr('id');
+        var IsCurrent = false;
+        $('#tbl_veh_service_list tbody tr').each(function () {
+            var id = $(this).attr('id').split('_')[2];
+
+            var odoMeter = $('#txt_odo_meter_' + id).val();
+
+            if (parseInt(thisId.split('_')[3]) == parseInt(id)) {
+                IsCurrent = true;
+            }
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("VerifyOdoMeterReading", "Vehicle")',
+                data: { OdoMeter: odoMeter, CurrentReading: val, Iscurrent: IsCurrent },
+                success: function (data) {
+                    IsCurrent = false;
+                    if (data == 'False') {
+                        //$('#error_msg').empty();
+                        return true;
+                    }
+                    else {
+                        $('#error_msg').html('Odo meter reading has already exists or less than previous readings are not accepted');
+                        $('#' + thisId).val('');
+                        $('#' + thisId).focus();
+                        return false;
+                    }
+                }
+            });
+        });
+        $('#error_msg').empty;
+        return false;
+    }); 
+
+    // Validating Numbers
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57)) {
+            // $("#errmsg").html("Digits Only").show().fadeOut("slow");
+            return false;
+        }
+
+        return true;
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8)
+        { return true; } else { return false; }
+    }
+     
+ </script>

@@ -1,0 +1,132 @@
+﻿@model FMS.Models.tbl_bookings
+
+<p> Booking proccess communication will send to the mail is <u>@(Model.FromMail)</u> </p>
+    <table style="width: 100%;float:left;">
+        <tr style="width: 100%;">
+            <td style="width: 49%;" valign="top" align="left">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td>
+                            Booking Ref#
+                        </td>
+                        <td>
+                           <span class="label-success"> @Model.BookRefNo </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Client Name
+                        </td>
+                        <td>
+                            @Model.tbl_clients.CompanyName
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Mail From  
+                        </td>
+                        <td>
+                            @Model.FromMail
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date of Mail  
+                        </td>
+                        <td>
+                            @Model.BookingDt.Value.ToShortDateString()
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date of Reporting 
+                        </td>
+                        <td>
+                            @Model.DateofReport.Value.ToShortDateString()
+                            Time 
+                            @Model.ReportingTime
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Vehicle Model 
+                        </td>
+                        <td>
+                            @Model.tbl_vehicle_models.VehicleModelName
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Vehicle Type  
+                        </td>
+                        <td>
+                            @Model.tbl_vehicle_types.VehicleType
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 49%;" valign="top" align="right">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td>
+                            Trip Type
+                        </td>
+                        <td>
+                            @Model.TripType
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Priority
+                        </td>
+                        <td>
+                            @Model.Priority
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Guest Name
+                        </td>
+                        <td>
+                            @Model.GuestName
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Guest Details
+                        </td>
+                        <td>
+                            @Model.GuestDetails
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            From Location
+                        </td>
+                        <td>
+                            @Model.FromLocation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            To Location
+                        </td>
+                        <td>
+                            @Model.ToLocation
+                            <input type="hidden" id="hdnStatus" value="@Model.Status" />
+                            <input type="hidden" id="hdnLogId" value="@ViewBag.LogId" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Status
+                        </td>
+                        <td>
+                            <span class="label-important">@Model.Status </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
+    </table>

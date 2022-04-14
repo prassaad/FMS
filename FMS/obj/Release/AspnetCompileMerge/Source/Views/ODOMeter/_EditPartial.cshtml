@@ -1,0 +1,142 @@
+﻿@model FMS.Models.tbl_odometer_readings
+<div class="clsmodalheader">Edit Odometer Reading</div>
+@using (Html.BeginForm("Edit", "ODOMETER", FormMethod.Post, new { @id = "updateForm", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    @ViewBag.Errormessage
+
+    <div style="overflow: auto;z-index:9999;height:500px;" id="divNewReading">
+     <table class="table-striped table-condensed dTableR">
+        <tr>
+            <td colspan="2">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <span id="valdationMsg" style="color: Red;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Vehicle <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("Vehicle", Model.tbl_vehicles.VehicleRegNum, new { @style = "width:220px;background-color:#ddd;" , @readonly = true  })
+                @Html.Hidden("VehicleId", Model.VehicleId)
+                @Html.Hidden("Id")
+                @Html.Hidden("ModeOfEntry", Model.ModeOfEntry)
+            </td>
+        </tr>
+     @*   <tr>
+            <td>
+                Mode of Entry <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("ModeOfEntry", null, "-Select-", new { @tabindex = 2, @style = "width:220px;" })
+            </td>
+        </tr>*@
+        <tr>
+            <td>
+                ODM Date <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("ODMDate", Model.ODMDate, new { @class = "txtInput", @tabindex = 3, @style = "width:220px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reading Value <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("ReadingValue", Model.ReadingValue, new { @tabindex = 4, @onkeypress = "return numberValidate(event);", @style = "width:220px;" })
+                &nbsp;  <span id="errReading" style="color: Red"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" value="Save" id="btnforsave" onclick="updateReading()" tabindex="5" />
+            </td>
+        </tr>
+    </table>
+    </div>
+}
+
+
+
+<script type="text/javascript">
+   
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+//    $("#ReadingValue").change(function () {
+//        var range = $(this).val();
+//        var vehId = '@Model.VehicleId';
+//        if (range != '' || vehId != '') {
+//            $.get('/ODOMETER/checkleastRange?range=' + range + '&vehId=' + vehId + '&Id=' + '@Model.Id', "", function (data) {
+//                if (data.success) {
+//                    $("#valdationMsg").empty();
+//                }
+//                else {
+//                    $("#valdationMsg").html(data.msg);
+//                    $('#ReadingValue').val(''); $('#ReadingValue').focus();
+//                }
+//            });
+//        }
+//    });
+     
+    function updateReading() {
+        var formColl = $("#updateForm").serialize();
+        if (ValidateMsg()) {
+            $('#loading').fadeIn('slow');
+            $.post('/ODOMeter/Edit', formColl, function (data) {
+                alert(data.msg);
+                $('#loading').fadeOut('slow');
+                if (data.success == true) {
+                    $.modal.close();
+                    window.location.reload();
+                }
+            });
+        }
+    }
+    var myDate = new Date();
+    var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+    $("#ODMDate").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        maxDate: prettyDate,
+        onSelect: function () {
+            $('input[tabindex="4"]').select();
+        }
+    });
+    function ValidateMsg() {
+        var modeofEntry = $("#ModeOfEntry").val();
+        var odmDate = $("#ODMDate").val();
+        var readingValue = $("#ReadingValue").val();
+        
+        if (modeofEntry == "") {
+            $("#valdationMsg").show();
+            $("#valdationMsg").html("Please select mode of entry");
+            $("#ModeOfEntry").focus();
+            return false
+        }
+        if (odmDate == "") {
+            $("#valdationMsg").show();
+            $("#valdationMsg").html('Please select odometer date.');
+            $("#ODMDate").focus();
+            return false;
+        }
+        if (readingValue == "") {
+            $("#valdationMsg").show();
+            $("#valdationMsg").html('Please enter reading value.');
+            $("#ReadingValue").focus();
+            return false;
+        }
+        return true;
+    }
+</script>

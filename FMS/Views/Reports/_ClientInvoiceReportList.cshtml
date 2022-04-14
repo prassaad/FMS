@@ -1,0 +1,81 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+<p style="margin-top:10px;">
+No of entries @(ViewBag.ListCount) showing
+</p>
+@{
+    decimal TotAmount = 0;
+}
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Client
+        </th>
+        <th>
+            Month Year
+        </th>
+        <th>
+            Invoice#
+        </th>
+        <th>
+            Inv.Particular
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            Invoice Amount
+        </th>
+        <th>
+            Payment Status
+        </th>
+    </tr>
+    @{ TotAmount = 0; }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text4)
+            </td>
+            <td>@Html.Encode(item.Date1.ToString("dd/MM/yyyy"))
+            </td>
+            <td>
+                @Html.Encode(item.Value2)
+                @{ TotAmount += item.Value2; }
+            </td>
+            <td>
+                @if ((bool)item.Status)
+                { 
+                    <span class="label-success">Payment Received </span>
+                }
+                else
+                {  <span class="label-important"> Receivable </span> }
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="5">
+            Total Amount
+        </td>
+        <td>
+            @Html.Encode(String.Format("{0:N}",TotAmount))
+        </td>
+        <td>
+            
+        </td>
+    </tr>
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>
+<script type="text/javascript">
+    $('#print-icon').show();
+</script>

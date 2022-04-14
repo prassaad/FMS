@@ -1,0 +1,193 @@
+﻿@*@model FMS.Models.tbl_card_assignments*@
+@{
+    Int64 PackageId = Convert.ToInt64(ViewBag.PackageId);
+    ViewBag.Title = "Bulk Card Entry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Bulk Card Entry</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>@*<li><a href="@Url.Action("ExportToExcel", "CardAssignment")" id="btnExportExcel">Download Excel</a>
+                            </li>*@
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Transactions", "Home")">
+                Cancel </a></li>
+        </ul>
+    </div>
+</div>
+@*<div id="div_export" style="padding-bottom: 5px; padding-left: 85%;">
+    <a href="@Url.Action("ExportToExcel", "CardAssignment")" id="btnExportExcel" class="DTTT_button">
+        Excel</a>
+</div>*@
+@using (Html.BeginForm("BulkCardEntry", "CardAssignment", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmBulkCardEntry" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Bulk Card Entry </legend>
+        <table class="table-striped table-condensed dTableR dataTable" style="width: 85% ! important;">
+         
+            <tr>
+                <td>
+                    Client <span style="color: red;">* </span>
+                </td>
+                <td>
+                    @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.ClientId, "-Select Client-", new { @style = "width:220px;", @class = "clsPackage" })
+                    <span id="errClientId" style="display: none; color: Red">Please Select Client</span>
+                </td>
+                <td>
+                    Project <span style="color: red;">* </span>
+                </td>
+                <td>
+                    <select id="ProjectId" name="ProjectId" class="clsPackage" style="width: 220px;">
+                        <option value="0">-Select-</option>
+                    </select>
+                    <span id="errProjectId" style="display: none; color: Red">Please Select Project</span>
+                </td>
+                <td>
+                    Date <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("LogDate", "", new { @style = "width:150px" })
+                    <span id="errLogDate" style="display: none; color: Red">Please Enter Date</span>
+                </td>
+                <td>
+                    <input type="button" value="Get Card Details" id="btnCardDetails" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+  
+    <div id="divCardEntryDetailsList">
+    </div>
+    <br />
+    <div id="divAdhocList">
+    </div>
+    <br />
+    <div id="divNocabList">
+    </div>
+}
+<script type="text/javascript">
+
+    $('#errorMessage').empty();
+
+    $("#LogDate").datepicker({
+        minDate: "-41",
+        maxDate: "+5",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    $('#btnCardDetails').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var logDate = $('#LogDate').val();
+         $("#errClientId").hide(); $("#errProjectId").hide();
+        $('#errLogDate').hide();
+
+
+        if (clientId == '') {
+            $("#errClientId").show();
+            return false;
+        }
+        if (projectId == '') {
+            $("#errProjectId").show();
+            return false;
+        }
+        if (logDate == '') {
+            $('#errLogDate').show();
+            return false;
+        }
+
+        GetCardEntryDetails(clientId, projectId, logDate);
+
+    });
+    
+   
+
+    //bulkcardentry
+    function GetCardEntryDetails(ClientId, ProjectId, logDate) {
+        $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/BulkCardEntryList?ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&LogDate=" + logDate,
+        dataType: "html",
+        success: function (result) {
+            $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/AdhocList?ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&LogDate=" + logDate,
+        dataType: "html",
+        success: function (result) {
+
+            $('#divAdhocList').html(result);
+            $('#loading').fadeOut('slow');
+        }
+    });
+          $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/NocabList?ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&LogDate=" + logDate,
+        dataType: "html",
+        success: function (result) {
+            $('#divNocabList').html(result);
+            $('#loading').fadeOut('slow');
+        }
+    });
+            $('#divCardEntryDetailsList').html(result);
+            $('#loading').fadeOut('slow');
+
+        },
+
+        error: function (error) {
+            alert(error);
+        }
+
+    });
+    }
+
+
+
+    $('#ClientId').change(function () {
+        var clientId = $(this).val();
+        GetProjectsByClient(clientId);
+    });
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                    $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+
+     
+</script>

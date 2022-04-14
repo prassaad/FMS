@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="FosterModelStoreContainer" CdmEntityContainer="FosterEntities">
+    <EntitySetMapping Name="aspnet_Roles">
+      <EntityTypeMapping TypeName="FosterModel.aspnet_Roles">
+        <MappingFragment StoreEntitySet="aspnet_Roles">
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+          <ScalarProperty Name="LoweredRoleName" ColumnName="LoweredRoleName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Users">
+      <EntityTypeMapping TypeName="FosterModel.aspnet_Users">
+        <MappingFragment StoreEntitySet="aspnet_Users">
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="LoweredUserName" ColumnName="LoweredUserName" />
+          <ScalarProperty Name="MobileAlias" ColumnName="MobileAlias" />
+          <ScalarProperty Name="IsAnonymous" ColumnName="IsAnonymous" />
+          <ScalarProperty Name="LastActivityDate" ColumnName="LastActivityDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="bill_no_seq">
+      <EntityTypeMapping TypeName="FosterModel.bill_no_seq">
+        <MappingFragment StoreEntitySet="bill_no_seq">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="prefix" ColumnName="prefix" />
+          <ScalarProperty Name="bno" ColumnName="bno" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="customers">
+      <EntityTypeMapping TypeName="FosterModel.customer">
+        <MappingFragment StoreEntitySet="customers">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="cust_text" ColumnName="cust_text" />
+          <ScalarProperty Name="cust_desc" ColumnName="cust_desc" />
+          <ScalarProperty Name="cust_add1" ColumnName="cust_add1" />
+          <ScalarProperty Name="cust_add2" ColumnName="cust_add2" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="cust_phone" ColumnName="cust_phone" />
+          <ScalarProperty Name="cust_mobile" ColumnName="cust_mobile" />
+          <ScalarProperty Name="active" ColumnName="active" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="locations">
+      <EntityTypeMapping TypeName="FosterModel.location">
+        <MappingFragment StoreEntitySet="locations">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="location_text" ColumnName="location_text" />
+          <ScalarProperty Name="active" ColumnName="active" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="lots">
+      <EntityTypeMapping TypeName="FosterModel.lot">
+        <MappingFragment StoreEntitySet="lots">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="lot_text" ColumnName="lot_text" />
+          <ScalarProperty Name="active" ColumnName="active" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="product_categories">
+      <EntityTypeMapping TypeName="FosterModel.product_categories">
+        <MappingFragment StoreEntitySet="product_categories">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="prod_cat_text" ColumnName="prod_cat_text" />
+          <ScalarProperty Name="bit" ColumnName="bit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="product_types">
+      <EntityTypeMapping TypeName="FosterModel.product_types">
+        <MappingFragment StoreEntitySet="product_types">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="prod_ty_text" ColumnName="prod_ty_text" />
+          <ScalarProperty Name="active" ColumnName="active" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="FosterModel.product">
+        <MappingFragment StoreEntitySet="products">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="prod_text" ColumnName="prod_text" />
+          <ScalarProperty Name="prod_ty_id" ColumnName="prod_ty_id" />
+          <ScalarProperty Name="prod_cat_id" ColumnName="prod_cat_id" />
+          <ScalarProperty Name="acvtive" ColumnName="acvtive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="dc_no_seq">
+      <EntityTypeMapping TypeName="FosterModel.dc_no_seq">
+        <MappingFragment StoreEntitySet="dc_no_seq">
+          <ScalarProperty Name="dcno" ColumnName="dcno" />
+          <ScalarProperty Name="prefix" ColumnName="prefix" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="billing_types">
+      <EntityTypeMapping TypeName="FosterModel.billing_types">
+        <MappingFragment StoreEntitySet="billing_types">
+          <ScalarProperty Name="active" ColumnName="active" />
+          <ScalarProperty Name="billing_type" ColumnName="billing_type" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="packing_types">
+      <EntityTypeMapping TypeName="FosterModel.packing_types">
+        <MappingFragment StoreEntitySet="packing_types">
+          <ScalarProperty Name="active" ColumnName="active" />
+          <ScalarProperty Name="packing_type_short_text" ColumnName="packing_type_short_text" />
+          <ScalarProperty Name="packing_type" ColumnName="packing_type" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="units">
+      <EntityTypeMapping TypeName="FosterModel.unit">
+        <MappingFragment StoreEntitySet="units">
+          <ScalarProperty Name="active" ColumnName="active" />
+          <ScalarProperty Name="units_short_text" ColumnName="units_short_text" />
+          <ScalarProperty Name="units_text" ColumnName="units_text" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="stock_register">
+      <EntityTypeMapping TypeName="FosterModel.stock_register">
+        <MappingFragment StoreEntitySet="stock_register">
+          <ScalarProperty Name="active" ColumnName="active" />
+          <ScalarProperty Name="remarks" ColumnName="remarks" />
+          <ScalarProperty Name="incharge_contact" ColumnName="incharge_contact" />
+          <ScalarProperty Name="incharge" ColumnName="incharge" />
+          <ScalarProperty Name="grn_no" ColumnName="grn_no" />
+          <ScalarProperty Name="vech_no" ColumnName="vech_no" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="location_id" ColumnName="location_id" />
+          <ScalarProperty Name="hamali_charges" ColumnName="hamali_charges" />
+          <ScalarProperty Name="marking" ColumnName="marking" />
+          <ScalarProperty Name="lot_no" ColumnName="lot_no" />
+          <ScalarProperty Name="dt_recived" ColumnName="dt_recived" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="billing_type_id" ColumnName="billing_type_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="stock_register_det">
+      <EntityTypeMapping TypeName="FosterModel.stock_register_det">
+        <MappingFragment StoreEntitySet="stock_register_det">
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="qoh" ColumnName="qoh" />
+          <ScalarProperty Name="issued_slod" ColumnName="issued_slod" />
+          <ScalarProperty Name="total_weight" ColumnName="total_weight" />
+          <ScalarProperty Name="rate" ColumnName="rate" />
+          <ScalarProperty Name="rec_qty" ColumnName="rec_qty" />
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="packing_type_id" ColumnName="packing_type_id" />
+          <ScalarProperty Name="units_id" ColumnName="units_id" />
+          <ScalarProperty Name="exp_dt" ColumnName="exp_dt" />
+          <ScalarProperty Name="mfg_dt" ColumnName="mfg_dt" />
+          <ScalarProperty Name="prod_title" ColumnName="prod_title" />
+          <ScalarProperty Name="prod_id" ColumnName="prod_id" />
+          <ScalarProperty Name="slno" ColumnName="slno" />
+          <ScalarProperty Name="stock_reg_id" ColumnName="stock_reg_id" />
+          <ScalarProperty Name="lot_no" ColumnName="lot_no" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="user_cust">
+      <EntityTypeMapping TypeName="FosterModel.user_cust">
+        <MappingFragment StoreEntitySet="user_cust">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="cid" ColumnName="cid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="grn_no_seq">
+      <EntityTypeMapping TypeName="FosterModel.grn_no_seq">
+        <MappingFragment StoreEntitySet="grn_no_seq">
+          <ScalarProperty Name="grnno" ColumnName="grnno" />
+          <ScalarProperty Name="prefix" ColumnName="prefix" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="dcs">
+      <EntityTypeMapping TypeName="FosterModel.dc">
+        <MappingFragment StoreEntitySet="dcs">
+          <ScalarProperty Name="active" ColumnName="active" />
+          <ScalarProperty Name="other_details" ColumnName="other_details" />
+          <ScalarProperty Name="driver_name" ColumnName="driver_name" />
+          <ScalarProperty Name="vech_no" ColumnName="vech_no" />
+          <ScalarProperty Name="qty_issued" ColumnName="qty_issued" />
+          <ScalarProperty Name="dc_dt" ColumnName="dc_dt" />
+          <ScalarProperty Name="dc_no" ColumnName="dc_no" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="dc_det">
+      <EntityTypeMapping TypeName="FosterModel.dc_det">
+        <MappingFragment StoreEntitySet="dc_det">
+          <ScalarProperty Name="total" ColumnName="total" />
+          <ScalarProperty Name="qty" ColumnName="qty" />
+          <ScalarProperty Name="dt_received" ColumnName="dt_received" />
+          <ScalarProperty Name="prod_title" ColumnName="prod_title" />
+          <ScalarProperty Name="prod_id" ColumnName="prod_id" />
+          <ScalarProperty Name="issued_to" ColumnName="issued_to" />
+          <ScalarProperty Name="lot_no" ColumnName="lot_no" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="dc_no" ColumnName="dc_no" />
+          <ScalarProperty Name="slno" ColumnName="slno" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

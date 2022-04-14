@@ -1,0 +1,2 @@
+[2016-03-01 11:05:17.2534] [127.0.0.1] [ERROR] [The method or operation is not implemented.] [superadmin] [   at FMS.Controllers.CardAssignmentController.LogEntryValidate1(tbl_log_sheets logsheets, Boolean p) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 1054
+   at FMS.Controllers.CardAssignmentController.BulkCardEntry(FormCollection frm, tbl_log_sheets logsheets) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 976]

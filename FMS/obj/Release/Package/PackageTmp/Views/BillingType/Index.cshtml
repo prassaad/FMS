@@ -1,0 +1,40 @@
+﻿@model IEnumerable<FMS.Models.tbl_billing_types>
+
+@{
+    ViewBag.Title = "List of Billing Types";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List of Billing Types</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                           <li class="active">@Html.ActionLink("Create New", "Create")</li>
+                        </ul>
+                    </div>
+            </div>
+
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+<thead>
+    <tr>
+        <th>
+            Billing Type
+        </th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillingType)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+</tbody>
+</table>

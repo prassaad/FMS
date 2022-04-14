@@ -1,0 +1,11 @@
+[2016-02-20 16:01:38.0718] [127.0.0.1] [ERROR] [The method or operation is not implemented.] [superadmin] [   at FMS.Models.core.GetPackageClientRateList() in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Models\core.cs:line 1748
+   at FMS.Controllers.CardAssignmentController.NocabEntry(Int64 ClientId, Int64 ProjectId, String logDate) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 1181
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

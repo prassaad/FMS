@@ -1,0 +1,84 @@
+﻿@model IEnumerable<FMS.Models.tbl_pay_fields>
+@using FMS.Models
+@{
+    ViewBag.Title = "List of PayFields";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List of PayFields</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(36, User.Identity.Name).Add)
+            { <li class="active">@Html.ActionLink("Add Pay Fields", "Create", "PayFields")</li> }
+        </ul>
+    </div>
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+    <thead>
+        <tr>
+            <th>
+                Pay Name
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Entry Mode
+            </th>
+            <th>
+                Formula
+            </th>
+            <th>
+                Calc. Type
+            </th>
+            <th>
+                Created By
+            </th>
+            <th>
+                Created On
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PayName)
+                </td>
+               
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EntryMode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Formula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CalcType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedOn)
+                </td>
+                <td>
+                   @if ((bool)core.GetUserAccess(36, User.Identity.Name).Edit)
+                   {  @Html.ActionLink("Edit", "Edit", new { id = item.PayID })  }
+                    @if (item.PayName != "BP")
+                    {
+                          if ((bool)core.GetUserAccess(36, User.Identity.Name).Delete)
+                          { <text> | </text>    <a href="@Url.Action("Delete", "PayFields", new { id = item.PayID })" onclick="return confirm('Are you want to delete ? ');">Delete</a> }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

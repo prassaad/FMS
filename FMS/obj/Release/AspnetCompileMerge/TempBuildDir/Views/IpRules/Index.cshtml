@@ -1,0 +1,58 @@
+﻿@model IEnumerable<FMS.Models.IPRule>
+
+@{
+    ViewBag.Title = "List of IP Rules";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+<h2>
+    IP based Web Access 
+</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive">@Html.ActionLink("Create New", "Create", "IPRules")</li>
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered table-condensed table-striped">
+    <tr>
+        <th>
+            IP Address <small>(Internet) </small>
+        </th>
+        <th>
+            Concerning Location
+        </th>
+        <th>
+            Grant Access
+        </th>
+        <th>
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IpAddr)
+                @Html.HiddenFor(modelitem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @if ((item.Allow == null ? false : (bool)item.Allow))
+                {
+                    <span class="system positive">Yes</span>
+            }
+                else
+                {
+                    <span class="system negative">No</span>
+            }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) | <a href="@Url.Action("Delete", "IPRules", new { id = item.Id })" onclick = "return confirm('Are you sure delete this ?')">
+                    Delete</a>
+            </td>
+        </tr>
+}
+</table>

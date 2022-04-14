@@ -1,0 +1,80 @@
+﻿@model IEnumerable<FMS.Models.tbl_deposits_deductions>
+@using FMS.Models;
+@{
+    core objCore = new core();  
+} 
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Date
+        </th>
+        <th>
+            Owner
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Driver
+        </th>
+        <th>
+            Deposit Mode
+        </th>
+        <th>
+            DD/Cheque No
+        </th>
+        <th>
+            Cheque Date
+        </th>
+        <th>
+            Bank Name
+        </th>
+        <th>
+            Branch
+        </th>
+        <th>
+            Amount
+        </th>
+        <th>
+            Transaction#
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDt)
+            </td>
+            <td>
+                @objCore.GetOwner((long)item.VendorId)
+            </td>
+            <td>
+                @objCore.GetVehicleRegNumber((long)item.VehicleId)
+            </td>
+            <td>
+                @objCore.GetDriver((long)item.DriverId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepositMode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChequeNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChequeDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BankName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionNum)
+            </td>
+        </tr>
+}
+</table>

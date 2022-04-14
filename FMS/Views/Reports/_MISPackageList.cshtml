@@ -1,0 +1,137 @@
+﻿@model IEnumerable<FMS.Controllers.DutyLogSheetReportList>
+@using FMS.Models;
+<table class="table table-striped table-condensed dTableR dataTable">
+    <thead>
+    <tr>
+        <th>
+            Client Name
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Type
+        </th>
+        <th>
+            Model
+        </th>
+        <th>
+            Driver Name
+        </th>
+        <th>
+            Log Date
+        </th>
+        <th>
+            LogEnd Date
+        </th>
+        <th>
+            LogSheet#
+        </th>
+        <th>
+            Working Days
+        </th>
+        <th>
+            Working Hrs
+        </th>
+        <th>
+            Extra KM
+        </th>
+        <th>
+            Extra Hr
+        </th>
+        <th>
+            Pack Model
+        </th>
+        <th>
+            Gross Amount
+        </th>
+        <th>
+            Toll Chrg.
+        </th>
+        <th>
+            Parking Chrg.
+        </th>
+        <th>
+            Fuel Hike
+        </th>
+        <th>
+            Net Amount
+        </th>
+        <th>
+            Final Net Amt.
+        </th>
+        <th>
+        </th>
+    </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+        <tr>
+            <td>
+                @item.Client
+            </td>
+            <td>
+                @item.VehicleReg
+            </td>
+            <td>
+                @item.VehicleType
+            </td>
+            <td>
+                @item.VehicleModel
+            </td>
+            <td>
+                @item.Driver
+            </td>
+            <td>
+                @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+            </td>
+            <td>
+                @(string.IsNullOrEmpty(item.LogEndDt) ? "" : String.Format("{0:dd/MM/yyyy}", Convert.ToDateTime(item.LogEndDt)))
+            </td>
+            <td>
+                @item.LogSheetNum
+            </td>
+            <td>
+                @item.WorkingDays
+            </td>
+            <td>
+                @item.WorkingHrs
+            </td>
+            <td>
+                @item.ExtraKM
+            </td>
+            <td>
+                @item.ExtraHr
+            </td>
+            <td>
+                @item.PackModel
+            </td>
+            <td>
+                @item.GrossAmt
+            </td>
+            <td>
+                @item.TollChrg
+            </td>
+            <td>
+                @item.ParkingChrg
+            </td>
+            <td>
+                @item.FuelHike
+            </td>
+            <td>
+                @item.NetAmount
+            </td>
+            <td>
+                @item.FinalNetAmt
+            </td>
+            <td>
+                @if ((bool)core.GetUserAccess(46, User.Identity.Name).Edit)
+                {
+                    <a href="#" onclick="EditLogSheetModal('@item.ID')">Edit</a>
+                    }
+            </td>
+        </tr>
+        </tbody>
+        }
+</table>

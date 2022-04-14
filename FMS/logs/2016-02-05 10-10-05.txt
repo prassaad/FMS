@@ -1,0 +1,3 @@
+[2016-02-05 10:10:05.4952] [127.0.0.1] [ERROR] [Nullable object must have a value.] [superadmin] [   at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   at System.Nullable`1.get_Value()
+   at FMS.Controllers.ProjectsController.SaveBulkApprovedPackages(Int64 ClientId, Int64 ProjectId, FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\ProjectsController.cs:line 249]

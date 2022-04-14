@@ -1,0 +1,167 @@
+﻿@model FMS.Models.tbl_vehicles
+@using (Html.BeginForm("EditProxyVehicle", "Vehicle", FormMethod.Post, new { id = "frmEditProxyVehicle", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="clsmodalheader">Edit Proxy Vehicle</div>
+    <div style="overflow: auto;z-index:9999;height:500px;">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <input type="hidden" id="RegNo" name="RegNo" value="@ViewBag.VehRegNo" />
+                    <input type="hidden" id="VendorID" name="VendorID" value="@ViewBag.VendorID" />
+                    <input type="hidden" id="DriverID" name="DriverID" value="@ViewBag.DriverID" />
+                      @Html.Hidden("VehicleID", Model.ID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("VehicleRegNum", null, new { @style="width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("vendor", (string)@ViewBag.VendorName, new { @style = "width:200px" })   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Type :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Model :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleModelID", null, "--Select Vehicle Model--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Seater :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("SeaterID", null, "--Select Seater--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                  Driver :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Driver",(string)@ViewBag.DriverName, new { @style = "width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                  Phone :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Phone", (long)@ViewBag.PhoneNumber, new { @style = "width:200px" })
+                </td>
+            </tr> 
+              
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" id="btnEditVehicle" value="Save" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<script type="text/javascript">
+
+    $('#btnEditVehicle').click(function () {
+//         Validate fields here  
+        if (ValidationFields()) {
+//             Ajax Post Call 
+            $.post("/Vehicle/EditProxyVehicle?ID=" + $("#VehicleID").val() + "", $("#frmEditProxyVehicle").serialize(), function (data) {
+                alert(data.msg);
+                $.modal.close();
+                $("#div_loading").fadeIn('slow');
+                window.location.href = "/Vehicle/ProxyVehicles";
+            });
+        }
+    });
+
+    function ValidationFields() {
+        var vehicleReg = $('#VehicleRegNum').val();
+        var vendor = $('#vendor').val();
+        var vehicleType = $('#VehicleTypeID').val();
+        var vehicleModel = $('#VehicleModelID').val();
+        var driver = $('#Driver').val();
+        var seaterID = $('#SeaterID').val();
+        var phone = $('#Phone').val();
+        var CurrentRegNo = $("#RegNo").val();
+        if (vehicleReg == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter vehicle reg number.');
+            $('#VehicleRegNum').focus();
+            return false;
+        }
+        if (vehicleReg != CurrentRegNo) {
+            if (vehicleReg != '') {
+                $.post('/Vehicle/VerifyVehicleRegNumber?vehicleRegNum=' + vehicleReg, function (data) {
+                    if (data == 'False') {
+                        document.getElementById('VehicleRegNum').value = '';
+                        document.getElementById('VehicleRegNum').focus();
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").html("Vehicle reg number already exists.");
+                        return false;
+                    }
+
+                });
+            }
+        }
+        if (vendor == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter vendor name.');
+            $('#vendor').focus();
+            return false;
+        }
+        if (vehicleType == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select vehicle type.');
+            $('#VehicleTypeID').focus();
+            return false;
+        }
+        if (vehicleModel == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select vehicle model.');
+            $('#VehicleModelID').focus();
+            return false;
+        }
+        if (seaterID == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select seater.');
+            $('#SeaterID').focus();
+            return false;
+        }
+        if (driver == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter driver name.');
+            $('#Driver').focus();
+            return false;
+        }
+        if (phone == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter phone number.');
+            $('#Phone').focus();
+            return false;
+        }
+        $('#SpanValidateMsg').hide();
+        return true;
+    }
+</script>

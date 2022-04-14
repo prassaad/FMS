@@ -1,0 +1,189 @@
+﻿@model IEnumerable<FMS.Models.tbl_veh_service_schedules>
+@{
+    long vehicleId = 0;
+}
+<fieldset>
+<legend>Available Service List</legend>
+@if (Model.Count() == 0)
+{
+    <h2>
+        No service schedule has found to this vehicle
+    </h2>
+}
+else
+{
+ { vehicleId = (long)Model.FirstOrDefault().VehicleId; }
+    <table class="table table-bordered" id="tbl_veh_serivce_list1">
+        <thead>
+            <tr>
+                <th>
+                    Service No.
+                </th>
+                <th>
+                    Min Odo Meter Reading(s)
+                </th>
+                <th>
+                    Max Odo Meter Reading(s)
+                </th>
+                <th>
+                    Service Days
+                </th>
+                <th>
+                    Done
+                </th>
+                <th>
+                    Service Station
+                </th>
+                <th>
+                    Done Dt.
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="tr_add_@(item.Id)">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceNo)
+                        <input type="hidden" id="hdn_serstat1_@(item.Id)" value="@(item.ServiceStation)" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ODMeterReading)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ODMeterMax)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceDays)
+                    </td>
+                    <td>
+                        @if (item.IsDone == null ? false : (bool)item.IsDone)
+                        {
+                            <span class="system positive">Yes</span>
+                }
+                        else
+                        {
+                            <span class="system negative">No</span>
+                }
+                    </td>
+                    <td>
+                        <span id="serviceStat_@(item.Id)" class="clsdisplay">
+                            @Html.Encode(item.ServiceStation == null ? "-" : item.tbl_service_stations.ServiceStation)
+                        </span><span id="spndropField_@(item.Id)" style="display:none;" class="clsfielddisplay">
+                            @Html.DropDownList("station_" + item.Id, (IEnumerable<SelectListItem>)ViewBag.ServiceStation, "--Select--", new { @style = "width:180px;", @maxlength = 50 })
+                        </span>
+                    </td>
+                    <td>
+                        <span id="spnDate_@(item.Id)" class="clsdisplay">
+                            @if (item.IsDone == null ? false : (bool)item.IsDone)
+                            {
+                                @Html.Encode(item.DoneDt.Value.Date.ToShortDateString())
+                }
+                        </span><span id="spnTxtField_@(item.Id)" style="display:none;" class="clsfielddisplay">
+                            @Html.TextBox("DoneDt_" + item.Id, item.DoneDt.HasValue ? item.DoneDt.Value.ToShortDateString() : "", new { @style = "width:100px;", @onkeypress = "return numberValidate(event);", @class = "datePicker", @maxlength = 15 })
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#" style="color:Blue;text-decoration:underline;" id="hrfDone_@(item.Id)" onclick="ServiceDone('@item.Id');" class="clsdisplay">
+                            Service Done</a> <a href="#" onclick="DoneService('@item.Id')" style="color:Green;text-decoration:underline;display:none" id="hrfUpdate_@(item.Id)" class="clsfielddisplay">
+                                Done</a> &nbsp;&nbsp; <a href="#" style="color:Red;text-decoration:underline;display:none" id="hrfCancel_@(item.Id)" onclick="CancelService('@item.Id');" class="clsfielddisplay">
+                                    Cancel</a>
+                    </td>
+                </tr>
+    }
+        </tbody>
+    </table>
+}
+</fieldset>
+
+<script type="text/javascript">
+    // Page Load
+    SetServiceStation();
+    // DatePicker
+    $(".datePicker").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    // Do Service as Done
+    function ServiceDone(Id) {
+        $('.clsdisplay').show();
+        $('.clsfielddisplay').hide();
+        $('#hrfDone_' + Id).hide();
+        $('#hrfUpdate_' + Id).show(); $('#hrfCancel_' + Id).show();
+        $('#spnDate_' + Id).hide(); $('#spnTxtField_' + Id).show();
+        $('#serviceStat_' + Id).hide(); $('#spndropField_' + Id).show();
+        $('html,body').animate({ scrollTop: 300 }, 'slow');
+    }
+
+    // Cancel
+    function CancelService(Id) {
+        $('html,body').animate({ scrollTop: 300 }, 'slow');
+        $('#hrfDone_' + Id).show();
+        $('#hrfUpdate_' + Id).hide(); $('#hrfCancel_' + Id).hide(); $('#spnDate_' + Id).show(); $('#spnTxtField_' + Id).hide();
+        $('#serviceStat_' + Id).show(); $('#spndropField_' + Id).hide();
+    }
+    // Done Service
+    function DoneService(Id) {
+        var DoneDate = $('#DoneDt_' + Id).val();
+        var statService = $('#station_' + Id).val();
+        if (DoneDate == '') {
+            alert('Please select date');
+            $('#DoneDt_' + Id).focus();
+            $('html,body').animate({ scrollTop: 300 }, 'slow');
+            return false;
+        }
+        if (statService == '') {
+            alert('Please select service station');
+            $('#station_' + Id).focus();
+            $('html,body').animate({ scrollTop: 300 }, 'slow');
+            return false;
+        }
+        // Call Post Method
+        $.post('/Vehicle/DoneVehService?Id=' + Id + '&date=' + DoneDate + '&serviceStatId=' + statService, function (result) {
+            alert(result.msg);
+            if (result.success) {
+                if ('@vehicleId' != 0) {
+                    VehServiceList('@vehicleId');
+                }
+            }
+        });
+    }
+
+    // Set Dropdown Value
+    function SetServiceStation() {
+        $('#tbl_veh_serivce_list1 tbody tr').each(function () {
+            var id = $(this).attr('id').split('_')[2];
+            $('#station_' + id).val($('#hdn_serstat1_' + id).val());
+        });
+    } 
+
+    function VehServiceList(VehicleID) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            url: "../../Vehicle/GetVehServiceList",
+            beforeSend: function () {
+                $('#loading').fadeIn('slow');
+            },
+            data: "vehicleId=" + VehicleID,
+            dataType: "html",
+            success: function (result) {
+                $('#VehServiceList').html(result);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+
+            }
+        });
+        $("#loading").fadeOut('slow');
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

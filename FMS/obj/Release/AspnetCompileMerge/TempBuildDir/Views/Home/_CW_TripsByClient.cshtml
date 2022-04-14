@@ -1,0 +1,80 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+    FMS.Controllers.HomeController objHome = new FMS.Controllers.HomeController();   
+}
+<style type="text/css">
+    .clienttripsuper-sub-menu li
+    {
+        background-color: #ABC9DF !important;
+        color: #fff !important;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    #clienttripsub-menu a
+    {
+        text-decoration: none;
+        border-bottom: 1px solid #ccc;
+        font: bold 1.1em/2em Arial, sans-serif;
+        color: #fff;
+        padding: 0 10px;
+        display: block;
+        cursor: pointer;
+    }
+  
+</style>
+    @foreach (var item in Model)
+    {
+        var supermenuId = "clienttripsupersubmenu_" + item.ID;
+        <li id="clienttripsub-menu"><a href="#" id="@item.ID"><span style="float: left; width: 50%">
+            &nbsp;&nbsp;&nbsp; Trips</span> <span style="width: 50%; text-align: center;">@item.Value1</span></a>
+            <ul class="clienttripsuper-sub-menu" id="@supermenuId"
+            style="display: none;">
+            </ul>
+        </li>
+    }
+
+<input type="hidden" id="fromlogdate" value="@ViewBag.fromDate" />
+<input type="hidden" id="tologdate" value="@ViewBag.toDate " />
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        var fromlogdate = $("#fromlogdate").val();
+        var tologdate = $("#tologdate").val();
+        $('.clienttripsub-menu li a').click(function () {
+                var openMe = $(this).next();
+                var IdArray = $(this).attr('id').split('_');
+                var mySiblings = $(this).parent().siblings().find('ul');
+                if (openMe.is(':visible')) {
+                    openMe.slideUp('normal');
+                } else {
+                    mySiblings.slideUp('normal');
+                    openMe.slideDown('normal');
+                    CW_TripsByLogs(IdArray[0], fromlogdate, tologdate);
+                }
+        });
+
+    });
+//function to load data  by selection on Client and Trips
+function  CW_TripsByLogs(ClientId,fromlogdate,topaiddate)
+{
+    if ($('#clienttripsupersubmenu_' + ClientId + ' li').length == 0) 
+     {
+        $('#m_loading').show();
+         $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Home/CW_TripsByLogs",
+                data: "ClientId=" + ClientId + "&fromDate=" + fromlogdate + "&toDate=" + topaiddate,
+                dataType: "html",
+                success: function(data) {
+                    $('#clienttripsupersubmenu_' + ClientId + '').html(data);
+                     $('#m_loading').fadeOut('slow');  
+                },
+                error: function(error) {
+                   // alert(error);
+                }
+        });
+    }  
+}
+</script>

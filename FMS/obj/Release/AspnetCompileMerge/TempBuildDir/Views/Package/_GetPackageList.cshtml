@@ -1,0 +1,225 @@
+﻿@model IEnumerable<FMS.Models.tbl_package_client_rates>
+@using FMS.Models;
+@{
+    ViewBag.Title = "_GetPackageList";
+    core objCore = new core();
+}
+<h2>
+    Package List</h2>
+<br />
+@using (Html.BeginForm("Index", "Package", FormMethod.Post, new { }))
+{
+    @Html.ValidationSummary(true) 
+    <table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+        <thead>
+            <tr>
+                @*<th>
+                    Vehicle Reg#
+                </th>*@
+                <th>
+                    Location
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Model
+                </th>
+                <th>
+                    Package Amt.
+                </th>
+                <th>
+                    Time Unit
+                </th>
+                <th>
+                    Day(s)/Month(s)
+                </th>
+                <th>
+                    LogIn Time
+                </th>
+                <th>
+                    LogOut Time
+                </th>
+                <th>
+                    Effective Dt.
+                </th>
+                <th>
+                    Expiration Dt.
+                </th>
+                <th>
+                   Period
+                </th>
+                <th>
+                    Created On
+                </th>
+                <th>
+                    Card No.
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @*<td>
+                        @item.tbl_vehicles.VehicleRegNum
+                    </td>*@
+                    <td>
+                        @item.tbl_locations.Location
+                    </td>
+                    <td>
+                        @item.tbl_vehicle_types.VehicleType
+                    </td>
+                    <td>
+                        @item.tbl_vehicle_models.VehicleModelName
+                    </td>
+                    <td>
+                        @item.PackageAmt
+                        @*@objCore.GetPackage((long)item.PackageAmt)*@
+                    </td>
+                    <td>
+                        @(item.TimeUnit.HasValue ? (item.TimeUnit.Value.ToString("MMM", System.Globalization.CultureInfo.GetCultureInfo("en-GB")) + "-" + item.TimeUnit.Value.ToString()) : "")
+                    </td>
+                    <td>
+                        @item.WorkingDays
+                    </td>
+                    <td>
+                        @item.LoginTime
+                    </td>
+                    <td>
+                        @item.LogoutTime
+                    </td>
+                    <td>
+                        @item.EffectiveDt
+                    </td>
+                    <td>
+                        @item.ExpiredDt
+                    </td>
+                    <td> @((item.EffectiveDt.HasValue ? Convert.ToDateTime(item.EffectiveDt.Value).ToShortDateString() : "") + " to " + (item.ExpiredDt.HasValue ? Convert.ToDateTime(item.ExpiredDt.Value).ToShortDateString() : ""))
+                  
+                    </td>
+
+                    <td>
+                        @item.CreatedDt
+                    </td>
+                    <td>
+                        @Html.Encode(objCore.GetCardNumber(item.Id))
+                    </td>
+                    <td>
+                        @if (item.ExpiredDt.HasValue)
+                        {
+                            if (DateTime.Now.Date >= Convert.ToDateTime(item.ExpiredDt.Value).Date)
+                            {
+                            <span class="system negative">Expired</span>
+                            }
+                            else
+                            {
+                            <span class="system positive">Active</span>
+                            }
+                        }
+                        else
+                        {
+                            <text> Date Not Assigned </text>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+@*  <div id="divGetPackagelist">
+    </div>*@
+}
+@*<script type="text/javascript">
+
+        function _GetPackageList(ClientId, ProjectId, Package) {
+            $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/Package/_GetPackageList",
+        data: "ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&PackageMonth=" + Package,
+        dataType: "html",
+        success: function (result) {
+            $('#divGetPackagelist').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+}
+$('#btnGetPackages').click(function () {
+    var clientId = $('#ClientId').val();
+    var projectId = $('#ProjectId').val();
+    var package = $('#Package').val();
+    $("#errClientId").hide(); $("#errProjectId").hide(); $("#errPackageId")
+
+    if (clientId != '') {
+
+        if (projectId != '') {
+            if (package != '') {
+                _GetPackageList(clientId, projectId, package);
+            }
+            else {
+                $("#errPackageId").show();
+            }
+        }
+        else {
+            //  alert("Please Select Project ")
+            $("#errProjectId").show();
+        }
+
+    }
+    else {
+        //  alert("Please Select Client")
+        $("#errClientId").show();
+    }
+});
+
+$('#ClientId').change(function () {
+    var clientId = $(this).val(); $("#errClientId").hide(); $("#errProjectId").hide();
+    if (clientId != '')
+        GetProjectsByClient(clientId);
+    else {
+        $('#ProjectId').empty().append("<option>-Select-</option>");
+    }
+});
+
+function GetProjectsByClient(ClientId) {
+    $("#loading").fadeIn('slow');
+    $.ajax({
+        type: "Post",
+        contentType: "application/json; charset=utf-8",
+        url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+        dataType: "json",
+        success: function (data) {
+            if (data.length > 0) {
+                $('#ProjectId').html('<option value="">-Select-</option>');
+                var options = ""; var sModel = "";
+                for (var i = 0; i < data.length; ++i) {
+                    options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                    sModel = data[i].Id;
+                }
+                $("#ProjectId").append(options);
+            }
+            else
+                $('#ProjectId').html('<option value="">-No Project Available-</option>');
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            // alert(error);
+        }
+    });
+}
+        </script>*@

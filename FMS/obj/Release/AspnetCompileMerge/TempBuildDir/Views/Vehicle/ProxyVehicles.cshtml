@@ -1,0 +1,132 @@
+﻿@model IEnumerable<FMS.Models.tbl_vehicles>
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Proxy Vehicles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+}
+<h2>
+    List of Proxy Vehicles</h2>
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 40%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <h4>
+            </h4>
+        <img src="../../Content/images/layout/loading.gif"  alt="Loading..."/ >
+    </div>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive"><a href="#" onclick="AddNewProxyVehicle();">Add Proxy Vehicle</a></li>
+        </ul>
+    </div>
+</div>
+<table  class="table table-striped table-condensed dTableR dataTable" id="tbl_Proxy_Vehicle">
+ 
+    </tbody>
+</table>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_Proxy_Vehicle').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/Vehicle/GetProxyVehiclesList",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                if (aData[8] == "True") {
+                    $('td:eq(8)', nRow).html('@if ((bool)core.GetUserAccess(22, User.Identity.Name).Edit){ <a style="cursor:pointer;"   onclick="EditProxyVehicle(' + aData[0] + ')" >Edit</a>  }' +
+                    '@if ((bool)core.GetUserAccess(22, User.Identity.Name).Delete){<text>|</text> <a href="/Vehicle/DeleteVehicle/' + aData[0] + '">Delete</a> }' +
+                    '@if ((bool)core.GetUserAccess(22, User.Identity.Name).Delete){<text>|</text> <a href="/Vehicle/ModifytoPermenentVehicle/' + aData[0] + '">Move to Permnt.Vehicles</a> }');
+                }
+                $('td:eq(8)', nRow).attr('style', 'width:250px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Vehicle Reg#" },
+            { "sTitle": "Owner" },
+            { "sTitle": "Driver" },
+            { "sTitle": "Contact Number" },
+            { "sTitle": "Model" },
+            { "sTitle": "Seater" },
+             { "sTitle": "Type" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+    $("#div_loading").hide();
+    // Add New Proxy Vehicle popup window
+    function AddNewProxyVehicle() {
+        $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 600,
+              height: 350
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/AddProxyVehicle",
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        }
+    }); // end ajax 
+
+          }
+      });
+}
+function EditProxyVehicle(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 600,
+              height: 350
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/EditProxyVehicle",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        }
+    }); // end ajax 
+
+          }
+      });
+}
+
+</script>
+

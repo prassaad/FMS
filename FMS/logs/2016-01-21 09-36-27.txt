@@ -1,0 +1,8 @@
+[2016-01-21 09:36:27.5114] [127.0.0.1] [ERROR] [The property 'ID' is part of the object's key information and cannot be modified. ] [superadmin] [   at System.Data.Objects.EntityEntry.VerifyEntityValueIsEditable(StateManagerTypeMetadata typeMetadata, Int32 ordinal, String memberName)
+   at System.Data.Objects.EntityEntry.GetAndValidateChangeMemberInfo(String entityMemberName, Object complexObject, String complexObjectMemberName, StateManagerTypeMetadata& typeMetadata, String& changingMemberName, Object& changingObject)
+   at System.Data.Objects.EntityEntry.EntityMemberChanging(String entityMemberName, Object complexObject, String complexObjectMemberName)
+   at System.Data.Objects.EntityEntry.EntityMemberChanging(String entityMemberName)
+   at System.Data.Objects.ObjectStateEntry.System.Data.Objects.DataClasses.IEntityChangeTracker.EntityMemberChanging(String entityMemberName)
+   at System.Data.Objects.DataClasses.EntityObject.ReportPropertyChanging(String property)
+   at FMS.Models.tbl_log_sheets.set_ID(Int64 value) in D:\ProjectRelatedfiles\SuryaTravels\Backup\Abdhul\FMS\Models\FMS.Designer.cs:line 24222
+   at FMS.Controllers.CardAssignmentController.AdhocLogEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\Abdhul\FMS\Controllers\CardAssignmentController.cs:line 1046]

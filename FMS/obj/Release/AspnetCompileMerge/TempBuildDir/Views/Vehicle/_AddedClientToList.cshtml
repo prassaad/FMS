@@ -1,0 +1,57 @@
+﻿@model IEnumerable<FMS.Models.tbl_vehicle_clients>
+ 
+<p style="color:Red;padding-bottom:15px;">
+    @ViewBag.ExceptionMsg
+</p>
+<br /><br />
+<fieldset>
+<legend>Added Clients</legend>
+<table class="table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Vehicle 
+        </th>
+        <th>
+            Client 
+        </th>
+       <th>
+       </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.tbl_vehicles.VehicleRegNum).ToString().ToUpper()
+        </td>
+        <td>
+            @item.tbl_clients.CompanyName.ToString().ToUpper()
+        </td>
+        <td>
+             <a href="#" class="btnKMDelete" onclick="RemoveItem('@item.ID');"><img alt="Delete" src="../../Content/images/minus.png" /></a>
+        </td>
+    </tr>
+}
+</table>
+</fieldset>
+<script type="text/javascript">
+
+    function RemoveItem(ID) {
+        if (confirm("Are you sure want to delete this item?")) {
+            $.ajax(
+    {
+        type: "POST",
+        url: "/Vehicle/DeleteClientVehicle",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divVehicleClientList').html(result);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+        }
+
+    }
+
+</script>

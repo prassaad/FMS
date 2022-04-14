@@ -1,0 +1,17 @@
+﻿@model FMS.Models.tbl_odometer_readings
+@{
+    ViewBag.Title = "Delete";
+}
+<h2>
+    Delete</h2>
+@ViewBag.Errormessage
+<h3>
+    Are you sure you want to delete this @Model.CreatedBy?</h3>
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Delete" />
+        |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<FMS.Models.tbl_vehicle_clients>
+ 
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Vehicle
+        </th>
+        <th>
+            Client
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.tbl_vehicles.VehicleRegNum).ToString().ToUpper()
+            </td>
+            <td>
+                @item.tbl_clients.CompanyName.ToString().ToUpper()
+            </td>
+        </tr>
+        }
+</table>

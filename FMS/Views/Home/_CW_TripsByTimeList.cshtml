@@ -1,0 +1,100 @@
+﻿@model IEnumerable<FMS.Controllers.DutyLogSheetReportList>
+<div class="clsmodalheader">LogSheet Details by Client</div>
+<div style="overflow: auto;z-index:9999;height:450px;" id="divAdvanceDet">
+<p style="margin-top:15px;margin-left:5px;">
+    No. of entries @(ViewBag.ListCount) showing
+</p>
+    <p style="margin-top: 15px;margin-bottom:8px;text-align:center">
+        LogSheet Dates from <span style="color: Red">@(ViewBag.FromDate)</span> to <span
+            style="color: Red">@(ViewBag.ToDate)</span> , Trip Type :<span style="color: Red"> @(ViewBag.Logs)</span>
+        and ShifTime :<span style="color: Red"> @(ViewBag.ShiftTime)
+        </span>
+    </p>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_DutyLogs">
+   
+        <tr>
+            <th>
+                Client Name
+            </th>
+            <th>
+                Vehicle Reg#
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Driver Name
+            </th>
+            <th>
+                Log Date
+            </th>
+            <th>
+                LogSheet#
+            </th>
+            <th>
+                Tripe Type
+            </th>
+            <th>
+                Pax
+            </th>
+            <th>
+                Shift Time
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Passenger EmpID
+            </th>
+        </tr>
+   
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Client
+                </td>
+                <td>
+                    @item.VehicleReg
+                </td>
+                <td>
+                    @item.VehicleType
+                </td>
+                <td>
+                    @item.VehicleModel
+                </td>
+                <td>
+                    @item.Driver
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+                </td>
+                <td>
+                    @item.LogSheetNum
+                </td>
+                <td>
+                    @item.TripType
+                </td>
+                <td>
+                    @item.Pax
+                </td>
+                <td>
+                    @item.ShiftTime
+                </td>
+                <td>
+                    @item.Location
+                </td>
+                <td>
+                    @item.PassengerEmpID
+                </td>
+            </tr>
+        }
+   
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>
+</div>

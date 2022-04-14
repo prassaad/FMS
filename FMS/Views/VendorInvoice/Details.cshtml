@@ -1,0 +1,219 @@
+﻿@model FMS.Models.GenerateInvoice
+
+@{
+    ViewBag.Title = "View Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="../../Content/invoice.print.css" rel="stylesheet" type="text/css" media="print" />
+ <style type="text/css">
+  #printable { display: none; }
+ @@media print
+        {
+            #printable { display: block; }
+        }
+        h1
+        {
+        	line-height:0;
+        }
+        .PrintCopy
+        {
+            top:5.8in;
+            position:absolute;
+        }
+</style>
+<h2>Vendor Invoice</h2>
+<div class="nonPrintable">
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Invoices", "Index", "VendorInvoice")</li>
+            
+        </ul>
+    </div>
+</div>
+   <p style="margin-bottom:5px;">
+     Click here to print:<a href="#" onclick="javascript:ClickHereToPrint('InvoiceView');">
+      <img alt="Print Report" src="../../Content/images/printer.jpeg" /> </a>
+   </p>
+</div>
+<div id="InvoiceView">
+    <fieldset>
+        <legend>Invoice</legend>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmInvoicePayment", enctype = "multipart/form-data" }))
+        {
+            <center style="font-size:18px;"><u>@FMS.ApplicationSettings.OrgName , @FMS.ApplicationSettings.Address2 </u></center> 
+            <table class="table table-striped table-bordered dTableR dataTable">
+                <tr>
+                    <td>
+                        <b>Vehicle Number </b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.VehicleRegNum.ToUpper()
+                        @Html.Hidden("VehicleID", Model._VehicleDet.ID)
+                    </td>
+                    <td>
+                        <b>Type</b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.tbl_vehicle_models.VehicleModelName - @Model._VehicleDet.tbl_vehicle_types.VehicleType
+                    </td>
+                    <td>
+                        <b>Invoice#</b>
+                    </td>
+                    <td>
+                        @Model._venInvDet.InvoiceNum
+                    </td>
+                  @*  <td>
+                        <b>Invoice Date</b>
+                    </td>
+                    <td>
+                        @(Model._venInvDet.InvoiceDate == null ? "" : Model._venInvDet.InvoiceDate.Value.ToString("dd/MM/yyyy"))
+                    </td>*@
+                </tr>
+            </table>
+            <!--  Vendor Invoice Details  -->
+            <table class="table table-striped table-bordered">
+                        <!--  Vendor Invoice Header  -->
+                         
+                            <tr>
+                        <td>
+                            Particulars
+                        </td>
+                        <td>
+                            Qty.
+                        </td>
+                        <td>
+                            Rate
+                        </td>
+                        <td>
+                            Tot. Amt.
+                        </td>
+                        <td>
+                            Net Amt.
+                        </td>
+                    </tr>
+                       
+                        <tbody>
+                            <!--  Vendor Invoice List by Client Wise  -->
+                            @foreach (var item in Model._venInvDetList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Particulars
+                                    </td>
+                                    <td>
+                                        @item.Qty
+                                    </td>
+                                    <td>
+                                        @item.Rate
+                                    </td>
+                                    <td>
+                                        @item.TotalAmt
+                                    </td>
+                                    <td>
+                                        @item.NetTotalAmt
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+         <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                        A/c Name
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.AccountHolderName == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountHolderName)
+                    </td>
+                    <td>
+                        Bank A/c Number
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.AccountNumber == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountNumber)
+                    </td>
+                    <td>
+                        Bank Name
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.BankName == null ? "" : Model._VehicleDet.tbl_vendor_details.BankName)
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td>
+                        Branch
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.Branch == null ? "" : Model._VehicleDet.tbl_vendor_details.Branch)
+                    </td>
+                    <td>
+                        IFSC Code
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.IFSCCode == null ? "" : Model._VehicleDet.tbl_vendor_details.IFSCCode)
+                    </td>
+                    <td>
+                        Receiver's Name
+                    </td>
+                    <td>
+                        @Model._venInvDet.ReceiverName.ToString().ToUpper()
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Remark
+                    </td>
+                    <td colspan="5">
+                        @(Model._venInvDet.Remark)
+                    </td>
+                </tr>
+            </table>
+            <!-- Footer In Vendor Invoice -->  
+            @* <p class="topAlign">
+                <h2>  @(ViewBag.PrevInvoice) </h2> 
+             </p>*@
+             <p id="printable" class="topAlign">
+              *Computer generated document signature not required. 
+             For Invoice billing & payment queries call to @FMS.ApplicationSettings.Phone timing:10:00AM-08:00PM  </p> 
+          @*  <table style="width: 100%;">
+                <tr style="width: 100%">
+                    <td>
+                        
+                    </td>
+                    <td>
+                        <b>Authorized Signature : </b>@Model._venInvDet.AuthorizedSign.ToUpper()
+                    </td>
+                    <td>
+                        <b>Remark : </b>
+                        @Model._venInvDet.Remark.ToString().ToUpper()
+                    </td>
+                </tr>
+            </table>*@
+        }
+    </fieldset>
+</div>
+<div id="printable" class="PrintCopy">
+</div>
+<script type="text/javascript" language="javascript">
+     
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            $('.PrintCopy').html($('#InvoiceView').html());
+            self.print();
+        }
+    }
+    
+</script>

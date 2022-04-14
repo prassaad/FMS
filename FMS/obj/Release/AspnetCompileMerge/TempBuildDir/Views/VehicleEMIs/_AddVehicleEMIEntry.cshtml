@@ -1,0 +1,42 @@
+﻿@model IEnumerable<FMS.Models.tbl_veh_emis>
+@using FMS.Models;
+@{
+    core objCr = new core(); 
+}
+<table class="table table-striped table-condensed dTableR">
+    <tr>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            EMI No
+        </th>
+        <th>
+            Amount
+        </th>
+        <th>
+            Fine Amount
+        </th>
+       
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @objCr.GetVehicleRegNumber((long)item.VehicleId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMINo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FineAmt)
+            </td>
+              <td>
+                @Html.DisplayFor(modelItem => item.Paymode)
+            </td>
+        </tr>
+    }
+</table>

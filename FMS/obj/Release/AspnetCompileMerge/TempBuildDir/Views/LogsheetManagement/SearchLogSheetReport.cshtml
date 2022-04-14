@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Search LogSheet ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+input[type="button"]:focus {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+}
+a:focus {
+    border:yellow 2px solid;
+}
+</style>
+<h2>Search Log Sheet </h2>
+
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Log Sheet Management", "Index", "LogSheetManagement")</li>
+        </ul>
+    </div>
+</div>
+ 
+<form id="frmMISReport" enctype="multipart/form-data" method="post">
+<div style="height: 30px; padding-bottom: 10px; padding-top: 10px; background-color: #F5F5F5;">
+    <table>
+        <tr>
+            <td>
+                Search LogSheet Number
+            </td>
+            <td>
+                @Html.TextBox("LogSheetNum", "", new { @style = "width:250px", @class = "txtAutoComplete" , @tabindex = "1" })
+                <input type="hidden" id="logId" name="logId" />
+            </td>
+            <td>
+                <input type="button" value="Get Report" id="btnGetMISReport" tabindex = "2" />
+            </td>
+        </tr>
+    </table>
+</div>
+</form>
+<div id="MISDivData">
+</div>
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#LogSheetNum').val('');
+    $('#LogSheetNum').focus(); 
+    // Auto Complete for Vehicle Reg Number
+    $("#LogSheetNum").autocomplete("/Penalty/getLogSheetNumber/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+    function OnselectItem(li) {
+        $('#logId').val(0);
+        if (li == null) $('#logId').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+        $('#logId').val(sValue);
+        $('input[tabindex="2"]').focus();
+    }
+     
+    $('#div_loading').hide();
+
+    $('#btnGetMISReport').click(function () {
+        if ($('#LogSheetNum').val() == "") {
+            alert('Please enter logsheet number');
+            return false;
+        }
+        $('#loading').fadeIn('slow');
+        $.post("/LogSheetManagement/SearchLogSheetReport", $("#frmMISReport").serialize(), function (result) {
+            $("#MISDivData").html(result);
+            $('#loading').fadeOut('slow');
+        });
+    });
+    
+</script>

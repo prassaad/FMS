@@ -1,0 +1,793 @@
+﻿@model FMS.Models.tbl_log_sheets
+
+<style type="text/css">
+    .txtAutoComplete {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        maxlength ="30";
+    }
+
+    .txtInput {
+        width: 220px !important;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .txtInputtime {
+        width: 71px !important;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+
+    .ac_loading {
+        background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+    }
+
+    #btnAddlogentry:focus {
+        border: yellow 2px solid;
+        background-color: #0A99D1;
+    }
+</style>
+<div class="clsmodalheader"> Add Package Log Sheet</div>
+@using (Html.BeginForm("AddPackageLogSheet", "LogsheetManagement", FormMethod.Post, new { id = "frmLogSheet", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+<div style="overflow: auto; z-index: 9999; height: 500px;" id="divNewDutylog">
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+                <p style="color: Red; font-style: italic;">
+                    @(ViewBag.message)
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Client Name <span style="color: Red;">*</span>
+                <input type="hidden" id="cid" name="cid" />
+                <input type="hidden" id="vid" name="vid" />
+                <input type="hidden" id="hdncid" name="hdncid" />
+
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ClientID, new { @class = "txtAutoComplete", @tabindex   = 1 , @maxlength = 30 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Veh. Reg# <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.VehicleID, new { @class = "txtAutoComplete", @tabindex   = 2 , @maxlength = 30})
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Driver <span style="color: Red;">*</span>
+            </td>
+            <td>
+                <select id="DriverID" name="DriverID" class="txtInput" tabindex="3">
+                    <option value="0">--Select Driver--</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Veh. Type <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { @class = "txtInput", @tabindex = 4 })
+            </td>
+        </tr>
+        <tr>
+            <td> Veh. Model <span style="color: Red;">*</span></td>
+            <td>
+                <select id="VehicleModelID" name="VehicleModelID" class="txtInput" tabindex="5">
+                    <option value="0">--Select Vehicle Model--</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Package Model <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("PackModel", (IEnumerable<SelectListItem>)ViewBag.PackModel, "-Select-", new { @class = "txtInput", @tabindex = 6 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Billing From <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.LogDate, new { @class = "txtInput validDate", @tabindex   = 7 , @style = "width:90px !important;" , @maxlength = 12}) &nbsp;
+                To &nbsp;
+                @Html.TextBoxFor(model => model.LogEndDate, new { @class = "txtInput validDate", @tabindex = 8, @style = "width:90px ! important;", @maxlength = 12 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Package <span style="color: Red;">*</span>
+            </td>
+            <td>
+                <select id="Package" name="Package" class="txtInput" tabindex="9">
+                    <option value="0">--Select Package--</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Working Day(s) <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.WorkingDays, new { @class = "txtInput txtAmount", @tabindex = 10, @onkeypress = "return numberValidate(event);", @maxlength = 3 })
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Working hour(s) <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.WorkingHrs, new { @class = "txtInput txtAmount", @tabindex = 11, @onkeypress = "return numberValidate(event);", @maxlength = 4 })
+            </td>
+        </tr>
+        <tr style="width:100%">
+            <td style="width:30%">
+                Extra KM
+            </td>
+            <td style="width:70%">
+                @Html.TextBox("ExtraKM",0, new { @class = "txtInput txtAmount", @tabindex = 12, @onkeypress = "return numberValidate(event);", @maxlength = 4, @style = "width:50px !important;" })
+                &nbsp; @Html.TextBox("ExtraKMAmt", 0, new { @class = "txtInput",  @onkeypress = "return numberValidatedot(event);", @maxlength = 8, @style = "width:70px !important;background-color:#ddd;", @readonly = true })
+                &nbsp; <span id="spanExtKM" style="color:Red;"></span>
+            </td>
+        </tr>
+        <tr style="width:100%">
+            <td style="width:30%">
+                Extra Hr.
+            </td>
+            <td style="width:70%">
+                @Html.TextBox("ExtraHr",0, new { @class = "txtInput txtAmount", @tabindex = 13, @onkeypress = "return numberValidate(event);", @maxlength = 4, @style = "width:50px !important;" })
+                &nbsp; @Html.TextBox("ExtraHrAmt", 0, new { @class = "txtInput",   @onkeypress = "return numberValidatedot(event);", @maxlength = 8, @style = "width:70px !important;background-color:#ddd;" , @readonly = true })
+                &nbsp; <span id="spanExtHr" style="color:Red;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Gross Amt.
+            </td>
+            <td>
+                @Html.TextBox("GrossAmt", null, new { @class = "txtInput txtAmount", @tabindex = 14, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 , @style = "background-color:#ddd;" , @readonly = true })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Toll Charges
+            </td>
+            <td>
+                @Html.TextBox("TollChrg", 0, new { @class = "txtInput txtAmount", @tabindex = 15, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Parking Charges
+            </td>
+            <td>
+                @Html.TextBox("ParkingChrg", 0, new { @class = "txtInput txtAmount", @tabindex = 16, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Fuel Hike
+            </td>
+            <td>
+                @Html.TextBox("FuelHike", 0, new { @class = "txtInput txtAmount", @tabindex = 17, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Net Amount
+            </td>
+            <td>
+                @Html.TextBox("NetAmount", 0, new { @class = "txtInput", @tabindex = 18, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Remark
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Remark, new { @cols = 36, @class = "txtInput", @tabindex = 19, @style = "background-color:#ffffe0;resize:none;", @maxlength = 250 })
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" style="margin-top: 5px;" id="btnAddlogentry" class="btnnewlog"
+                       value="Add Log" tabindex="20" onfocus="focus();" />
+                <input type="hidden" id="hdnPackId" name="hdnPackId" />
+            </td>
+        </tr>
+    </table>
+</div>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    var i = 0;
+    $("#btnAddlogentry").click(function () {
+
+        if (!RequiredFieldValidation()) {
+            $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        $("#SpanValidateMsg").hide();
+        var frmColl = $("#frmLogSheet").serialize();
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax(
+            {
+                type: "POST",
+                url: "../LogsheetManagement/AddPackageLogSheet",
+                dataType: "html",
+                data: "frm=" + frmColl + "&CID=" + ClientID + "&VID=" + VehicleID,
+                success: function (result, textStatus, jqXHR) {
+                    $('#divLogSheetEntryList').html('');
+                    $('#divLogSheetEntryList').html(result);
+                    $("#btnSaveAllLogentries").show();
+                    var status = $("#Status").val();
+                    if (i < 9) {
+                        var msg = 'Are you want to Add one more Log Entry in the List?';
+                        if (confirm(msg)) {
+                            i = i + 1;
+                            RefreshFields();
+                            $("#divlog_loading").hide();
+                            $("#divlog_loading").fadeOut('slow');
+                        }
+                        else {
+                            SaveLogSheets();
+                            i = 0;
+                            RefreshFields();
+                            $("#divlog_loading").hide();
+                            $("#divlog_loading").fadeOut('slow');
+                        }
+                    }
+                    else {
+                        alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                        SaveLogSheets();
+                        i = 0;
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+    });
+    $("#btnSaveAllLogentries").click(function () {
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        SaveLogSheets();
+        $("#btnSaveAllLogentries").hide();
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+    });
+
+    function SaveLogSheets() {
+        $.ajax({
+            type: "GET",
+            url: "/LogsheetManagement/SaveUnSavedLogSheetEntries",
+            dataType: "html",
+            success: function (data) {
+                if (data == 1) {
+                    window.location = "/LogsheetManagement/Index";
+                }
+                else {
+                    window.location = "/LogsheetManagement/PackageEntry";
+                }
+            }
+        });
+    }
+</script>
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function () {
+        RefreshFields();
+        $("#divlog_loading").fadeOut('slow');
+        $("#ClientID").autocomplete("/LogsheetManagement/getAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: selectItem });
+        $("#VehicleID").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+        $("#ClientID").focus();
+        var myDate = new Date();
+        var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+        $("#LogDate").val(prettyDate);
+        $('#LogDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            maxDate: prettyDate,
+            onSelect: function (selected) {
+                $("#LogEndDate").datepicker("option", "minDate", selected);
+            }
+        });
+        $("#LogEndDate").val(prettyDate);
+        $('#LogEndDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            maxDate: prettyDate,
+            onSelect: function (selected) {
+                $('input[tabindex="8"]').focus();
+                $("#LogDate").datepicker("option", "maxDate", selected);
+            }
+        });
+    });
+
+
+    function selectItem(li) {
+        $('#cid').val(0);
+        if (li == null) $('#cid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+
+        $('#cid').val(sValue);
+
+        $('input[tabindex="2"]').focus();
+    }
+    function OnselectItem(li) {
+        $('#vid').val(0);
+        if (li == null) $('#vid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            GetVehicleDriver(sValue);
+            GetVehicleModel(sValue);
+            $('input[tabindex="3"]').focus();
+        }
+        else var sValue = li.selectValue;
+        $('#vid').val(sValue);
+        $('input[tabindex="3"]').focus();
+    }
+
+    function RefreshFields() {
+        //        $('#ClientID').val('');$('#cid').val(0);
+        //        $('#VehicleID').val('');$('#vid').val(0);
+        //        $('#DriverID').val('');
+        //        $('#VehicleTypeID').val('');
+        //        $('#VehicleModelID').val('');
+        //        $('#PackModel').val('');
+        $('#PacKage').val('');
+        $('#WorkingDays').val('');
+        $('#WorkingHrs').val('');
+        $('#ExtraKM').val(0);
+        $('#ExtraHr').val(0);
+        $('#ExtraKMAmt').val(0);
+        $('#ExtraHrAmt').val(0);
+        $('#Remark').val('');
+        $('#GrossAmt').val(0);
+        $('#TollChrg').val(0);
+        $('#ParkingChrg').val(0);
+        $('#FuelHike').val(0);
+        $('#NetAmount').val(0);
+    }
+
+    function GetVehicleDriver(VehicleID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").hide();
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#DriverID").append(options);
+                    $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#DriverID option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").show();
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#DriverID").append(options);
+                        $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetVehicleModel(VehicleID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleModel?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].VehicleModelName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#VehicleModelID").append(options);
+                    $("#VehicleModelID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#VehicleModelID option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetPackageRateByVehType(ClientID, VehTypeId, VehModelId, PackModel) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageRateByVehType?ClientID=" + ClientID + "&VehTypeId=" + VehTypeId + "&VehModelId=" + VehModelId + "&PackModel=" + PackModel,
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#Package').html('<option value="0">--Select Package--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].Text2 + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#Package").append(options);
+                    $('#Package option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#Package').html('<option value="0">--Select Package--</option>');
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].Id + "'>" + data[i].Text2 + "</option>";
+                            sModel = data[i].Id;
+                        }
+                        $("#Package").append(options);
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            }
+        });
+    }
+    // Vehicle Model change event
+    $('#VehicleModelID').change(function () {
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var VehTypeId = $('#VehicleTypeID').val();
+        var PackModel = $('#PackModel').val();
+        if ($(this).val() == 0) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle model');
+            $('#Package').find('option').remove().end().append('<option value="0">--Select Package--</option>');
+            $('#Package').val('0'); $('#hdnPackId').val(0);
+            $("#Package").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        GetPackageRateByVehType(ClientID, VehTypeId, $(this).val(), PackModel);
+    });
+    // Vehicle Type change event
+    $('#VehicleTypeID').change(function () {
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var VehModelId = $('#VehicleModelID').val();
+        var PackModel = $('#PackModel').val();
+        if ($(this).val() == 0) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle type');
+            $('#Package').find('option').remove().end().append('<option value="0">--Select Package--</option>');
+            $('#Package').val('0'); $('#hdnPackId').val(0);
+            $("#Package").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        GetPackageRateByVehType(ClientID, $(this).val(), VehModelId, PackModel);
+    });
+    // Pack Model Change event
+    $('#PackModel').change(function () {
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var VehModelId = $('#VehicleModelID').val();
+        var VehTypeId = $('#VehicleTypeID').val();
+        if ($(this).val() == 0) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle type');
+            $('#Package').find('option').remove().end().append('<option value="0">--Select Package--</option>');
+            $('#Package').val('0'); $('#hdnPackId').val(0);
+            $("#Package").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        GetPackageRateByVehType(ClientID, VehTypeId, VehModelId, $(this).val());
+    });
+    $('#Package').change(function () {
+        var ClientID = $("#cid").val();
+        var PackId = $(this).val();
+        $('#hdnPackId').val(PackId);
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageDet?Id=" + PackId,
+            dataType: "json",
+            success: function (data) {
+                if (data.PackDet != 0) {  // If Package Rate is exists
+                    $('#spanExtKM').html('For each extra KM Rs ' + data.ExtKM + '/-');
+                    $('#spanExtHr').html('For each extra Hr.Rs ' + data.ExtHr + '/-');
+                }
+            }
+        });
+    });
+    // Working Days change event
+    $('#WorkingDays').change(function () {
+        var PackId = $('#hdnPackId').val();
+        var wrkDays = $(this).val();
+        if (PackId == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select package');
+            $("#Package").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageDet?Id=" + PackId,
+            dataType: "json",
+            success: function (data) {
+                if (data.PackDet != 0) {  // If Package Rate is exists
+                    if (wrkDays > data.PackDet) { // Verify working days with existed working days
+                        document.getElementById('WorkingDays').value = '';
+                        $('#WorkingDays').focus();
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").html('Beyond the ' + data.PackDet + ' day(s) is not valid');
+                        $('html,body').animate({ scrollTop: 0 }, 'slow');
+                        return false;
+                    }
+                }
+            }
+        });
+        $("#SpanValidateMsg").hide();
+    });
+    // Working Hours Change event
+    $('#WorkingHrs').change(function () {
+        var PackId = $('#hdnPackId').val();
+        var wrkhrs = $(this).val();
+        if (PackId == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select package');
+            $("#Package").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageDet?Id=" + PackId,
+            dataType: "json",
+            success: function (data) {
+                if (data.PackDet != 0) {  // If Package Rate is exists
+                    if (wrkhrs > data.PackWorkHr) { // Verify working days with existed working days
+                        document.getElementById('WorkingHrs').value = '';
+                        $('#WorkingHrs').focus();
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").html('Beyond the ' + data.PackWorkHr + ' hour(s) is not valid');
+                        $('html,body').animate({ scrollTop: 0 }, 'slow');
+                        return false;
+                    }
+                }
+            }
+        });
+        $("#SpanValidateMsg").hide();
+    });
+
+    // Extra KM change event
+
+    $('#ExtraKM').keyup(function () {
+        var PackId = $('#hdnPackId').val();
+        var ExtKm = $(this).val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageDet?Id=" + PackId,
+            dataType: "json",
+            success: function (data) {
+                if (data.PackDet != 0) {  // If Package Rate is exists
+                    $('#ExtraKMAmt').val(parseFloat(data.ExtKM) * parseInt(ExtKm));
+                }
+            }
+        });
+    });
+    // Extra KM change event
+
+    $('#ExtraHr').keyup(function () {
+        var PackId = $('#hdnPackId').val();
+        var ExtHr = $(this).val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetPackageDet?Id=" + PackId,
+            dataType: "json",
+            success: function (data) {
+                if (data.PackDet != 0) {  // If Package Rate is exists
+                    $('#ExtraHrAmt').val(parseFloat(data.ExtHr) * parseInt(ExtHr));
+                }
+            }
+        });
+    });
+    // Calculate Gross Amount
+
+    $('.txtAmount').keyup(function () {
+        var PackId = $('#hdnPackId').val();
+        var WrkDays = $('#WorkingDays').val();
+        var WrkHrs = $('#WorkingHrs').val();
+        var ExtraKM = $('#ExtraKM').val();
+        var ExtraHr = $('#ExtraHr').val();
+        if (PackId != '0' && WrkDays != '' && WrkHrs != '' && ExtraKM != '' && ExtraHr != '') {
+            $.get('/LogSheetManagement/CalculatePackGrossAmount?PackId=' + PackId + '&WrkDays=' + WrkDays + '&WrkHrs=' + WrkHrs + '&extKM=' + ExtraKM + '&extHr=' + ExtraHr, function (data) {
+                $('#GrossAmt').val(parseFloat(data).toFixed(2));
+                var TollChrg = $('#TollChrg').val();
+                var ParkingChrg = $('#ParkingChrg').val();
+                var FuelHike = $('#FuelHike').val();
+                var NetAmount = $('#NetAmount').val();
+                if (TollChrg != '' && ParkingChrg != '' && FuelHike != '' && NetAmount != '') {
+                    var NetAmount = parseFloat($('#NetAmount').val(parseFloat(data) + parseFloat(TollChrg) + parseFloat(ParkingChrg) + parseFloat(FuelHike))).toFixed(2);
+                }
+            });
+        }
+    });
+
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9) { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9) { return true; } else { return false; }
+    }
+
+    // Validate Fields
+    function RequiredFieldValidation() {
+
+        var txtClient = $("#ClientID").val();
+        var txtVehicleRegNo = $("#VehicleID").val();
+        var ddVehicleDriver = $("#DriverID").val();
+        var ddVehicleType = $("#VehicleTypeID").val();
+        var ddVehicleModel = $("#VehicleModelID").val();
+        var PackModel = $('#PackModel').val();
+        var txtDate = $("#LogDate").val();
+        var endLogDt = $('#LogEndDate').val();
+        var package = $('#Package').val();
+        var workingDays = $('#WorkingDays').val();
+        var workingHrs = $('#WorkingHrs').val();
+
+        if (txtClient == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search client name');
+            $("#ClientID").focus();
+            return false;
+        }
+        if (txtVehicleRegNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle reg number');
+            $("#VehicleID").focus();
+            return false;
+        }
+        if (ddVehicleDriver == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select Driver.');
+            $("#DriverID").focus();
+            return false;
+        }
+        if (ddVehicleType == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle type.');
+            $("#VehicleTypeID").focus();
+            return false;
+        }
+        if (ddVehicleModel == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle model.');
+            $("#VehicleModelID").focus();
+            return false;
+        }
+        if (PackModel == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select package model.');
+            $("#PackModel").focus();
+            return false;
+        }
+        if (txtDate == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter billing from date');
+            $("#LogDate").focus();
+            return false;
+        }
+        if (endLogDt == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter billing to date');
+            $("#LogEndDate").focus();
+            return false;
+        }
+        if (package == "0") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select package');
+            $("#Package").focus();
+            return false;
+        }
+        if (workingDays == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter working days');
+            $("#WorkingDays").focus();
+            return false;
+        }
+        if (workingHrs == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter working hours');
+            $("#WorkingHrs").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        return true;
+    }
+
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        var dateval = $("#" + this.id).val();
+        var msg = validateDate(dateval);
+        if (msg != "") {
+            document.getElementById("" + this.id + "").value = '';
+            this.focus();
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html(msg);
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+    });
+
+</script>

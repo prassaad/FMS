@@ -1,0 +1,371 @@
+﻿@model FMS.Models.tbl_PurchaseOrderItemDetails
+@{
+     System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+}
+<div class="clsmodalheader">Add Purchase order Item</div> 
+@using (Html.BeginForm("AddOrderItem", "PurchaseOrder", new { area = "Inventory" }, FormMethod.Post, new { id = "frmAddOrderItem", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+ 
+ <div style="overflow: auto;z-index:9999;height:500px;" id="divNewDutylog">
+     <p style="margin-top: 20px;"> Supplier : <span class="label-success"> @ViewBag.SupplierName </span>
+  </p>
+    <h2 class="clsmark">@ViewBag.ErrorMessage</h2>
+    <div id="Issue_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 30%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loader.gif")" alt="Loading..." />
+    </div>
+ <table class="table table-striped table-condensed table-bordered">
+    <tr>
+        <td colspan="2">
+            <span id="NewIssueerrormsg" style="color: Red;" class="clsmark"></span>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Select Item to Issue<span class="clsmark">*</span>
+        </th>
+        <td>
+            @Html.DropDownList("ddlItem", (IEnumerable<SelectListItem>)ViewBag.ItemId, "--Select Item--")
+            <input type="hidden" id="hdnItem" name="hdnItem" />
+            <input type="hidden" id="hdnItemId" name="hdnItemId" />
+       
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Qty. <span class="clsmark">*</span>
+        </th>
+        <td>
+               @Html.TextBox("txtQty", null, new { @style = "width:40px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+        </td>
+    </tr>
+      <tr>
+        <th>
+            Tax. <span class="clsmark">*</span>
+        </th>
+        <td>
+               @Html.TextBox("Taxes", null, new { @style = "width:80px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+        </td>
+    </tr>
+     <tr>
+         <th>
+            Schedule Date
+         </th>
+         <td>
+               @Html.TextBox("ScheduleDt", String.Format(customCulture, "{0:dd/MM/yyyy}", DateTime.Now), new { @style = "width:150px;", @class = "BoxBackground datetimepicker" }) 
+         </td>
+     </tr>
+    
+     <tr>
+        <td>
+            <span class="clsspan" id="SpanLabel">Avail Qty </span>
+        </td>
+        <td>
+            <span id="SpanAvailQty" class="clsmark"></span>
+        </td>
+    </tr>
+     <tr>
+            <td>
+                <span class="clsspan" >Amount</span> 
+            </td>
+            <td>
+                <span class="clsmark" id="ItemAmount"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                 <span class="clsspan" >Total Amt</span>
+            </td>
+            <td>
+                <span class="clsmark"  id="TotalAmount"></span>
+            </td>
+        </tr>
+         <tr>
+            <td>
+                 <span class="clsspan" >Description</span>
+            </td>
+            <td>
+                   @Html.TextArea("Description", null, new { @maxlength = 250, @class = "validate", @style = "resize:none;", @rows = "3", @cols = "30" })
+            </td>
+        </tr>
+    <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" id="btnSaveAndNextItem" value="Save & Next" class="btn btn-primary" />
+                &nbsp;&nbsp;
+                <input type="button" class="btn btn-primary" value="Save & Close" id="btnAddAndCloseItem" />
+                &nbsp;&nbsp;
+                <input type="button" class="btn btn-light-grey" data-dismiss="modal" value="Close" />
+                
+            </td>
+        </tr>
+ </table>
+ </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        var myDate = new Date();
+        var dd = myDate.getDate();
+        var mm = myDate.getMonth() + 1; //January is 0! 
+        var yyyy = myDate.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm }
+        var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+        $(".datetimepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    $('#Issue_loading').fadeOut('slow');
+    $("#txtQty").change(function () {
+        var Qty = $(this).val();
+        var AvailQty = $('#SpanAvailQty').html();
+        var ItemAmt = $('#ItemAmount').html();
+        $('#TotalAmount').html(Qty * ItemAmt);
+        var a = parseInt(Qty)
+        var b = parseInt(AvailQty)
+        if (Qty.charAt(0) == 0) { // or use Qty.slice(0, 1)
+            $(this).val("")
+            return;
+        }
+        if ($.trim($('#ddlItem').val()) == "") {
+            alert("Please select the item to be added");
+            $(this).val("");
+            $('#TotalAmount').html('0');
+            $('#ddlItem').focus();
+            $("#NewIssueerrormsg").hide();
+            return;
+        }
+
+    });
+    // Add Item List here
+    $('#btnSaveAndNextItem').click(function () {
+        AddIssuedItem($(this).attr('id'));
+    });
+    function AddIssuedItem(ClickId) {
+        if ($.trim($('#ddlItem').val()) == "") {
+            $("#NewIssueerrormsg").show();
+            $("#NewIssueerrormsg").text("Please select the item to be added");
+            $('#ddlItem').focus();
+            return;
+        }
+        if ($.trim($('#txtQty').val()) == "") {
+            $("#NewIssueerrormsg").show();
+            $("#NewIssueerrormsg").text("Please enter quantity");
+            $('#txtQty').focus();
+            return;
+        }
+        if ($.trim($('#ScheduleDt').val()) == "") {
+            $("#NewIssueerrormsg").show();
+            $("#NewIssueerrormsg").text("Please enter Sschedule date");
+            $('#ScheduleDt').focus();
+            return;
+        }
+        var ItemId = $('#ddlItem').val();
+       
+        var SupplierId = $('#SupplierId').val();
+        var Qty = $('#txtQty').val();
+        var Tax = $('#Taxes').val();
+        var Description = $('#Description').val();
+        var ScheduleDt = $('#ScheduleDt').val();
+        var POId = $("#hdnPOId").val();
+        $('#Issue_loading').hide();
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $.post('@Url.Action("PurchaseOrderItemListAdd", "PurchaseOrders", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty + '&Tax=' + Tax + '&Description=' + Description + '&ScheduleDt=' + ScheduleDt + '&SupplierId=' + SupplierId, function (data) {
+                if (data.success) {
+
+                    LoadPurchaseOrderItems(data.POId);
+                    ClearAll();
+                    $('#Issue_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        SaveIssuedItems();
+                    }
+                }
+                else {
+
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    LoadPurchaseOrderItems(data.POId);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        if (confirm('Are you sure want to save previous issued items?')) {
+                            SaveIssuedItems();
+                        }
+                        else {
+                            window.location.href = '@Url.Action("Index", "PurchaseOrders", new { area = "Inventory" })';
+                        }
+                    }, delay);
+                }
+            });
+        }
+        else {
+            $.post('@Url.Action("PurchaseOrderItemListAdd", "PurchaseOrders", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty + '&Tax=' + Tax + '&Description=' + Description + '&ScheduleDt=' + ScheduleDt + '&POId=' + POId + '&SupplierId=' + SupplierId, function (data) {
+                if (data.success) {
+                    LoadPurchaseOrderItems(data.POId);
+                    ClearAll();
+                    $('#Issue_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        SaveIssuedItems();
+                    }
+                }
+                else {
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    LoadPurchaseOrderItems(data.POId);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        if (confirm('Are you sure want to save previous issued items?')) {
+                            SaveIssuedItems();
+                        }
+                        else {
+                            window.location.href = '@Url.Action("Index", "PurchaseOrders", new { area = "Inventory" })';
+                        }
+                    }, delay);
+                }
+            });
+        }
+
+
+    }
+    $("#btnAddAndCloseItem").click(function () {
+
+        AddIssuedItem($(this).attr('id'));
+        //SaveIssuedItems();
+    });
+    function LoadPurchaseOrderItems(POId) {
+        $('#Issue_loading').show();
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("LoadPurchaseOrderItems", "PurchaseOrders", new { area = "Inventory" })?POId=' + POId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#POrdersDetList').html('');
+                      $('#POrdersDetList').html(result);
+                      $('#Issue_loading').hide();
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function SaveIssuedItems() {
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $('#Issue_loading').show();
+            $.post('@Url.Action("PurchaseOrderCreate", "PurchaseOrders", new { area = "Inventory" })', $('#PurchaseOrderForm').serialize(), function (data) {
+                if (data.success) {
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    window.location.href = '@Url.Action("Index", "PurchaseOrders", new { area = "Inventory" })';
+                }
+                else {
+                    $('#Issue_loading').hide();
+                    alert(data.msg);
+                    ClosePopUpWindow();
+                }
+            });
+        } else {
+            var POId = $("#hdnPOId").val();
+            $('#Issue_loading').show();
+            $.post('@Url.Action("PurchaseOrderEdit", "PurchaseOrders", new { area = "Inventory" })', $('#PurchaseOrderForm').serialize(), function (data) {
+                if (data.success) {
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    window.location.href = '@Url.Action("Index", "PurchaseOrders", new { area = "Inventory" })';
+                }
+                else {
+                    $('#Issue_loading').hide();
+                    alert(data.msg);
+                    window.location.href = '@Url.Action("PurchaseOrderEdit", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId;
+                }
+            });
+        }
+    }
+    function ClosePopUpWindow() {
+        $("#AddPurchaseOrderItems").modal('hide');
+    }
+    function GetAvailQuantity(ItemId) {
+        $.post('@Url.Action("GetAvailQty", "PurchaseOrders", new { area = "Inventory" })?ItemId=' + ItemId, function (data) {
+            $('#SpanLabel').show();
+            $('#SpanAvailQty').html(data);
+        });
+    }
+    $('#ddlItem').change(function () {
+        var ItemId = $(this).val();
+        if (ItemId == "") {
+            $('#SpanAvailQty').html('0')
+            $('#ItemAmount').html(0);
+            $('#TotalAmount').html('0');
+            $("#NewIssueerrormsg").hide();
+            return;
+        }
+        // GetAvailQuantity(Selectedval, CampusId);
+        $.get('@Url.Action("GetItemDetails", "Stores", new { area = "Inventory" })?ItemId=' + ItemId + "&VehicleId=0", function (data) {
+            if (data.success) {
+                $('#ReorderLevel').html(data.ReorderLevel);
+                $('#ItemAmount').html(data.Amount);
+                $('#SpanAvailQty').html(data.AvailQty);
+                var b = parseInt(data.AvailQty)
+                $('#Indent_loading').hide();
+            }
+        });
+    });
+    function ClearAll() {
+        $('#ddlItem').val("");
+        $('#ddlItem').focus();
+        $('#hdnItem').val("");
+        $('#txtQty').val("");
+        $('#SpanAvailQty').html('0');
+        $('#ItemAmount').html(0);
+        $('#TotalAmount').html('0');
+        $("#Description").val("");
+        $("#Taxes").val("");
+        $('#ScheduleDt').val("");
+    }
+    $(".validate").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#NewIssueerrormsg").show();
+                $("#NewIssueerrormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#NewIssueerrormsg").show();
+                    $("#NewIssueerrormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#NewIssueerrormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#NewIssueerrormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

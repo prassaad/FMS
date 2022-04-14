@@ -1,0 +1,17 @@
+[2015-12-26 15:52:45.1331] [127.0.0.1] [ERROR] [Metadata information for the relationship 'FMSDBModel.FK_tbl_package_client_rates_tbl_vehicles' could not be retrieved. If mapping attributes are used, make sure that the EdmRelationshipAttribute for the relationship has been defined in the assembly.  When using convention-based mapping, metadata information for relationships between detached entities cannot be determined.
+Parameter name: relationshipName] [superadmin] [   at System.Data.Objects.DataClasses.RelationshipManager.GetRelatedEndInternal(String relationshipName, String targetRoleName)
+   at System.Data.Objects.DataClasses.RelationshipManager.GetRelatedReference[TTargetEntity](String relationshipName, String targetRoleName)
+   at FMS.Models.tbl_package_client_rates.get_tbl_vehicles() in D:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Models\FMS.Designer.cs:line 27084
+   at ASP._Page_Views_package__GetPackageList_cshtml.Execute() in d:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Views\Package\_GetPackageList.cshtml:line 67
+   at System.Web.WebPages.WebPageBase.ExecutePageHierarchy()
+   at System.Web.Mvc.WebViewPage.ExecutePageHierarchy()
+   at System.Web.WebPages.WebPageBase.ExecutePageHierarchy(WebPageContext pageContext, TextWriter writer, WebPageRenderingBase startPage)
+   at System.Web.Mvc.RazorView.RenderView(ViewContext viewContext, TextWriter writer, Object instance)
+   at System.Web.Mvc.BuildManagerCompiledView.Render(ViewContext viewContext, TextWriter writer)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResult(ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass1c.<InvokeActionResultWithFilters>b__19()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass1c.<>c__DisplayClass1e.<InvokeActionResultWithFilters>b__1b()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

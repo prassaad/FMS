@@ -1,0 +1,18 @@
+[2016-02-01 18:47:36.0275] [127.0.0.1] [ERROR] [The given key was not present in the dictionary.] [superadmin] [   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at ClosedXML.Excel.IntegerExtensions.ToStringLookup(Int32 value)
+   at ClosedXML.Excel.XLAddress.GetTrimmedAddress()
+   at ClosedXML.Excel.XLWorkbook.GenerateWorksheetPartContent(WorksheetPart worksheetPart, XLWorksheet xlWorksheet, SaveContext context)
+   at ClosedXML.Excel.XLWorkbook.CreateParts(SpreadsheetDocument document)
+   at ClosedXML.Excel.XLWorkbook.CreatePackage(Stream stream, Boolean newStream)
+   at ClosedXML.Excel.XLWorkbook.SaveAs(Stream stream)
+   at FMS.Controllers.CardAssignmentController.LogsheetsExportToExcel(List`1 list) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 1097
+   at FMS.Controllers.CardAssignmentController.ExportToExcel() in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 1038
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

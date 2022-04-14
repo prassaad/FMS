@@ -1,0 +1,232 @@
+﻿@model FMS.Models.tbl_drivers
+
+@using (Html.BeginForm("AddDriver", "LogsheetManagement", FormMethod.Post, new { @id = "frmaddDriver", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+<br />
+<fieldset>
+    <legend>Driver</legend>
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td></td>
+            <td style="height:12px;float:right;">
+                <a href="#" onclick="BacktoDutyLog()">Back</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                First Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.FirstName)
+                @Html.ValidationMessageFor(model => model.FirstName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Last Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.LastName)
+                @Html.ValidationMessageFor(model => model.LastName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Permanent Address :
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Address1, new { @cols = 36 })
+                @Html.ValidationMessageFor(model => model.Address1)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Current Address :
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Address2, new { @cols = 36 })
+                @Html.ValidationMessageFor(model => model.Address2)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ContactNumber)
+                @Html.ValidationMessageFor(model => model.ContactNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Vendor :
+            </td>
+            <td>
+                @Html.DropDownList("VendorID", null, "--Select Vendor--", new { style = "width: 310px;" })
+                @Html.ValidationMessageFor(model => model.VendorID)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Current Vehicle :
+            </td>
+            <td>
+                <label id="CurrentVehicle" style="color:Red;font-weight:bold;">@ViewBag.VehicleRegNum</label>
+                <input type="hidden" id="CurrentVehicleID" name="CurrentVehicleID" value="@ViewBag.CurrentVehicleID" />
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Photo :
+            </td>
+            <td>
+                <input type="file" name="PhotoUrl" />
+                @Html.ValidationMessageFor(model => model.PhotoUrl)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ID Proof:
+            </td>
+            <td>
+                <input type="file" name="IDProof" />
+                @Html.ValidationMessageFor(model => model.IDProof)
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Name on Driving Licence :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.NameonLicence)
+                @Html.ValidationMessageFor(model => model.NameonLicence)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Licence Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.LicenceNumber)
+                @Html.ValidationMessageFor(model => model.LicenceNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Licence Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.LicenceValidity)
+                @Html.ValidationMessageFor(model => model.LicenceValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Badge Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.BadgeNumber)
+                @Html.ValidationMessageFor(model => model.BadgeNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Badge Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.BadgeValidity)
+                @Html.ValidationMessageFor(model => model.BadgeValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reference Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ReferenceName)
+                @Html.ValidationMessageFor(model => model.ReferenceName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reference Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ReferenceNumber)
+                @Html.ValidationMessageFor(model => model.ReferenceNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Blood Group :
+            </td>
+            <td>
+                <select id="BloodGroup" name="BloodGroup" style="width: 310px;">
+                    <option value="">--Select Blood Group--</option>
+                    <option value="1">O+</option>
+                    <option value="2">O-</option>
+                    <option value="3">A+</option>
+                    <option value="4">A-</option>
+                    <option value="5">B+</option>
+                    <option value="6">B-</option>
+                    <option value="7">AB+</option>
+                    <option value="8">AB-</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.BloodGroup)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Diesel Card Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.DieselCardNum)
+                @Html.ValidationMessageFor(model => model.DieselCardNum)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Remark :
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Remark, new { @cols = 36 })
+                @Html.ValidationMessageFor(model => model.Remark)
+            </td>
+        </tr>
+        <tr>
+
+            <td colspan="2">
+                <input type="button" value="Create" class="btn btn-primary" id="btnCreatedriver" />
+                @*<a href="#" id="btnCreatedriver">Create</a>*@
+            </td>
+        </tr>
+    </table>
+</fieldset>
+}
+<script type="text/javascript">
+
+    $("#btnCreatedriver").click(function (event) {
+        $.post("/LogsheetManagement/AddDriver", $("#frmaddDriver").serialize(), function (event) {
+            $("#divDutylog").show();
+            $("#divaddDriver").hide();
+        });
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+    });
+    $(document).ready(function () {
+        $('#LicenceValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#BadgeValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+
+</script>

@@ -1,0 +1,197 @@
+﻿@model IEnumerable<FMS.Models.tbl_package_client_rates>
+@using FMS.Models;
+@{
+    core objCore = new core();  
+}
+<br />
+@using (Html.BeginForm("SaveBulkApprovedPackages", "Projects", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmBulkPackages" }))
+{
+    @Html.ValidationSummary(true)
+     
+    <input type="button" value="Add New +" id="btnAddNewPackage" />
+    <span id="SpanErrorMsg" style="color: Red; font-weight: bold;"></span>
+    <div id="AddNewPackageDiv">
+    </div>
+    <input type="hidden" name="rdFilter" value="@ViewBag.rdFilter" />            
+    <input type="hidden" name="PackageMonth" value="@ViewBag.PackageMonth" />
+<table class="table table-striped table-condensed dTableR dataTable">
+    <thead>
+        <tr>
+            <th>
+                RouteId/Route
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Package Amt.
+            </th>
+            <th>
+                Time Unit
+            </th>
+            <th>
+                Day(s)/Month(s)
+            </th>
+            <th>
+                LogIn
+            </th>
+            <th>
+                LogOut
+            </th>
+            <th>
+                Effective Dt.
+            </th>
+            <th>
+                Expiration Dt.
+            </th>
+            <th>
+                Card No.
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                   @{ var locationList = new SelectList((IEnumerable<SelectListItem>)ViewBag.LocationId, "Value", "Text", item.LocationId);
+                         }
+                    @Html.DropDownListFor(m => item.LocationId, locationList, "-Select-", new { @style = "width:80px;", Name = "LocationId_" + item.Id })
+                </td>
+                <td>
+                    @{ var vehicleTypeList = new SelectList((IEnumerable<SelectListItem>)ViewBag.VehicleTypeId, "Value", "Text", item.VehicleTypeId); }
+                    @Html.DropDownListFor(m => item.VehicleTypeId, vehicleTypeList, "-Select-", new { @style = "width:80px;", Name = "VehicleTypeId_" + item.Id })
+                </td>
+                <td>
+                    @{ var VehModelList = new SelectList((IEnumerable<SelectListItem>)ViewBag.VehicleModelId, "Value", "Text", item.VehicleModelId); }
+                    @Html.DropDownListFor(m => item.VehicleModelId, VehModelList, "-Select-", new { @style = "width:80px;", Name = "VehicleModelId_" + item.Id })
+                </td>
+                <td>
+                    @Html.TextBox("PackageAmt_" + item.Id, item.PackageAmt, new { @style = "width:100px" })
+                </td>
+                <td>
+                    @{ var TimeUnitList = new SelectList((IEnumerable<SelectListItem>)ViewBag.TimeUnit, "Value", "Text", item.TimeUnit); }
+                    @Html.DropDownListFor(m => item.TimeUnit, TimeUnitList, "-Select-", new { @style = "width:80px", Name = "TimeUnit_" + item.Id })
+                </td>
+               <td>
+                    @Html.TextBox("WorkingDays_" + item.Id, item.WorkingDays, new { @style = "width:60px" })
+                </td>
+                <td>
+                    @Html.TextBox("LoginTime_" + item.Id, item.LoginTime, new { @style = "width:60px" })
+                </td>
+                <td>
+                    @Html.TextBox("LogoutTime_" + item.Id, item.LogoutTime, new { @style = "width:60px" })
+                </td>
+                <td>
+                  @if (DateTime.Now.Date > Convert.ToDateTime(item.ExpiredDt.Value).Date)
+                  {
+                    @Html.TextBox("EffectiveDt_" + item.Id, item.EffectiveDt, new { @style = "width:70px", @class = "ClsEffectiveDt" })
+                  }
+                  else
+                  {
+                      @Html.Hidden("EffectiveDt_" + item.Id, item.EffectiveDt)
+                      @Html.Encode(item.EffectiveDt.HasValue ? Convert.ToDateTime(item.EffectiveDt).ToShortDateString() : "")
+                  }
+                </td>
+                <td>
+                    @Html.Encode(item.ExpiredDt.HasValue ? Convert.ToDateTime(item.ExpiredDt).ToShortDateString() : "")
+                </td>
+                <td>
+                    @Html.Encode(objCore.GetCardNumber(item.Id))
+                </td>
+                <td>
+                    @if (item.ExpiredDt.HasValue)
+                    {
+                        if (DateTime.Now.Date >= Convert.ToDateTime(item.ExpiredDt.Value).Date)
+                        {
+                        <span class="system negative">Expired</span>
+                        }
+                        else
+                        {
+                        <span class="system positive">Active</span>
+                        }
+                    }
+                    else
+                    {
+                        <text> Date Not Assigned  </text>
+                    }
+                </td>
+                @if (DateTime.Now.Date > Convert.ToDateTime(item.ExpiredDt.Value).Date)
+                {
+                    <td>
+                        @Html.CheckBox("Approve_" + item.Id, false)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        &nbsp;
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+    <div style="float: right">
+        <input type="button" id="btnSubmit" value="Submit" />
+    </div>  
+
+}
+<script type="text/javascript">
+
+    $(".ClsEffectiveDt").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+    $('#btnSubmit').click(function () {
+        // Validation here 
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+
+        $('#loading').fadeIn('slow');
+        $('#btnSubmit').attr('disabled', true);
+        $('#btnSubmit').attr('style', 'cursor:no-drop');
+        $.post('/Projects/SaveBulkApprovedPackages?ClientId=' + clientId + '&ProjectId=' + projectId, $('#frmBulkPackages').serialize(), function (data) {
+            alert(data.msg);
+            $('#loading').fadeOut('slow');
+            $('#btnSubmit').attr('disabled', false);
+            $('#btnSubmit').attr('style', 'cursor:pointer');
+            if (data.success) {
+                window.location.href = '/Projects/BulkPackageApprovals';
+            }
+
+        });
+
+    });
+
+
+    // Add New Package
+
+    $('#btnAddNewPackage').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/AddQuickPackage?ClientId=" + clientId + "&ProjectId=" + projectId,
+            dataType: "html",
+            success: function (data) {
+                $('#AddNewPackageDiv').html(data);
+            },
+            error: function (error) {
+            }
+        });
+    });
+
+    
+</script>

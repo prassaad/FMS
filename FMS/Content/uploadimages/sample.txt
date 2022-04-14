@@ -1,0 +1,3 @@
+numberoffiles|state|statecode|county|countycode
+10 | CA | 04 | KERN | 029
+10 | CA | 04 | KERN | 030

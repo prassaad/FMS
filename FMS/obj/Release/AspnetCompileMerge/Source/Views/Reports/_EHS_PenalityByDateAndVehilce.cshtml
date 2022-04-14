@@ -1,0 +1,49 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+    string date = ViewBag.Date;
+    decimal TotAmt = 0;
+}
+@{
+    TotAmt = 0;
+}
+<style type="text/css">
+.tfooter_total td
+{
+	background: #058DC7 ! important;
+	font-size: 12px; 
+	font-weight:bold;
+	color:#fff;
+	height:20px;
+}
+</style>
+@{TotAmt =0;}
+@foreach (var item in Model)
+{
+    var supermenuId = "Ehssupersupersubmenu_" + item.Text1 + "_" + date;
+    var Id = item.Text1.ToUpper().Trim() + "_" + date;
+    <li id="Ehssub-menu"><a href="#" id="@Id"><span style="float: left; width: 34%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp&nbsp @item.Text1.ToUpper()</span>
+        <span style="float: right; width: 43%; text-align: right;">
+        @Html.Encode(String.Format("{0:N}", item.Value2))
+        </span> <span
+            style="float: right; width: 23%; text-align: right;">@item.Text2.ToUpper()</span></a>
+             @{
+                 TotAmt += item.Value2;
+             }
+        <ul class="Ehssuper-sub-menu" id="@supermenuId" style="display: none;">
+        </ul>
+    </li>
+    }
+ 
+<table style="width:100%;">
+    <tr  class="tfooter_total">
+        <td  style="width:34%;">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sub-Total:
+        </td>
+         <td style="text-align: right; font-size: 12px;width:23%;">
+        </td>
+        <td style="text-align: right;width:43%;padding-right:10px;">
+          @Html.Encode(String.Format("{0:N}", TotAmt))
+        </td>
+    </tr>
+</table>

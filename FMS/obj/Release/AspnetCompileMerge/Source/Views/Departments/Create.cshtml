@@ -1,0 +1,111 @@
+﻿@model FMS.Models.tbl_departments
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Department</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Departments", "Index")</li>
+        </ul>
+    </div>
+</div>
+ 
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Department</legend>
+
+        <table class="table-striped table-condensed dTableR dataTable">
+           <tr>
+            <td  colspan="2">
+                <span id="errormsg" style="color: Red; font-style: italic; font-size: medium;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Department
+            </td>
+              <td>
+                @Html.EditorFor(model => model.DisplayName, new { @maxlength = 30 })
+                @Html.ValidationMessageFor(model => model.DisplayName)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <b><u>Indent</u></b>
+            </td>
+        </tr>
+         <tr>
+            <td colspan="2">
+                <b>Can Request For Items</b> 
+                 @Html.CheckBox("ReqItem") 
+            </td>
+        </tr>
+          <tr id="tr_assign_user" style="display:none;">
+            <td>
+               Indent Manager
+            </td>
+            <td>
+                @Html.DropDownList("IndentMgrUserId", null, "-Select Indent Manager-", new { @style = "width:220px;" })
+                @Html.ValidationMessage("IndentMgrUserId")
+            </td>
+         </tr>    
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="submit" value="Create" />
+            </td>
+        </tr>
+    </table>
+    </fieldset>
+}
+<script type="text/javascript">
+    // Verify Is Req Item
+    if ($('#ReqItem').is(':checked')) {
+        $('#tr_assign_user').show();
+    }
+    else {
+        $('#tr_assign_user').hide();
+        $('#IndentMgrUserId option[value=""]').attr("selected", "selected");
+    }
+    // Isuser change event
+    $('#ReqItem').change(function () {
+        if ($('#ReqItem').is(':checked')) {
+            $('#tr_assign_user').show();
+        }
+        else {
+            $('#tr_assign_user').hide();
+            $('#IndentMgrUserId option[value=""]').attr("selected", "selected");
+        }
+    });
+    $("#DisplayName").change(function () {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \n These are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                $("#errormsg").hide();
+                var val = $.trim($("#" + this.id).val());
+                $("#" + this.id).val(val);
+            }
+        }
+    });
+    $("input[type='text']").keyup(function (e) {
+
+        var keyCode = e.which;
+        if (($(this).val().length == 1 && $(this).val().trim() == "") || $(this).val().trim() == "" && keyCode == 32) {
+            $(this).val('');
+        }
+    });
+ </script>

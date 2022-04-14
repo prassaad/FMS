@@ -1,0 +1,56 @@
+﻿@model FMS.Models.tbl_client_log_sheet_cols
+@{
+    Session["FieldTextList"] = null;
+    Session["AvailColsList"] = null;
+    Session["ClientColsList"] = null;
+}
+<form id="frmFieldTextAdd" enctype="multipart/form-data">
+<p>
+    @if (ViewBag.Status != null)
+    {
+        <a href="#" onclick="ClientColumnsToBeMapped('@ViewBag.ClientID')" style="text-decoration:underline;color:Red;">Cancel Mapping</a>
+    }
+</p> <br /> 
+<table class="table table-striped table-condensed dTableR dataTable">
+<tr>
+    <td>
+       Add New Client Column  @Html.TextBox("FieldText", null, new { @style = "width:310px;" }) 
+       <input type="hidden" value="@ViewBag.ClientID" id="ClientID" name="ClientID" />
+    </td>
+    <td>
+         <img class="statusicon" src="../../Content/images/plus.png" id="btnAddFieldText" style="cursor: pointer;">
+    </td>
+</tr>
+</table>
+</form>
+<div id="divAddedFieldTextList">
+</div>
+<script type="text/javascript">
+    $("#btnAddFieldText").click(function () {
+        if ($("#FieldText").val() == "") {
+            alert("Field Text is missing!Please enter field text.");
+            $("#FieldText").focus();
+            return false;
+        }
+        $("#div_loading").fadeIn('slow');    
+        $.ajax(
+        {
+            type: "GET",
+            url: "../../Client/AddMappedList",
+            data: "fieldText=" + $("#FieldText").val() + "&ClientID=" + $("#ClientID").val(),
+            dataType: "html",
+            success: function (result) {
+                $('#divAddedFieldTextList').html(result);
+                $('#FieldText').val('');
+                $('#FieldText').focus();
+                if ('@Session["ClientColsList"]' != null) {
+                    GetMappedStructList('@ViewBag.ClientID');
+                }
+                $("#div_loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    });
+</script>

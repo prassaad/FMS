@@ -1,0 +1,369 @@
+﻿@model FMS.Models.tbl_driver_salaries
+@{
+    ViewBag.Title = "Add Driver Salary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+ 
+    table tr td { width:100px; }
+    .chzn-container
+     {
+         position:relative;
+         margin:0;
+     }
+     small 
+     {
+         color:Red;
+     }   
+</style>
+<h2>Add Driver Salary</h2>
+ <div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Driver Salaries", "DriverSalary")</li>
+        </ul>
+    </div>
+</div>
+
+@using (Html.BeginForm("AddDriverSalary", "Driver", FormMethod.Post, new { id = "frmDriver" , enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+    <legend>Salary Details</legend>
+        <table class="table-condensed table-striped dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <p style="color: Red; font-style: italic;">
+                        @(ViewBag.message)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Month & Year <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.MonthYear, new { @class = "txtInput IsValid", @tabindex = 1 })
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    Veh. Reg# <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Vehicle", "", new { @class = "txtAutoComplete IsValid", @tabindex = 2, @maxlength = 30 })
+                    @Html.HiddenFor(model => model.VehicleId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Driver <span style="color: Red;">*</span>
+                </td>
+                <td>
+                   @Html.TextBox("DriverName", "", new { @class = "txtAutoComplete IsValid", @tabindex = 3, @maxlength = 50 })  
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salary Amount <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("SalaryAmt", 0, new { @class = "txtInput netTotal", @tabindex = 4, @onkeypress = "return numberValidatedot(event);", @maxlength = 8 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Working Day(s) <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WorkDays, new { @class = "txtInput netTotal", @tabindex = 5, @onkeypress = "return numberValidate(event);", @maxlength = 3 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Present Day(s) <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PresentDays, new { @class = "txtInput netTotal", @tabindex = 6, @onkeypress = "return numberValidate(event);", @maxlength = 3 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Net Salary Amount <small> (Salary/WD*PD) </small>
+                </td>
+                <td>
+                    @Html.TextBox("NetSalary", 0, new { @class = "txtInput netTotal", @tabindex = 7, @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @style = "background-color:#ddd;cursor:no-drop;", @readonly = true })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Incentive <small>  (+) </small>
+                </td>
+                <td>
+                    @Html.TextBox("Incentive", 0, new { @class = "txtInput netTotal", @tabindex = 8, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Advance <small>  (-) </small>
+                </td>
+                <td>
+                    @Html.TextBox("AdvAmt", 0, new { @class = "txtInput netTotal", @tabindex = 9, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Deductions <small>  (-) </small>
+                </td>
+                <td>
+                    @Html.TextBox("Deductions", 0, new { @class = "txtInput netTotal", @tabindex = 10, @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Net Payable <small>(Net Salary + Inc - Advance - Deductions)</small>
+                </td>
+                <td>
+                    @Html.TextBox("TotalAmt", 0, new { @class = "txtInput netTotal", @tabindex = 11, @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @style = "background-color:#ddd;cursor:no-drop;", @readonly = true })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   Gross Salary <small>(Advance + Deductions + Net Payable)</small>
+                </td>
+                <td>
+                   @Html.TextBox("GrossSalary", 0, new { @class = "txtInput",  @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @style = "background-color:#ddd;cursor:no-drop;", @readonly = true })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Remark
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Remark, new { @cols = 36, @class = "txtInput", @tabindex = 12, @style = "background-color:#ffffe0;resize:none;", @maxlength = 250 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="button" style="margin-top: 5px;" id="btnAddSal" class="btnnewlog" value="Add Salary"
+                    tabindex="13" /> 
+                </td>
+            </tr>
+        </table>  
+   </fieldset>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script> 
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $('input[name=MonthYear]').bind('keyup keydown keypress', function (evt) {
+            return false;
+        });
+        $('.netTotal').bind('keyup keydown keypress change', function (evt) {
+            var SalaryAmt = $('#SalaryAmt').val();
+            var WrkDays = $('#WorkDays').val();
+            var PrstDays = $('#PresentDays').val();
+
+            if (SalaryAmt != '0' && WrkDays != '' && PrstDays != '') {
+                var perDay = parseFloat(SalaryAmt) / parseInt(WrkDays);
+                $('#NetSalary').val(parseFloat(perDay * PrstDays).toFixed(2));
+            }
+
+            var NetSal = $('#NetSalary').val();
+            var Incentive = $('#Incentive').val();
+            var AdvanceAmt = $('#AdvAmt').val();
+            var Deductions = $('#Deductions').val();
+
+            if (NetSal != 0 || Incentive != 0 || AdvanceAmt != 0 || Deductions != 0) {
+                var TotalEarnings = parseFloat(NetSal) + parseFloat(Incentive);
+                var TotalDeductions = parseFloat(AdvanceAmt) + parseFloat(Deductions);
+                $('#TotalAmt').val(parseFloat(TotalEarnings - TotalDeductions).toFixed(2));
+                var TotalAmt = parseFloat($('#TotalAmt').val());
+                $('#GrossSalary').val(parseFloat(TotalAmt + TotalDeductions).toFixed(2));
+            }
+        });
+    });
+    $(function () {
+        $('#MonthYear').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy'
+        }).focus(function () {
+            var thisCalendar = $(this);
+            $('.ui-datepicker-calendar').detach();
+            $('.ui-datepicker-close').click(function () {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                thisCalendar.datepicker('setDate', new Date(year, month, 1));
+            });
+        });
+    });
+
+    $("#Vehicle").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+       
+    function OnselectItem(li) {
+        $('#VehicleId').val(0);
+        if (li == null) $('#VehicleId').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            $('input[tabindex="3"]').focus();
+        }
+        else var sValue = li.selectValue;
+        $('#VehicleId').val(sValue);
+        $('input[tabindex="3"]').focus();
+        //GetAdvanceAmount($('#MonthYear').val(), sValue);
+    }
+
+    function GetAdvanceAmount(MonthYear, VehicleId) {
+        if (VehicleId == null || VehicleId == "") {
+            VehicleId = 0;
+            return false;
+        }
+        if (MonthYear == '') {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/VehicleEMIs/GetDriverDeductionsByVehicle",
+            dataType: "json",
+            data: "MonthYear=" + MonthYear + "&VehicleId=" + VehicleId,
+            success: function (data) {
+                if (data.success == true) {
+                    $('#AdvAmt').val(data.AdvAmt); $('#Deductions').val(data.AdvAmt);
+                }
+                else {
+                    $('#AdvAmt').val(0);
+                    $('#Deductions').val(0);
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+
+    // Validate Fields
+    function RequiredFieldValidation() {
+
+        var MonthYear = $("#MonthYear").val();
+        var Vehicle = $("#Vehicle").val();
+        var DriverName = $("#DriverName").val();
+        var SalaryAmt = $("#SalaryAmt").val();
+        var WorkDays = $("#WorkDays").val();
+        var PresentDays = $('#PresentDays').val();
+
+        if (MonthYear == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select month year');
+            $("#MonthYear").select();
+            return false;
+        }
+        if (Vehicle == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle reg number');
+            $("#Vehicle").select();
+            return false;
+        }
+        if (DriverName == "") {
+            $("#SpanValidateMsg").focus();
+            $("#SpanValidateMsg").html('Please enter driver name.');
+            $("#DriverName").select();
+            return false;
+        }
+        if (SalaryAmt == "0") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter salary amount');
+            $("#SalaryAmt").select();
+            return false;
+        }
+        if (WorkDays == "0" || WorkDays == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter working day(s).');
+            $("#WorkDays").select();
+            return false;
+        }
+        if (PresentDays == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter present day(s)');
+            $("#PresentDays").select();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        return true;
+    }
+
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        var dateval = $("#" + this.id).val();
+        var msg = validateDate(dateval);
+        if (msg != "") {
+            document.getElementById("" + this.id + "").value = '';
+            this.focus();
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html(msg);
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+    });
+
+    $('#btnAddSal').click(function () {
+        if (RequiredFieldValidation()) {
+            $('#loading').fadeIn('slow');
+            $.post('/Driver/AddDriverSalary', $('#frmDriver').serialize(), function (data) {
+                alert(data.msg);
+                $('#loading').fadeOut('slow');
+                if (data.success) {
+                    window.location.href = '/Driver/DriverSalary';
+                }
+            });
+        }
+        else {
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+    });
+</script>

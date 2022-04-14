@@ -1,0 +1,331 @@
+﻿@model FMS.Models.tbl_vehicles
+           @{
+               long VendorId = ViewBag.VendorID;
+           }
+<style type="text/css">
+    .specialDate { background-color: #6F0 !important; }
+</style>
+@using (Html.BeginForm("Create", "Vehicle", FormMethod.Post, new { id="frmCreateVehicle", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+     <div class="clsmodalheader">Add Vehicle</div>
+    <div style="overflow: auto;z-index:9999;height:500px;">
+            <table class="table-striped table-condensed dTableR dataTable">
+                <tr>
+                    <td colspan="2" style="padding-top: 10px;">
+                        <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+            <td>
+                Reg. No# : <span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.VehicleRegNum)
+                @Html.ValidationMessageFor(model => model.VehicleRegNum)
+                @Html.Hidden("VendorID", VendorId)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Model :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleModelID", null, "--Select Vehicle Model--", new { style = "width: 310px;" })
+                @Html.ValidationMessageFor(model => model.VehicleModelID)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Month,Year :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ManufactureYearMonth)
+                @Html.ValidationMessageFor(model => model.ManufactureYearMonth)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Type :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { style = "width: 310px;" })
+                @Html.ValidationMessageFor(model => model.VehicleTypeID)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Capacity :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("SeaterID", null, "--Select Seater", new { style = "width:310px;" })
+                @Html.ValidationMessageFor(model => model.SeaterId)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Tax Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.TaxValidity, new { @class = "validDate" })
+                @Html.ValidationMessageFor(model => model.TaxValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Permit Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.PermitValidity, new { @class = "validDate" })
+                @Html.ValidationMessageFor(model => model.PermitValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                FitNess Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.FitnessValidity, new { @class = "validDate" })
+                @Html.ValidationMessageFor(model => model.FitnessValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Insurance Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.InsuranceValidity, new { @class = "validDate" })
+                @Html.ValidationMessageFor(model => model.InsuranceValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Pollution Validity :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.PollutionValidity, new { @class = "validDate" })
+                @Html.ValidationMessageFor(model => model.PollutionValidity)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Owner/Driver :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.RadioButton("OwnerCumDriver", "True") &nbsp;&nbsp;YES &nbsp;&nbsp; @Html.RadioButton("OwnerCumDriver", "False")
+                &nbsp;&nbsp;NO
+                @Html.ValidationMessageFor(model => model.OwnerCumDriver)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Driver :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.RadioButton("SingleDoubleDriver", "Single") &nbsp;&nbsp;SINGLE &nbsp;&nbsp;
+                @Html.RadioButton("SingleDoubleDriver", "Double") &nbsp;&nbsp;DOUBLE
+                @Html.ValidationMessageFor(model => model.SingleDoubleDriver)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                SIM# :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.SIMNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Priority :
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.VehiclePriority)
+            </td>
+        </tr>
+          <tr>
+                <td>
+                    Vendor Rate :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VendorRate)
+                     @Html.ValidationMessageFor(model => model.VendorRate)
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Diesel Card Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DieselCardNum)
+                    @Html.ValidationMessageFor(model => model.DieselCardNum)
+                </td>
+            </tr>
+        <tr>
+            <td>
+                
+            </td>
+            <td>
+                <input type="button" id="btnVehicleCreate" value="Add" /> <input type="button" id="btnVehicleCancel" value="Cancel" />
+            </td>
+        </tr>
+    </table>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dateToday = new Date();
+        $('#TaxValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PermitValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#FitnessValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#InsuranceValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PollutionValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        
+    });
+    //replace   selectMonth with your date pickers id here at all places 
+    $('#ManufactureYearMonth').datepicker({
+        changeMonth: true,      //provide option to select Month
+        changeYear: true,       //provide option to select year
+        showButtonPanel: true,  // button panel having today and done button
+        dateFormat: 'MM yy',    //set date format
+        yearRange: '1970:+0',
+        onClose: function (dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1)); //here set the date when closing.
+            $(this).blur(); //remove focus input box
+
+        }
+    });
+
+    //on foucus event on this code is to hide the calender part
+    $("#ManufactureYearMonth").focus(function () {
+        $(".ui-datepicker-calendar").hide();
+        $("#ui-datepicker-div").position({
+            my: "center top",
+            at: "center bottom",
+            of: $(this)
+        });
+    });
+
+    $("#btnVehicleCreate").click(function () {
+        $.post("/Vehicle/Create", $("#frmCreateVehicle").serialize(), function (result, status) {
+            $("#divSimpleModalDet").html(result);
+//            alert(result.msg);
+//            if (result.success) {
+//                $.modal.close();
+//                VehiclesList('@ViewBag.VendorID');
+//            }
+        });
+
+    });
+    $("#btnVehicleCancel").click(function () {
+        $.modal.close();
+    });
+    $("#VendorRate").change(function () {
+        var result = isFloat(this.value);
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Vendor rate has special characters or alphabets. These are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            $("#" + this.id).focus();
+        }
+    });
+
+    $("#VehicleRegNum").change(function () {
+        var result = isAlphaNumeric(this.value);
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Vehicle registration number should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        if (this.id == "TaxValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                return false;
+            }
+        }
+        else if (this.id == "PermitValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                return false;
+            }
+        }
+        else if (this.id == "FitnessValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                return false;
+            }
+        }
+        else if (this.id == "InsuranceValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                return false;
+            }
+        }
+        else if (this.id == "PollutionValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                return false;
+            }
+        }
+    });
+</script>

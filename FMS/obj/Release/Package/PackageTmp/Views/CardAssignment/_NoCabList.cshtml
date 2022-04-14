@@ -1,0 +1,213 @@
+﻿@model IEnumerable<FMS.Models.NocabListModel>
+@using FMS.Models;
+@{
+    Int64 UniqueId = 0;
+    core objCore = new core(); 
+}
+<div id="divNocabEntry">
+</div>
+<h2 style="color: #a12121; font-style: italic; font-family: Arial">
+    <u>No Cab List:</u></h2>
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <td colspan="12" style="padding-top: 10px;">
+            <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+            </span>
+        </td>
+    </tr>
+    <thead style="background-color: #a12121">
+        <tr>
+            <th>
+                SNo.
+            </th>
+            <th>
+                Card#
+            </th>
+            <th>
+                Package
+            </th>
+            <th>
+                Vehicle
+            </th>
+            <th>
+                Vehicle Type
+            </th>
+            <th>
+                Emp. Name
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Trip Type
+            </th>
+            <th>
+                LogIn Time
+            </th>
+            <th>
+                Logout Time
+            </th>
+            <th>
+                Mobile
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    @{ UniqueId = 1; }
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @UniqueId
+                    @Html.Hidden("UniqueId_" + UniqueId, UniqueId)
+                </td>
+                <td>
+                    @item.CardNumber
+                </td>
+                <td>
+                    @{
+               string Package = objCore.GetPackage((long)item.PackId);
+                    }
+                    <span title="@Package">
+                        @(Package.Length > 100 ? Package.Substring(0, 29) : Package)
+                    </span>
+                    @Html.Hidden("PackageId_" + UniqueId, item.PackId)
+                </td>
+                <td>
+                    @item.AlterVehNumber
+                </td>
+                <td>
+                    @objCore.GetVehicleType((long)item.VehicleTypeID)
+                </td>
+                <td style="width: 150px;">
+                    @item.EmpName
+                </td>
+                <td style="width: 150px;">
+                    @item.Location
+                </td>
+                <td>
+                    @item.TripType
+                </td>
+                <td>
+                    @item.ShiftTime
+                </td>
+                <td>
+                    @item.ReachTime
+                </td>
+                <td>
+                    @item.ContactNumber
+                </td>
+                <td>
+                    @item.NetAmount
+                </td>
+            </tr>
+               { UniqueId = UniqueId + 1; }
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+
+
+    $('#btnNocab').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var logDate = $('#LogDate').val();
+
+        $("divNocabEntry").hide();
+
+        $("#errClientId").hide(); $("#errProjectId").hide();
+        $('#errLogDate').hide();
+
+        if (clientId == '') {
+            $("#errClientId").show();
+            return false;
+        }
+        if (projectId == '') {
+            $("#errProjectId").show();
+            return false;
+        }
+        if (logDate == '') {
+            $('#errLogDate').show();
+            return false;
+        }
+
+        $('#divAdhocEntry').empty();
+        NocabEntry(clientId, projectId, logDate);
+
+    });
+
+    function NocabEntry(ClientId, ProjectId, logDate) {
+        $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/NocabEntry?ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&LogDate=" + logDate,
+        dataType: "html",
+        success: function (result) {
+            $('#divNocabEntry').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+    $('#btnAdhoc').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var logDate = $('#LogDate').val();
+        $("#adhocspan").html("Adhoc Log Entry...");
+        $('#adhocspan').show();
+        $('#nocabspan').hide();
+
+        $("divAdhocEntry").hide();
+
+        $("#errClientId").hide(); $("#errProjectId").hide();
+        $('#errLogDate').hide();
+
+        if (clientId == '') {
+            $("#errClientId").show();
+            return false;
+        }
+        if (projectId == '') {
+            $("#errProjectId").show();
+            return false;
+        }
+        if (logDate == '') {
+            $('#errLogDate').show();
+            return false;
+        }
+
+
+        $('#divNocabEntry').empty();
+        AdhocLogEntry(clientId, projectId, logDate);
+
+    });
+
+    function AdhocLogEntry(ClientId, ProjectId, logDate) {
+        $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/AdhocLogEntry?ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&LogDate=" + logDate,
+        dataType: "html",
+        success: function (result) {
+            $('#divAdhocEntry').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+</script>

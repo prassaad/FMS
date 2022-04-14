@@ -1,0 +1,420 @@
+﻿@model FMS.Models.tbl_veh_hypothicated
+@using FMS.Models;
+@{
+    tbl_vehicles vehDet = ViewBag.VehDet as tbl_vehicles;
+}
+<div class="clsmodalheader">
+    Add Finance to Vehicle
+</div>
+<br />
+<table class="table table-striped dTableR dataTable">
+    <tr>
+        <td>
+            Vehicle Reg.
+        </td>
+        <td>
+            <span class="label label-important">
+                @(vehDet.VehicleRegNum)
+            </span>
+        </td>
+        <td>
+            Owner
+        </td>
+        <td>
+            @vehDet.tbl_vendor_details.FirstName @vehDet.tbl_vendor_details.LastName
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Vehicle Type
+        </td>
+        <td>
+            @vehDet.tbl_vehicle_types.VehicleType
+        </td>
+        <td>
+            Vehicle Model
+        </td>
+        <td>
+            @vehDet.tbl_vehicle_models.VehicleModelName
+        </td>
+    </tr>
+</table>
+@if (Model == null)
+{
+    using (Html.BeginForm("AddOwnVehicleFinanceView", "Vehicle", FormMethod.Post, new { id = "frmFinanceView" }))
+    {
+    <table class=" table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top: 10px;">
+                <input type="hidden" name="VehicleId" value='@ViewBag.VehicleId' />
+                <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="vertical-align: top;">
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td width="50%">
+                            Finance Amt :<span style="color: Red;">*</span>
+                        </td>
+                        <td width="50%">@Html.TextBox("HypothicatedAmt", null, new { @style = "width:150px;", @onkeypress = "return numberValidate(event);", @maxlength = 10 })
+                            <br />
+                            <span id="errHypothicatedAmt" style="color: Red; display: none">Please enter finance
+                                amount.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Down Payment :<span style="color: Red;">*</span>
+                        </td>
+                        <td>@Html.TextBox("DownPayment", null, new { @style = "width:150px;", @onkeypress = "return numberValidate(event);", @maxlength = 10, @class = "Vehpayment", @autocomplete = "off" })
+                            <br />
+                            <span id="errDownPayment" style="color: Red; display: none">Please enter DownPayment
+                                .</span>
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td>
+                            EMI From Dt:<span style="color: Red;">*</span>
+                        </td>
+                        <td>@Html.TextBox("MonthlyEMIFrom", null, new { @style = "width:150px;" })
+                            <br />
+                            <span id="errMonthlyEMIFrom" style="color: Red; display: none">Please enter From EMI
+                                date .</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            EMI To Dt:<span style="color: Red;">*</span>
+                        </td>
+                        <td>@Html.TextBox("MonthlyEMITo", null, new { @style = "width:150px;" })
+                            <br />
+                            <span id="errMonthlyEMITo" style="color: Red; display: none">Please enter To EMI date
+                                .</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total EMI's :<span style="color: Red;">*</span>
+                        </td>
+                        <td>@Html.TextBox("RepaymentTenure", null, new { @style = "width:150px;background-color:#ddd;cursor:no-drop;", @onkeypress = "return numberValidate(event);" , @maxlength = 3 , @readonly = true })
+                            <br />
+                            <span id="errRepaymentTenure" style="color: Red; display: none">Please enter no.of EMI's
+                                .</span>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td width="45%">
+                            EMI Amt. :<span style="color: Red;">*</span>
+                        </td>
+                        <td width="55%">@Html.TextBox("MonthlyEMIAmt", "", new { @style = "width:150px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+                            <br />
+                            <span id="errMonthlyEMIAmt" style="color: Red; display: none">Please enter Monthly EMI
+                                amount.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            On Road Cost : 
+                        </td>
+                        <td>@Html.TextBox("OnRoadCost", null, new { @style = "width:150px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10 })
+                            <br />
+                            <span id="errOnRoadCost" style="color: Red; display: none">Please enter Road cost.</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="50%" style="vertical-align: top;">
+                <table class="table-striped table-condensed dTableR dataTable">
+                     
+                     <tr>
+                        <td>
+                            Insurance Amount :
+                        </td>
+                        <td>@Html.TextBox("LifeInsurance", null, new { @style = "width:130px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @class = "Vehpayment" })
+                        </td>
+                    </tr>
+                  <tr>
+                        <td>
+                            Registration Charges :
+                        </td>
+                        <td>@Html.TextBox("LifeTax", null, new { @style = "width:130px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @class = "Vehpayment" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Accessories Cost :
+                        </td>
+                        <td>@Html.TextBox("AccressCost", null, new { @style = "width:130px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @class = "Vehpayment", @autocomplete = "off" })
+                            <br />
+                            @Html.ValidationMessage("AccressCost")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            GPS Cost :
+                        </td>
+                        <td>@Html.TextBox("GPSCost", null, new { @style = "width:130px;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @class = "Vehpayment", @autocomplete = "off" })
+                            <br />
+                            @Html.ValidationMessage("GPSCost")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Payment for Vehicle :
+                        </td>
+                        <td>@Html.TextBox("TotalAmt", "", new { @style = "width:130px;cursor:no-drop;background-color:#ddd;", @onkeypress = "return numberValidatedot(event);", @maxlength = 10, @readonly = true })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Amt to be Repaid
+                        </td>
+                        <td>@Html.TextBox("RepaidAmt", null, new { @style = "width:130px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="button" id="btnAddFinance" value="Add Finance" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+}
+}
+else
+{
+              
+    <table style="width:100%;">
+        <tr>
+            <td width="50%" style="vertical-align: top;">
+                <table class="table  table-striped dTableR dataTable">
+                    <tr>
+                        <td width="50%">
+                            Finance Amt :
+                        </td>
+                        <td width="50%">@Html.Encode(Model.HypothicatedAmt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Down Payment :
+                        </td>
+                        <td>@Html.Encode(Model.DownPayment)
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td>
+                            EMI From Dt:
+                        </td>
+                        <td>@Html.Encode(Model.MonthlyEMIFrom)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            EMI To Dt:
+                        </td>
+                        <td>@Html.Encode(Model.MonthlyEMITo)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           Total EMI's :
+                        </td>
+                        <td>@Html.Encode(Model.RepaymentTenure)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="45%">
+                            EMI Amt. : 
+                        </td>
+                        <td width="55%">@Html.Encode(Model.MonthlyEMIAmt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            On Road Cost : 
+                        </td>
+                        <td>@Html.Encode(Model.OnRoadCost)
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="50%" style="vertical-align: top;">
+                <table class="table  table-striped dTableR dataTable">
+                    
+                     <tr>
+                        <td>
+                            Insurance Amount:
+                        </td>
+                        <td>@Html.Encode(Model.LifeInsurance)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Registration Charges :
+                        </td>
+                        <td>
+                            @Html.Encode(Model.LifeTax)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Accessories Cost :
+                        </td>
+                        <td>@Html.Encode(Model.AccressCost)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            GPS Cost :
+                        </td>
+                        <td>@Html.Encode(Model.GPSCost)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Payment for Vehicle :
+                        </td>
+                        <td>@Html.Encode(Model.TotalAmt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Amt to be Repaid
+                        </td>
+                        <td>@Html.Encode(Model.RepaidAmt)
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+}
+<script type="text/javascript">
+    var myDate = new Date();
+    var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+    $(document).ready(function () {
+        $('#MonthlyEMIFrom').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            maxDate: prettyDate,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function (selected) {
+                $("#MonthlyEMITo").datepicker("option", "minDate", selected);
+            }
+        }).change(dateChanged)
+        .on('changeDate', dateChanged);
+        $('#MonthlyEMITo').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: prettyDate,
+            dateFormat: 'dd/mm/yy'
+        }).change(dateChanged)
+        .on('changeDate', dateChanged);
+
+        function dateChanged(ev) {
+            var start = $("#MonthlyEMIFrom").val();
+            var end = $("#MonthlyEMITo").val();
+            $.get('@Url.Action("GetTotalMonthsBetweenDates", "Vehicle")?start=' + start + '&end=' + end, function (data) {
+                $('#RepaymentTenure').val(parseInt(data));
+            });
+        }
+    });
+
+    $("#btnAddFinance").click(function () {
+        var HypothicatedAmt = $("#HypothicatedAmt").val();
+        var DownPayment = $("#DownPayment").val();
+        var InterestRate = $("#InterestRate").val();
+        var MonthlyEMIFrom = $("#MonthlyEMIFrom").val();
+        var MonthlyEMITo = $("#MonthlyEMITo").val();
+        var RepaymentTenure = $("#RepaymentTenure").val();
+        var MonthlyEMIAmt = $("#MonthlyEMIAmt").val();
+        var OnRoadCost = $("#OnRoadCost").val();
+        var flag = true;
+        if (HypothicatedAmt == '' || HypothicatedAmt == null) {
+            $("#errHypothicatedAmt").show();
+            flag = false;
+        }
+        else
+            $("#errHypothicatedAmt").hide();
+
+        if (DownPayment == '' || DownPayment == null) {
+            $("#errDownPayment").show();
+            flag = false;
+        }
+        else
+            $("#errDownPayment").hide();
+
+        if (MonthlyEMIFrom == '' || MonthlyEMIFrom == null) {
+            $("#errMonthlyEMIFrom").show();
+            flag = false;
+        }
+        else
+            $("#errMonthlyEMIFrom").hide();
+        if (MonthlyEMITo == '' || MonthlyEMITo == null) {
+            $("#errMonthlyEMITo").show();
+            flag = false;
+        }
+        else
+            $("#errMonthlyEMITo").hide();
+        if (RepaymentTenure == '' || RepaymentTenure == null) {
+            $("#errRepaymentTenure").show();
+            flag = false;
+        }
+        else
+            $("#errRepaymentTenure").hide();
+        if (MonthlyEMIAmt == '' || MonthlyEMIAmt == null) {
+            $("#errMonthlyEMIAmt").show();
+            flag = false;
+        }
+        else
+            $("#errMonthlyEMIAmt").hide();
+        if (flag == false)
+            return false;
+        else {
+            $("#btnAddFinance").attr('disabled', true);
+            $("#btnAddFinance").attr('style', 'cursor:no-drop');
+            $.post('/Vehicle/AddOwnVehicleFinanceView', $("#frmFinanceView").serialize(), function (data) {
+                alert(data.msg);
+                if (data.success) {
+                    $("#btnAddFinance").attr('disabled', false);
+                    $("#btnAddFinance").attr('style', 'cursor:pointer');
+                    window.location = "/Vehicle/OwnVehicles";
+                }
+            })
+        }
+
+    });
+    //Total payment for Vehicle
+    $(".Vehpayment").keyup(function () {
+        $("#TotalAmt").val(parseFloat($("#AccressCost").val() == "" ? 0 : $("#AccressCost").val()) + parseFloat($("#GPSCost").val() == "" ? 0 : $("#GPSCost").val()) + parseFloat($("#DownPayment").val() == "" ? 0 : $("#DownPayment").val()) + parseFloat($("#LifeInsurance").val() == "" ? 0 : $("#LifeInsurance").val()) + parseFloat($("#LifeTax").val() == "" ? 0 : $("#LifeTax").val()));
+        var totalAmt = $('#TotalAmt').val();
+        $("#RepaidAmt").val(parseFloat(totalAmt) + parseFloat($('#HypothicatedAmt').val()));
+    });
+    //validation for Down Payment
+    $("#DownPayment").keyup(function () {
+        if (parseInt($(this).val()) > parseInt($("#HypothicatedAmt").val())) {
+            $("#SpanValidateMsg").html("Down payment must be less than Finance Amount").show();
+        }
+        else
+            $("#SpanValidateMsg").hide();
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9 || charCode == 99 || charCode == 118)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9 || charCode == 99 || charCode == 118)
+        { return true; } else { return false; }
+    }
+</script>

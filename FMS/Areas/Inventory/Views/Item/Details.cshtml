@@ -1,0 +1,29 @@
+﻿@model FMS.Models.InventoryItemsMaster
+
+@{
+    ViewBag.Title = " Stock Item Details";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+
+<ol class="breadcrumb">
+    <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Item")">
+        Cancel</a> </li>
+</ol>
+
+<h3>
+    Stock Item Details</h3>
+<div class="col-sm-8">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>
+                Item
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ItemText)
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $('#loading').hide();
+</script>

@@ -1,0 +1,39 @@
+﻿@model FMS.Models.tbl_veh_service_schedules
+@{
+    DateTime value = DateTime.Now;
+    string idExt = value.ToString("ffff");
+ }
+
+<tr id="tr_add_@(idExt)">
+    <td>
+        <input type="hidden" name="rowId_@(idExt)" value="@(idExt)"/>
+        @Html.DropDownList("SS_NO_" + idExt, (IEnumerable<SelectListItem>)ViewBag.SSNO, "-Select-", new { @style = "width:100px;" })
+    </td>
+    <td>
+        @Html.TextBox("txt_odo_meter_" + idExt, Model.ODMeterReading, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);", @class = "clsodometer", @maxlength = 15 })
+    </td>
+    <td>
+        @Html.TextBox("txt_odo_meter_max_" + idExt, Model.ODMeterMax, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);", @class = "clsodometer", @maxlength = 15 })
+    </td>
+    <td>
+        @Html.TextBox("txt_ser_days_" + idExt, Model.ServiceDays, new { @style = "width:100px;", @onkeypress = "return isNumberKey(event);", @maxlength = 4 })
+    </td>
+   @* <td>
+        @Html.TextBox("txt_date_" + idExt, Model.DueDt, new { @style = "width:100px;", @onkeypress = "return numberValidate(event);", @class = "datePicker", @maxlength = 15 })
+    </td>*@
+    <td>
+        @Html.DropDownList("txt_station_" + idExt, (IEnumerable<SelectListItem>)ViewBag.ServiceStation,"--Select--", new { @style = "width:180px;", @maxlength = 50 })
+    </td>
+    <td style="text-align:center">
+        <a href="javascript:void(0)" onclick='return delete_row("@idExt");' style="color:Red;font-weight:bold;" >X</a>
+    </td>
+</tr>
+<script type="text/javascript">
+    // on PageLoad
+    $(".datePicker").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+</script>

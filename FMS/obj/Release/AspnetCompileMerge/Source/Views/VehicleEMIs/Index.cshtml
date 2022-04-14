@@ -1,0 +1,155 @@
+﻿@model IEnumerable<FMS.Models.tbl_veh_emis>
+@using FMS.Models;
+@{
+    ViewBag.Title = "Vehicle EMIs";
+}
+<h2>
+    Vehicle EMIs</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(61, User.Identity.Name).Add)
+            { <li class="lastactive">@Html.ActionLink("Add New EMI", "Create", "VehicleEMIs")</li> }
+        </ul>
+    </div>
+    <div style="float: right; margin-top: -5px;">
+        <table>
+            <tr>    
+                <td>
+                    Month
+                </td>
+                <td>
+                   @Html.DropDownList("MonthId", (IEnumerable<SelectListItem>)ViewBag.MonthId, "-Select-", new { @style = "width:100px;" , @class = "cls_filter" }) 
+                </td>
+                <td>
+                    Year
+                </td>
+                <td>
+                    @Html.DropDownList("YearId", (IEnumerable<SelectListItem>)ViewBag.YearId, "-Select-", new { @style = "width:100px;", @class = "cls_filter" }) 
+                </td>
+            </tr>
+        </table>
+        </div>
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_veh_emis">
+  
+</table>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loader.gif" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script type="text/javascript" src="../../Scripts/jquery.simplemodal-1.2.3.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_veh_emis').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "bDestroy": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/VehicleEMIs/GetVehiclesEMIsList?MonthId=" + MonthId + "&YearId=" + YearId,
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                $('td:eq(7)', nRow).html('@if ((bool)core.GetUserAccess(61, User.Identity.Name).Edit){ <a style="cursor:pointer;"  onclick="EditVehicleEMI(' + aData[0] + ')">Edit</a>  }' +
+                                          '@if ((bool)core.GetUserAccess(61, User.Identity.Name).Delete){ <text> | </text> <a href="#" onclick="DeleteVehicleEMI(' + aData[0] + ')">Delete</a> }');
+                $('td:eq(7)', nRow).attr('style', 'width:80px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Vehicle Reg Num" },
+            { "sTitle": "EMI No" },
+            { "sTitle": "Month Year" },
+            { "sTitle": "Amount" },
+            { "sTitle": "Fine Amount" },
+            { "sTitle": "Pay Mode" },
+            { "sTitle": "" }
+
+            ]
+        });
+    });
+    function EditVehicleEMI(id) {
+        $("#div_loading").fadeIn('slow');
+        $("#div_loading").show();
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 550,
+                 height: 400
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 EditNewVehicleEMI(id)
+             }
+         });
+    }
+    function EditNewVehicleEMI(id) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/VehicleEMIs/Edit?id=" + id,
+            dataType: "html",
+            success: function (data) {
+                $("#divSimpleModalDet").html(data);
+                $("#div_loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    function GetDataTable(MonthId,YearId) {
+        $('#tbl_veh_emis').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "bDestroy": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/VehicleEMIs/GetVehiclesEMIsList?MonthId=" + MonthId + "&YearId=" + YearId,
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                $('td:eq(16)', nRow).html('@if ((bool)core.GetUserAccess(61, User.Identity.Name).Edit){ <a style="cursor:pointer;"  onclick="EditVehicleEMI(' + aData[0] + ')">Edit</a>  }' +
+                                          '@if ((bool)core.GetUserAccess(61, User.Identity.Name).Delete){ <text> | </text> <a href="#" onclick="DeleteVehicleEMI(' + aData[0] + ')">Delete</a> }');
+                $('td:eq(16)', nRow).attr('style', 'width:80px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Vehicle Reg Num" },
+            { "sTitle": "EMI No" },
+            { "sTitle": "Month Year" },
+            { "sTitle": "Amount" },
+            { "sTitle": "Fine Amount" },
+            { "sTitle": "Pay Mode" },
+            { "sTitle": "" }
+
+            ]
+        });
+    }
+    $('.cls_filter').change(function () {
+        var MonthId = $('#MonthId').val();
+        var YearId = $('#YearId').val();
+        GetDataTable(MonthId, YearId);
+    });
+
+    function DeleteVehicleEMI(Id) {
+        if (confirm('Are you sure you want delete this EMI ?')) {
+            window.location.href = '@Url.Action("Delete", "VehicleEMIs", new { area = "" })?Id=' + Id;
+        } 
+    }
+</script>

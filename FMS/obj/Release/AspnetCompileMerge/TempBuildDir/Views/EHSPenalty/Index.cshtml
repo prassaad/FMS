@@ -1,0 +1,100 @@
+﻿@model IEnumerable<FMS.Models.tbl_ehs_details>
+@using FMS.Models
+@{
+    ViewBag.Title = "List of EHS Penalties";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>List of EHS Penalties</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                           @if ((bool)core.GetUserAccess(10, User.Identity.Name).Add)
+                           {  <li class="active">@Html.ActionLink("Create New", "Create")</li> }
+                        </ul>
+</div>
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_dataTable">
+</table>
+ 
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+   <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/loading-icon.gif"  alt="Loading..."/>
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_dataTable').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/EHSPenalty/GetEHSPenaltyList",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                $('td:eq(8)', nRow).html('@if ((bool)core.GetUserAccess(10, User.Identity.Name).Edit){ <a style="cursor:pointer;"  onclick="EditEHSPenaltyDet(' + aData[0] + ')">Edit</a>}' +
+                '@if ((bool)core.GetUserAccess(10, User.Identity.Name).Delete){ <text> | </text> <a href="/EHSPenalty/Delete/' + aData[0] + '">Delete</a> }');
+                $('td:eq(7)', nRow).attr('style', 'width:420px');
+                $('td:eq(8)', nRow).attr('style', 'width:80px');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Date" },
+            { "sTitle": "Client" },
+            { "sTitle": "Owner" },
+            { "sTitle": "Vehicle Reg#" },
+            { "sTitle": "EHS" },
+            { "sTitle": "EHS Amount" },
+            { "sTitle": "Remark" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+    function EditEHSPenaltyDet(ID) {
+        $("#div_loading").fadeIn('slow');
+        $("#div_loading").show();
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 610,
+                 height: 400
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 EditEHSPenalty(ID);
+             }
+
+         });
+    }
+    function EditEHSPenalty(ID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/EHSPenalty/EditEHSPenalty",
+            data: "Id=" + ID,
+            dataType: "html",
+            success: function (data) {
+                $("#divSimpleModalDet").html(data);
+                $("#div_loading").fadeOut('slow');
+                $("#div_loading").hide();
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+</script>

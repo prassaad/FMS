@@ -1,0 +1,46 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+ @if (Model != null)
+ {
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+        </th>
+        <th>
+            Pay Name
+        </th>
+        <th>
+            Formula
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" value="@item.Value1" onchange="DoPayMaster('@item.Value1')" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text2)
+            </td>
+        </tr>
+    }
+</table>
+ }
+ else
+ {
+     <h2 style="text-align:center;"> No Pay Fields were available to this Employee </h2>
+ }
+
+<script type="text/javascript">
+    function DoPayMaster(Value1) {
+        $('#div_loading').fadeIn('slow');
+        $.post('/PayMaster/Create?payFieldId=' + Value1, $('#frmAddPayMaster').serialize(), function (data) {
+            var EmpId = $('#EmpId').val();
+            AddPayFieldsToPayMaster(EmpId);
+            GetPayMasterListByEmp(EmpId);
+            $('#div_loading').fadeOut('slow');
+        }); 
+    }
+</script>

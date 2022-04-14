@@ -1,0 +1,57 @@
+﻿@model IEnumerable<FMS.Models.tbl_employees>
+@using FMS.Models
+@{
+    ViewBag.Title = "List of Employees";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>List of Employees</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+           @if ((bool)core.GetUserAccess(11, User.Identity.Name).Add)
+           {  <li class="active">@Html.ActionLink("Add New Employee", "Create")</li> }
+        </ul>
+    </div>
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_Employees">
+    
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_Employees').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/Employees/GetEmployees",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                $('td:eq(10)', nRow).html('@if ((bool)core.GetUserAccess(11, User.Identity.Name).Edit){ <a style="cursor:pointer;"  href="/Employees/Edit/' + aData[0] + '" >Edit</a>  }' +
+                    '@if ((bool)core.GetUserAccess(11, User.Identity.Name).View){ <text>|</text> <a href="/Employees/Details/' + aData[0] + '">View</a>  }' +
+                    '@if ((bool)core.GetUserAccess(11, User.Identity.Name).Delete){<text>|</text> <a href="/Employees/Delete/' + aData[0] + '">Delete</a> }');
+                 
+                $('td:eq(10)', nRow).attr('style', 'width:120px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "EmpNo" },
+            { "sTitle": "Name" },
+            { "sTitle": "Gender" },
+            { "sTitle": "DOJ" },
+            { "sTitle": "Dept." },
+            { "sTitle": "Desg." },
+            { "sTitle": "Mobile" },
+            { "sTitle": "Email" },
+            { "sTitle": "UserName" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+   
+</script>

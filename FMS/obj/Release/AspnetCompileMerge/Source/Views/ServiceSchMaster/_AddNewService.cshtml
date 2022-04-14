@@ -1,0 +1,161 @@
+﻿@model FMS.Models.tbl_service_sch_master
+@{
+    Session["ServiceList"] = null;
+}
+
+<div class="clsmodalheader">Add Serivce Schedules</div>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+   <div style="overflow: auto;z-index:9999;height:500px;" id="divNewService">
+   <span id="ErrorMsg" style="color: Red;font-size:12px;font-weight: bold;padding-top:10px;line-height:30px;"/>
+    <table cellspacing="0" cellpadding="0" class="table table-bordered table-striped" >
+           <tbody>
+               <tr>
+                   <th>
+                      Model
+                   </th> 
+                   <td>
+                      Service No. :
+                   </td> 
+                   <td>
+                       Min. KM :
+                   </td>
+                   <td>
+                       Max. KM :
+                   </td>
+                   <td>
+                       Day(s):
+                   </td>
+                   <td>
+                   </td>
+               </tr>
+               <tr>
+                    <td>
+                        @Html.DropDownList("VehModelId", (IEnumerable<SelectListItem>)ViewBag.VehModelId, "-Select-", new { @style = "width:80px;" })
+                    </td>
+                    <td>
+                        @Html.DropDownList("SSNO", (IEnumerable<SelectListItem>)ViewBag.SSNO, "-Select-", new { @style = "width:80px;" })
+                    </td>
+                   <td>
+                       <input name="txtMinValue" type="text" value="0" id="txtMinValue" style="width: 60px;"
+                           maxlength="15" onkeypress="return numberValidatedot(event);" />
+                   </td>
+                   <td>
+                       <input name="txtMaxValue" type="text" id="txtMaxValue" style="width: 60px;" maxlength="15"
+                           onkeypress="return numberValidatedot(event);" />
+                   </td>
+                   <td>
+                       <input name="txtDays" type="text" id="txtDays" style="width: 120px;" maxlength="5"
+                           class="validate" onkeypress="return numberValidatedot(event);" />
+                   </td>
+                   <td>
+                       <input type="button" class="btn btn-primary btn-sm" name="btnAddService" value="Add"
+                           onclick="" id="btnAddService" />
+                   </td>
+               </tr>
+                
+           </tbody>
+       </table>
+       <br />
+       <div id="divServiceList" style="margin:5px;">
+       </div>
+   </div>  
+}
+<script type="text/javascript" language="javascript">
+    var SelectMaxVal = 0;
+    $("#btnAddService").click(function () {
+        var VehModelId = parseInt($('#VehModelId').val() == "" ? 0 : $('#VehModelId').val());
+        var SSNo = parseInt($("#SSNO").val() == "" ? 0 : $('#SSNO').val());
+        var MinVal = parseInt($("#txtMinValue").val() == "" ? 0 : $('#txtMinValue').val());
+        var MaxVal = parseInt($("#txtMaxValue").val() == "" ? 0 : $('#txtMaxValue').val());
+        var Days = parseInt($("#txtDays").val() == "" ? 0 : $('#txtDays').val());
+        if (VehModelId == 0) {
+            $("#ErrorMsg").text("Please select vehicle model.");
+            $("#VehModelId").focus();
+            $("#VehModelId").val('');
+            return false;
+        }  
+        if (SSNo == 0) {
+            $("#ErrorMsg").text("Please select service number.");
+            $("#SSNO").focus();
+            $("#SSNO").val('');
+            return false;
+        }
+        if (MinVal == 0) {
+            $("#ErrorMsg").text("Please enter min. kilo meters.");
+            $("#txtMinValue").focus();
+            $("#txtMinValue").val('');
+            return false;
+        }
+        else if (MaxVal == 0) {
+            $("#ErrorMsg").text("Please enter max. kilo meters.");
+            $("#txtMaxValue").focus();
+            $("#txtMaxValue").val('');
+            return false;
+        }
+        else if (MinVal > MaxVal) {
+            $("#ErrorMsg").text("min. kilo meters should not be greater than max. kilo meters.");
+            $("#txtMaxValue").focus();
+            $("#txtMaxValue").val('');
+            return false;
+        }
+        else if (Days == 0) {
+            $("#ErrorMsg").text("Please enter days.");
+            $("#txtDays").focus();
+            $("#txtDays").val('');
+            return false;
+        }
+        else {
+            $("#ErrorMsg").empty();
+            SelectMaxVal = $('#txtMaxValue').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddNewService", "ServiceSchMaster")',
+                data: "MinVal=" + $("#txtMinValue").val() + "&MaxVal=" + $('#txtMaxValue').val() + "&Days=" + Days + "&SSNo=" + SSNo + "&ModelId=" + VehModelId,
+                dataType: "json",
+                success: function (result) {
+                    if (result.success) {
+                        $('#divServiceList').html('');
+                        $('#divServiceList').html('<img src="../../Content/images/layout/loader.gif" alt="Loading..." />');
+                        $("#divServiceList").load("/ServiceSchMaster/GetServiceSchList");
+                        var value = 0;
+                        if (SelectMaxVal.indexOf('.') === -1) {
+                            value = parseInt(SelectMaxVal) + 1;
+                        }
+                        else {
+                            var first = SelectMaxVal.split('.')[0]
+                            var second = parseInt(SelectMaxVal.split('.')[1]) + 1;
+                            value = first + "." + second;
+                        }
+                        $('#SSNO').focus();
+                        $('#SSNO').val('');
+                        $("#txtMinValue").val(value);
+                        $("#txtMaxValue").val('');
+                        $("#txtDays").val('');
+                    }
+                    else {
+                        $("#ErrorMsg").show();
+                        $("#ErrorMsg").html(result.msg);
+                        $("#div_loading").hide();
+                        $("#div_loading").fadeOut('slow');
+                    }
+
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

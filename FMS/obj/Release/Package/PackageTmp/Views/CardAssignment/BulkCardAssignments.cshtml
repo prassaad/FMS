@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "Bulk Card Assignments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Session["CardsList"] = null;
+}
+<h2>
+    Bulk Card Assignments
+</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a class="button_bg" href="@Url.Action("Index", "CardAssignment")">
+                Cancel </a></li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("SaveBulkCardAssignments", "CardAssignment", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmCardAssignment" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Card Assignments </legend>
+        <table class="table-striped table-condensed dTableR dataTable" style="width: 75% ! important;">
+            <tr>
+                <td colspan="4">
+                    <span id="errorMessage" style="color: Red; font-weight: bold;"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Client <span style="color: red;">* </span>
+                </td>
+                <td>
+                    @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.ClientId, "-Select Client-", new { @style = "width:220px;", @class = "clsPackage" })
+                    <span id="errClientId" style="display: none; color: Red">Please Select Client</span>
+                </td>
+                <td>
+                    Project <span style="color: red;">* </span>
+                </td>
+                <td>
+                    <select id="ProjectId" name="ProjectId" class="clsPackage" style="width: 220px;">
+                        <option value="0">-Select-</option>
+                    </select>
+                    <span id="errProjectId" style="display: none; color: Red">Please Select Project</span>
+                </td>
+                <td>
+                    <input type="button" id="btnGetCardDetails" value="Get Card Details" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <div id="divCardAssignmnetsList">
+    </div>
+}
+<script type="text/javascript">
+
+    $('#errorMessage').empty();
+
+    $(".clsMonthDate").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    $('#btnGetCardDetails').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        $("#errClientId").hide(); $("#errProjectId").hide();
+
+        if (clientId != '') {
+
+            if (projectId != '') {
+                GetCardAssginment(clientId, projectId);
+            }
+            else {
+                //  alert("Please Select Project ")
+                $("#errProjectId").show();
+            }
+
+        }
+        else {
+            //  alert("Please Select Client")
+            $("#errClientId").show();
+        }
+
+    });
+
+    function GetCardAssginment(ClientId, ProjectId) {
+        $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/CardAssignment/GetCardsList?ClientId=" + ClientId + "&ProjectId=" + ProjectId,
+        dataType: "html",
+        success: function (result) {
+            $('#divCardAssignmnetsList').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+    $('#ClientId').change(function () {
+        var clientId = $(this).val();
+        GetProjectsByClient(clientId);
+    });
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                    $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    $('#CardNo').change(function () {
+        $('#errorMessage').empty();
+        var thisValue = $(this).val();
+        $.get('/CardAssignment/VerifyCardNumber?cardNumber=' + thisValue, function (data) {
+            if (data.IsExist == true) {
+                $('#CardNo').val('');
+                $('#CardNo').focus();
+                $('#errorMessage').html('Card number has already exists.');
+            }
+        });
+    });
+    
+</script>

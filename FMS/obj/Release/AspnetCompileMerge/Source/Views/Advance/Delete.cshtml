@@ -1,0 +1,26 @@
+﻿@model FMS.Models.tbl_advances
+
+@{
+    ViewBag.Title = "Delete Advance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Advance</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Advances", "Index")</li>
+        </ul>
+    </div>
+</div>
+<p style="color:Red;">
+    @(ViewBag.Message)
+</p>
+<h3>Are you sure you want to delete this advance ?</h3>
+ 
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}

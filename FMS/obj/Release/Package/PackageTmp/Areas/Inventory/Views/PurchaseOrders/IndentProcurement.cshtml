@@ -1,0 +1,290 @@
+﻿@model FMS.Models.InventoryModel.PurchaseOrder
+@{
+    ViewBag.Title = "Procurement";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    List<FMS.Models.tbl_PurchaseOrderItemDetails> POrderDetList;
+    System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+}
+<h2>
+    <i class="fa fa-pencil-square teal"></i>Purchase Order Create with Source <b> <a href="#" id="btnIndentRef" onclick="GetIndentDetails('@Model._PurchaseOrder.Source ')"style="text-decoration:underline;color:Red;">@Model._PurchaseOrder.Source </a></b>
+</h2>
+<form id="PurchaseOrderForm" action="@Url.Action("PurchaseOrderCreate", "PurchaseOrders", new { area = "Inventory" })" method="post" enctype="multipart/form-data">
+<div class="bread_title" style="width: 100%">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "PurchaseOrders")">
+                Cancel</a> </li>
+            <li>
+                <input type="button" id="btnPurchaseOrderEntry" class="btn btn-primary btn-xs" value="Save Purchase Order"
+                    style="margin-top: -5px;" /></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="clsmark" style="color: Red; width: 320px;margin:10px;">
+            &nbsp;(*) marked fields are mandatory
+        </p>
+        <table cellpadding="5" class="table table-striped table-bordered">
+            <tr>
+                <td>
+                    Supplier:<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("SupplierId", null, "--Select Supplier--", new { @style = "width:180px;" })
+                    <input type="hidden" id="hdnIsFromIndent" name="hdnIsFromIndent" value="1" />
+                    <input type="hidden" id="hdnSource" name="hdnSource" value="@Model._PurchaseOrder.Source" />
+                </td>
+                <td>
+                    Supplier Ref.No.<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("RefNo", "", new { @style = "width:180px;", @maxLength = 30 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Order Date:<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("OrderDt", String.Format(customCulture, "{0:dd/MM/yyyy}", Model._PurchaseOrder.OrderDt), new { @style = "width:150px;", @class = "BoxBackground datetimepicker" })
+                </td>
+                <td>
+                    Excepted Date:<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("ExpectedDt", String.Format(customCulture, "{0:dd/MM/yyyy}", Model._PurchaseOrder.ExpectedDt), new { @style = "width:150px;", @class = "BoxBackground datetimepicker" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    UnTaxed Amount:<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("UnTaxed", Model._PurchaseOrder.UnTaxed, new { @style = "width:180px;", @onkeypress = "return numberValidatedot(event);", @maxLength = 8 })
+                </td>
+                <td>
+                    Terms & Conditions:
+                </td>
+                <td colspan="3">
+                    @Html.TextArea("TermsAndConditions", Model._PurchaseOrder.Terms_Conditions, new { @class = "validate", @style = "resize:none;", @rows = "3", @cols = "30" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="col-md-12">
+                        &nbsp;&nbsp;<span class="label label-success">Note :</span> Please select a <code>supplier
+                        </code>before selected items to be order.
+                        <h3>
+                            Add Purchase Order Items <a data-toggle="modal" href="#" id="btnItemAdd" onclick="AddPurchaseOrderItems()"
+                                style="vertical-align: middle;" class="btn btn-primary">
+                                <img src="@Url.Content("~/Content/images/plus.png")" alt="Add" style="margin-top:10px;height:15px;" /></a></h3>
+                    </div>
+                    <br />
+                    @{ ViewData["IsEdit"] = "0"; }
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="col-md-12">
+    @{ POrderDetList = Model._PurchaseOrderDettails; }
+    @if (POrderDetList != null)
+    {
+        <div id="POrdersDetList">
+            @{ Html.RenderPartial("_OrderItemsListAdd", POrderDetList.OrderBy(a => a.ScheduleDt)); }
+        </div>
+    }
+</div>
+</form>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+<script type="text/javascript">
+    $('#loading').hide();
+    $(function () {
+        var myDate = new Date();
+        var dd = myDate.getDate();
+        var mm = myDate.getMonth() + 1; //January is 0! 
+        var yyyy = myDate.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm }
+        var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+        $("#OrderDt").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            maxDate: TodayDate
+        }).on('changeDate', function (ev) {
+            var stdate = document.getElementById("OrderDt");
+            var endate = document.getElementById("ExpectedDt");
+            if (checkEnteredDates(stdate.value, endate.value) == false) { //Validate expected date to find out if it is prior to order date
+                $(this).val('');
+            }
+        });
+        $("#ExpectedDt").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            minDate: TodayDate
+        }).on('changeDate', function (ev) {
+            var stdate = document.getElementById("OrderDt");
+            var endate = document.getElementById("ExpectedDt");
+            if (checkEnteredDates(stdate.value, endate.value) == false) { //Validate expected date to find out if it is prior to order date
+                $(this).val('');
+            }
+        });
+    });
+    function AddPurchaseOrderItems() {
+        if (!ValidateMsg()) {
+            return false;
+        }
+        else {
+            $("#div_loading").fadeIn('slow');
+            $('#divSimpleModal').modal
+            ({
+                containerCss: {
+                    width: 610,
+                    height: 550
+                },
+                close: false,
+                onShow: function (dialog) {
+                    dialog.data.find('.no').click(function () {
+                        $.modal.close();
+                    });
+                    $("#btnItemAdd").attr("href", "#");
+                    $('#div_loading').show();
+                    var SupplierId = $('#SupplierId').val();
+                    AddItems(SupplierId, 0);
+                }
+            });
+        }
+    }
+    function AddItems(SupplierId, IsEdit) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("AddPurchaseOrderItem", "PurchaseOrders", new { area = "Inventory" })?SupplierId=' + SupplierId + "&IsEdit=" + IsEdit,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+    }
+    $('#btnPurchaseOrderEntry').click(function () {
+        if ($.trim($('#SupplierId').val()) == "" || $.trim($('#SupplierId').val()) == "--Select Supplier--") {
+            alert("Please select supplier to continue process.");
+            $('#SupplierId').focus();
+            return false;
+        }
+        if ($.trim($('#RefNo').val()) == "") {
+            alert("Please enter Ref. No# to continue process.");
+            $('#RefNo').focus();
+            return false;
+        }
+        if ($.trim($('#POrdersDetList').html()) == "") {
+            alert("Please add order items below to continue the process");
+            $('#RefNo').focus();
+            return;
+        }
+        $('#loading').show();
+        // save stock here '
+        $.post('@Url.Action("PurchaseOrderCreate", "PurchaseOrders", new { area = "Inventory" })', $('#PurchaseOrderForm').serialize(), function (data) {
+            if (data.success) {
+                $('#loading').hide();
+                alert(data.msg);
+                window.location.href = '@Url.Action("PurchaseOrderEdit","PurchaseOrders",new{area="Inventory"})?Id=' + data.POId;
+            }
+            else {
+                $('#loading').hide();
+                alert(data.msg);
+            }
+        });
+    });
+    function ValidateMsg() {
+        var stdate = document.getElementById("OrderDt");
+        var endate = document.getElementById("ExpectedDt");
+        if ($.trim($('#SupplierId').val()) == "" || $.trim($('#SupplierId').val()) == "--Select Supplier--") {
+            alert("Please select supplier to continue process.");
+            $("#btnItemAdd").attr("href", "#");
+            $('#SupplierId').focus();
+            return false;
+        }
+        if ($.trim($('#RefNo').val()) == "") {
+            alert("Please enter Ref. No# to continue process.");
+            $("#btnItemAdd").attr("href", "#");
+            $('#RefNo').focus();
+            return false;
+        }
+        if ($.trim($('#OrderDt').val()) == "") {
+            alert("Please enter Order Date to continue process.");
+            $("#btnItemAdd").attr("href", "#");
+            $('#OrderDt').focus();
+            return false;
+        }
+        if ($.trim($('#ExpectedDt').val()) == "") {
+            alert("Please enter expected date to continue process.");
+            $("#btnItemAdd").attr("href", "#");
+            $('#ExpectedDt').focus();
+            return false;
+        }
+        //Validate expected date to find out if it is prior to order date
+        if (checkEnteredDates(stdate.value, endate.value) == false) {
+            $("#btnItemAdd").attr("href", "#");
+            return false;
+        }
+        if ($.trim($('#UnTaxed').val()) == "") {
+            alert("Please enter UnTaxed Amount to continue process.");
+            $("#btnItemAdd").attr("href", "#");
+            $('#UnTaxed').focus();
+            return false;
+        }
+        return true;
+    }
+    //--------------------------------------------------------------------------
+    //This function verifies if the order date is prior to expected date.
+    //--------------------------------------------------------------------------
+    function checkEnteredDates(stdateval, endateval) {
+        //seperate the year,month and day for the first date
+        var stryear1 = stdateval.substring(6);
+        var strday1 = stdateval.substring(0, 2);
+        var strmth1 = stdateval.substring(5, 3);
+        var date1 = new Date(stryear1, strmth1, strday1);
+
+        //seperate the year,month and day for the second date
+        var stryear2 = endateval.substring(6);
+        var strday2 = endateval.substring(0, 2);
+        var strmth2 = endateval.substring(5, 3);
+        var date2 = new Date(stryear2, strmth2, strday2);
+
+        var datediffval = (date2 - date1) / 864e5;
+
+        if (datediffval < 0) {
+            alert("Oredr date must be prior to expected date");
+            return false;
+        }
+        return true;
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+
+    function GetIndentDetails(IndentRefNo) {
+        window.location.href = '@Url.Action("GetIndentDetailsByIndentRefNo", "PurchaseOrders", new { area = "Inventory" })?IndentRefNo=' + IndentRefNo;
+    }    
+</script>

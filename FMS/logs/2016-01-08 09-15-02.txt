@@ -1,0 +1,1 @@
+[2016-01-08 09:15:02.3011] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Controllers.CardAssignmentController.CloseCardWithComments(tbl_card_assignments cardDetails, FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Controllers\CardAssignmentController.cs:line 402]

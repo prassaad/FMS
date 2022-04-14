@@ -1,0 +1,435 @@
+/////////////////////////  Admin results.aspx.vb
+
+
+
+
+Protected Sub gv_results_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gv_results.RowCommand
+        Try
+            Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+            If e.CommandName = "ClickRe" Then
+                Dim id As Integer = 0
+                id = CInt(CType(gv_results.Rows(index).FindControl("lblid"), Label).Text)
+                If id > 0 Then
+                    'Response.Redirect("exampaper.aspx?RId=" & id)
+                    ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Open", "window.open('exampaper.aspx?RId=" & id & "');", True)
+                End If
+            End If
+            If e.CommandName = "Chart" Then
+                ''===================== Chart =================
+                'Dim xmlData As String = String.Empty
+                'Dim totalmarksscored As Integer = 0
+                'Dim totalmarks As Integer = 0
+                ''Dim skipped As Integer = 0
+                'Dim TotalQuestions As Integer = 0
+
+                'With gv_results.Rows(index)
+                '    totalmarksscored = Val(CType(.FindControl("lbltotalmarksscored"), Label).Text)
+                '    totalmarks = Val(CType(.FindControl("lbltotalmarks"), Label).Text)
+                '    'skipped = Val(CType(.FindControl("lblSkipped"), Label).Text)
+                '    TotalQuestions = Val(CType(.FindControl("lblTotQuestions"), Label).Text)
+                'End With
+
+                'xmlData = "<chart caption='Student Performance' xAxisName='Test Details' yAxisName='Marks' showValues='0' decimals='0' formatNumberScale='0'>"
+                'xmlData = xmlData & "<set label='" & "Toal Questions" & "' value='" & TotalQuestions & "'  />"
+                'xmlData = xmlData & "<set label='" & "Correct" & "' value='" & totalmarksscored & "'  />"
+                'xmlData = xmlData & "<set label='" & "Incorrect" & "' value='" & totalmarks & "'  />"
+                ''xmlData = xmlData & "<set label='" & "Not yet Attempted" & "' value='" & skipped & "'  />"
+                'xmlData = xmlData & "<set label='" & "Percentage" & "' value='" & (totalmarksscored / TotalQuestions) * 100 & "'  />"
+                'xmlData = xmlData & "</chart>"
+                'LiteralPiChart.Text = FusionCharts.RenderChart("Charts/Column3D.swf", "", xmlData, "percentage", "450", "300", False, False)
+                ''=============================================
+            End If
+            If e.CommandName = "Result" Then
+                Dim id As Integer = 0
+                Dim UserName As String = ""
+                Dim Location As String = ""
+                Dim Image As String = ""
+                Dim Examid As String = ""
+                Dim classid As String = ""
+                id = CInt(CType(gv_results.Rows(index).FindControl("lblStudId"), Label).Text)
+                UserName = CStr(CType(gv_results.Rows(index).FindControl("lblname"), Label).Text)
+                Location = CStr(CType(gv_results.Rows(index).FindControl("lbladdress"), Label).Text)
+                Image = CStr(CType(gv_results.Rows(index).FindControl("lblimage"), Label).Text)
+                Examid = CStr(CType(gv_results.Rows(index).FindControl("lblExamid"), Label).Text)
+                classid = CStr(CType(gv_results.Rows(index).FindControl("lblclassid"), Label).Text)
+                If id > 0 Then
+                    'Response.Redirect("exampaper.aspx?RId=" & id)
+                    'ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Open", "window.open('exampaper.aspx?RId=" & id & "');", True)
+                    Session("userid") = id
+                    Session("username") = UserName
+                    Session("location") = Location
+                    Session("PhotoUrl") = "StudentImages/" + Image
+                    Session("examid") = Examid
+                    Session("classid") = classid
+                    Response.Redirect("home.aspx")
+                End If
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+///////////////////////////////////////////////  
+
+examwisecomparisionadmin.aspx.vb
+
+
+Protected Sub gv_Students_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gv_Students.RowCommand
+        Try
+            Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+            Dim ds As DataSet = Nothing
+            If e.CommandName = "Report" Then
+                Dim id As Integer = 0
+                id = CInt(CType(gv_Students.Rows(index).FindControl("lblStudentId"), Label).Text)
+                If id > 0 Then
+                    'Response.Redirect("exampaper.aspx?RId=" & id)
+                    ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Open", "window.open('ExamComparisonPopup.aspx?sid=" & id & "','Report','width=600,top=50','true');", True)
+                End If
+
+            Else
+
+                If e.CommandName = "Result" Then
+                    Dim id As Integer = 0
+                    Dim UserName As String = ""
+                    Dim Location As String = ""
+                    Dim Image As String = ""
+                    'Dim Examid As String = ""
+                    Dim classid As String = ""
+                    id = CInt(CType(gv_Students.Rows(index).FindControl("lblStudentId"), Label).Text)
+                    UserName = CStr(CType(gv_Students.Rows(index).FindControl("lblname"), Label).Text)
+                    Location = CStr(CType(gv_Students.Rows(index).FindControl("lbladdress"), Label).Text)
+                    Image = CStr(CType(gv_Students.Rows(index).FindControl("lblimage"), Label).Text)
+                    'Examid = CStr(CType(gv_Students.Rows(index).FindControl("lblExamid"), Label).Text)
+                    classid = CStr(CType(gv_Students.Rows(index).FindControl("lblclassid"), Label).Text)
+                    If id > 0 Then
+                        Session("userid") = id
+                        Session("username") = UserName
+                        Session("location") = Location
+                        Session("PhotoUrl") = "StudentImages/" + Image
+                        'Session("examid") = Examid
+                        Session("classid") = classid
+                        Response.Redirect("home.aspx")
+                    End If
+
+                    '    Dim id1 As Integer = 0
+                    '    id1 = CInt(CType(gv_Students.Rows(index).FindControl("lblStudentId"), Label).Text)
+                    '    If id1 > 0 Then
+
+
+
+                    '        Try
+
+                    '            Dim db As Database
+                    '            Dim str As String = "select scored,wrong,skipped,totalquestions,ExamName from tbl_StudentMarks s join tbl_ExamScheduleDetails e on s.examid = e.examid where  studentid=@id1  "
+
+                    '            db = DatabaseFactory.CreateDatabase("QBConnStr")
+                    '            Dim command As DbCommand = db.GetSqlStringCommand(str)
+                    '            db.AddInParameter(command, "@id1", DbType.String, id1)
+                    '            ds = db.ExecuteDataSet(command)
+
+                    '        Catch ex As Exception
+
+                    '        End Try
+
+                    '    End If
+                    '    Dim arrData(6, ds.Tables(0).Rows.Count + 1) As String
+                    '    'Store Name of Products
+                    '    ' arrData(0, 1) = "Total Questions"
+                    '    arrData(1, 1) = "Correct"
+                    '    arrData(2, 1) = "InCorrect"
+                    '    arrData(3, 1) = "Not Yet Attempted"
+                    '    arrData(4, 1) = "Percentage"
+                    '    Dim arrDataSet(ds.Tables(0).Rows.Count) As String
+                    '    Dim intLoopIndex As Integer
+                    '    If ds.Tables(0).Rows.Count > 0 Then
+
+                    '        For intLoopIndex = 0 To ds.Tables(0).Rows.Count - 1
+                    '            arrDataSet(intLoopIndex) = "<dataset seriesName='" & ds.Tables(0).Rows(intLoopIndex)(4).ToString() & "' color='" & Guid.NewGuid().ToString().Substring(0, 6) & "'>"
+                    '            arrData(1, intLoopIndex + 2) = ds.Tables(0).Rows(intLoopIndex)(0).ToString()
+                    '            arrData(2, intLoopIndex + 2) = ds.Tables(0).Rows(intLoopIndex)(1).ToString()
+                    '            arrData(3, intLoopIndex + 2) = ds.Tables(0).Rows(intLoopIndex)(2).ToString()
+                    '            arrData(4, intLoopIndex + 2) = (Convert.ToInt32(ds.Tables(0).Rows(intLoopIndex)(0).ToString()) / Convert.ToInt32(ds.Tables(0).Rows(intLoopIndex)(3).ToString())) * 100
+
+                    '        Next intLoopIndex
+                    '    End If
+
+
+                    '    'Now, we need to convert this data into multi-series XML. 
+                    '    'We convert using string concatenation.
+                    '    'strXML - Stores the entire XML
+                    '    'strCategories - Stores XML for the <categories> and child <category> elements
+                    '    'strDataCurr - Stores XML for current year's sales
+                    '    'strDataPrev - Stores XML for previous year's sales
+                    '    Dim strXML As String, strCategories As String, i As Integer
+
+                    '    'Initialize <graph> element
+                    '    strXML = "<graph caption='Exam Wise Performance' numberPrefix='' decimalPrecision='0' >"
+
+                    '    'Initialize <categories> element - necessary to generate a multi-series chart
+                    '    strCategories = "<categories>"
+
+                    '    'Initiate <dataset> elements
+
+                    '    Dim arr As Integer
+                    '    'Iterate through the data	
+                    '    For i = 0 To UBound(arrData) - 1
+                    '        'Append <category name='...' /> to strCategories
+                    '        strCategories = strCategories & "<category name='" & arrData(i, 1) & "' />"
+                    '        'Add <set value='...' /> to both the datasets
+
+                    '        For arr = 0 To ds.Tables(0).Rows.Count - 1
+                    '            arrDataSet(arr) = arrDataSet(arr).ToString() & "<set value='" & arrData(i, arr + 2) & "' />"
+                    '        Next
+                    '    Next
+
+                    '    'Close <categories> element
+                    '    strCategories = strCategories & "</categories>"
+
+                    '    'Close <dataset> elements
+                    '    For arr = 0 To ds.Tables(0).Rows.Count - 1
+                    '        arrDataSet(arr) = arrDataSet(arr).ToString() & "</dataset>"
+                    '    Next
+
+                    '    'Assemble the entire XML now
+                    '    strXML = strXML
+
+                    '    For arr = 0 To ds.Tables(0).Rows.Count - 1
+                    '        strXML = strXML & arrDataSet(arr).ToString()
+                    '    Next
+                    '    strXML = strXML & strCategories & "</graph>"
+                    '    'Create the chart - MS Column 3D Chart with data contained in strXML
+                    '    LiteralPiChart.Text = FusionCharts.RenderChart("Charts/MSLine.swf", "", strXML, "productSales", "600", "300", False, False)
+
+
+                End If
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+/////////////////////////////////////////////////////
+
+classwisereports.aspx.vb
+
+///////////////////////////////////
+
+Private Sub GetData(ByVal classid As Integer)
+        Try
+            Dim ds As DataSet = Nothing
+            'ds = cls_StudentMarksDB.Get_classwiseRankbyExamid(Examid)
+            ds = cls_StudentMarksDB.Get_ClasswiseReport(ddlClassname.SelectedValue)
+            If ds.Tables(0).Rows.Count > 0 Then
+                gv_results.DataSource = ds
+                gv_results.DataBind()
+                set_serialno()
+                btnExport.Visible = True
+            Else
+                gv_results.DataSource = Nothing
+                gv_results.DataBind()
+                btnExport.Visible = False
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+ 
+////////////////////////////////////  classname event
+
+Protected Sub ddlClassname_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlClassname.SelectedIndexChanged
+        If ddlClassname.SelectedIndex <> 0 Then
+            'get_Examnames(Session("orgid"), ddlBoardname.SelectedValue, ddlClassname.SelectedValue)
+            GetData(ddlClassname.SelectedValue)
+        Else
+            ddlExamname.Items.Clear()
+            ddlExamname.Items.Insert(0, "-Choose-")
+            ddlExamname.SelectedIndex = 0
+            gv_results.DataSource = Nothing
+            gv_results.DataBind()
+            btnExport.Visible = False
+        End If
+    End Sub
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+questionreport.apsx.vb
+
+/////////////////////////////////////// get_exams
+
+Private Sub get_Exams(ByVal OrgId As Integer, ByVal Boardid As Integer, ByVal classid As Integer, ByVal branchgroupid As Integer, ByVal Yearsemid As Integer)
+        Try
+            Dim ds As DataSet = Nothing
+            ds = Cls_ScheduleDB.Get_Examnames(OrgId, Boardid, classid, branchgroupid, Yearsemid)
+            ddlExamname.Items.Clear()
+            If ds.Tables(0).Rows.Count > 0 Then
+                ddlExamname.DataSource = ds.Tables(0)
+                ddlExamname.DataTextField = "examname"
+                ddlExamname.DataValueField = "examid"
+                ddlExamname.DataBind()
+            End If
+            ddlExamname.Items.Insert(0, "-Choose-")
+            ddlExamname.SelectedIndex = 0
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+/////////////////////////////////////////// yearsem event
+
+Protected Sub ddlYearsem_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        If ddlOrgname.SelectedIndex <> 0 And ddlBoardname.SelectedIndex <> 0 And ddlClassName.SelectedIndex <> 0 And ddlBranchgroup.SelectedIndex <> 0 And ddlYearsem.SelectedIndex <> 0 Then
+            get_Exams(Session("orgid"), ddlBoardname.SelectedValue, ddlClassName.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+        End If
+    End Sub
+
+////////////////////////////////////////// diffculty event
+
+Protected Sub ddlDiffculty_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlDiffculty.SelectedIndexChanged
+        If ddlExamname.SelectedIndex <> 0 And ddlDiffculty.SelectedIndex <> 0 Then
+            Get_Data(ddlExamname.SelectedValue, ddlDiffculty.SelectedValue)
+        Else
+            gv_Question.DataSource = Nothing
+            gv_Question.DataBind()
+        End If
+    End Sub
+
+
+
+///////////////////////////////////////////////////// getdata method
+
+
+Private Sub Get_Data(ByVal ExamId As Integer, ByVal DiffLevel As String)
+        Try
+            Dim ds As DataSet = Nothing
+            ds = cls_StudentMarksDB.Get_QuestionCount(ExamId, DiffLevel)
+            If ds.Tables(0).Rows.Count > 0 Then
+                gv_Question.DataSource = ds.Tables(0)
+                gv_Question.DataBind()
+                Get_SerialNo()
+            Else
+                gv_Question.DataSource = Nothing
+                gv_Question.DataBind()
+            End If
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
+////////////////////////////////////////////////// subjectwisereports.aspx.vb
+
+ Private Sub Get_Examnames(ByVal Boardid As Integer, ByVal Classid As Integer, ByVal Branchgroupid As Integer, ByVal Yearsemid As Integer)
+        Try
+            Dim ds As DataSet = Nothing
+            ds = Cls_ScheduleDB.Get_Examnames(Session("orgid"), Boardid, Classid, Branchgroupid, Yearsemid)
+            If ds.Tables(0).Rows.Count > 0 Then
+                ddlQpName.DataSource = ds
+                ddlQpName.DataTextField = "Examname"
+                ddlQpName.DataValueField = "examid"
+                ddlQpName.DataBind()
+            End If
+            ddlQpName.Items.Insert(0, "-Choose-")
+            ddlQpName.SelectedIndex = 0
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+////////////////////////////////////////////////// get report
+
+Private Sub Get_Report(ByVal ExamId As Integer, ByVal SubjectId As Integer)
+        Try
+            Dim ds As DataSet = Nothing
+            ds = Cls_ScheduleDB.Get_SubjectwiseReport(ExamId, SubjectId)
+            If ds.Tables(0).Rows.Count > 0 Then
+                gv_Report.DataSource = ds
+                gv_Report.DataBind()
+                btnExport.Visible = True
+            Else
+                gv_Report.DataSource = Nothing
+                gv_Report.DataBind()
+                btnExport.Visible = False
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+////////////////////////////////////////////   yearsem event
+
+Protected Sub ddlYearsem_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        If ddlBoardname.SelectedIndex <> 0 And ddlClassname.SelectedIndex <> 0 And ddlBranchgroup.SelectedIndex <> 0 And ddlYearsem.SelectedIndex <> 0 Then
+            Get_Examnames(ddlBoardname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+
+        End If
+    End Sub
+
+/////////////////////////////////  qpname event
+
+Protected Sub ddlQpName_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        If ddlQpName.SelectedIndex <> 0 Then
+            get_subjects(Session("orgid"), ddlClassname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+
+        Else
+            gv_Report.DataSource = Nothing
+            gv_Report.DataBind()
+            btnExport.Visible = False
+        End If
+    End Sub
+
+/////////////////////////////////////////  subject event
+
+ Protected Sub ddlSubjectname_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlSubjectname.SelectedIndexChanged
+        If ddlSubjectname.SelectedIndex <> 0 Then
+            Get_Report(ddlQpName.SelectedValue, ddlSubjectname.SelectedValue)
+        Else
+            gv_Report.DataSource = Nothing
+            gv_Report.DataBind()
+            btnExport.Visible = False
+        End If
+    End Sub
+
+
+///////////////////////////////////////// questionpaperpreview.aspx.vb
+
+//////////////////////////////////////// get qpnames
+
+Private Sub Get_Qpnames(ByVal Boardid As Integer, ByVal Classid As Integer, ByVal Branchgroupid As Integer, ByVal Yearsemid As Integer)
+        Try
+            Dim ds As DataSet = Nothing
+            ds = Cls_QuestionPaperDB.Get_Qp(Session("orgid"), ddlBoardname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+            If ds.Tables(0).Rows.Count > 0 Then
+                ddlQpName.DataSource = ds
+                ddlQpName.DataTextField = "Qpname"
+                ddlQpName.DataValueField = "qpid"
+                ddlQpName.DataBind()
+            End If
+            ddlQpName.Items.Insert(0, "-Choose-")
+            ddlQpName.SelectedIndex = 0
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+//////////////////////////// branchgroup event
+
+ Protected Sub ddlBranchgroup_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        If ddlBoardname.SelectedIndex <> 0 And ddlClassname.SelectedIndex <> 0 And ddlBranchgroup.SelectedIndex <> 0 Then
+            get_YearSems(Session("orgid"), ddlBoardname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue)
+        End If
+    End Sub
+
+//////////////////////////////////////////////////// yearsem event
+
+    Protected Sub ddlYearsem_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        If ddlBoardname.SelectedIndex <> 0 And ddlClassname.SelectedIndex <> 0 And ddlBranchgroup.SelectedIndex <> 0 And ddlYearsem.SelectedIndex <> 0 Then
+            ddlQpName.Items.Clear()
+            Get_Qpnames(ddlBoardname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+            'get_subjects(Session("orgid"), ddlBoardname.SelectedValue, ddlClassname.SelectedValue, ddlBranchgroup.SelectedValue, ddlYearsem.SelectedValue)
+        End If
+    End Sub
+

@@ -1,0 +1,23 @@
+﻿<div style="padding-top: 20px;">
+    <div style="text-align: left;width:70%;">
+                    <h2>
+                        Successful. Please wait while we redirect...</h2>
+     </div>
+</div>
+<script type="text/javascript">
+
+    function Redirect() {
+        window.location.href = '@Url.Action("Create","AdminSettings")';
+//        $.ajax({
+//            url: '@Url.Content("~/AdminSettings/Create")',
+//            type: 'GET',
+//            success: function (result) {
+//               // ViewStateSession(result);
+//               // $("#HomeMainContent").html('');
+//               // $("#HomeMainContent").html(result);
+//            },
+//            error: function (request, status, error) { }
+//        });
+    }
+    setTimeout("Redirect()", 1000);
+</script>

@@ -1,0 +1,327 @@
+﻿@model FMS.Models.DocumentManagement
+@using FMS.Models;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+}
+<div id="divViewDocs">
+<div style="margin-left:80%;padding-bottom:10px;">
+    <input type="button" id="btnsendMail" onclick="SendDocmentsASMail()" value="Send a Mail"/>  <input type="button" id="btnAudit" onclick="AuditDocments()" value="Audit"/>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmViewDocs", enctype = "multipart/form-data" }))
+{
+    <div id="divEMailDet" style="display: none">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    <span id="SpanValidateMsg1" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <input type="button" id="btnhide" onclick="HideMailDetalisDiv()" value="Hide" style="float: right;" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email ID:<span style="color: Red;">*</span>
+                    <input type="hidden" id="hdnVehicleID" name="hdnVehicleID" value="@ViewBag.VehicleID" />
+                </td>
+                <td>
+                    <input type="text" id="mail" name="mail" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Subject:<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <input type="text" id="txtSubject" name="txtSubject" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Message:
+                </td>
+                <td>
+                    <textarea id="txtBody" name="txtBody" cols="20" rows="3"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+        <thead>
+            <tr>
+                <th>
+                    @Html.CheckBox("chkdocAll", false) Check All
+                </th>
+                <th>
+                    Document Type
+                </th>
+                <th>
+                    Document
+                </th>
+                <th>
+                    Audit
+                </th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.vehicleList)
+            {
+                <tr>
+                    <td>
+                        @Html.CheckBox("chkdoc_vehicle" + item.ID, false)
+                        @{
+                   string ext = item.DocPath.Split('.')[1];
+                           }
+                    </td>
+                    <td>
+                        @objcore.GetDocumentType((long)item.DocTypeID).ToUpper()
+                    </td>
+                    <td>
+                        @if (item.DocPath != null)
+                        {
+                            if (ext == "pdf")
+                            {
+                                <a href="@Url.Action("ViewDocument", "Home", new { @foldername = "Vehicle", @filename = item.DocPath })" target="_blank">
+                                  <img src="../../Content/images/pdf-icon.png" width="40" height="40" alt="Photo" />
+                                </a>  
+                            }
+                            else if (ext == "docx")
+                            {
+                                  <a href="/Content/Documents/Vehicle/@item.DocPath" target="_blank">
+                                    <img src="../../Content/images/Word-doc-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else if (ext == "txt")
+                            {
+                                   <a href="/Content/Documents/Vehicle/@item.DocPath" target="_blank"> <img src="../../Content/images/text-doc-icon.png" width="40" height="40" alt="Photo" /></a>
+                            }
+                            else
+                            {
+                                <a href="/Content/Documents/Vehicle/@item.DocPath" target="_blank">
+                                <img src="../../Content/Documents/Vehicle/@item.DocPath" width="40" height="40" alt="Photo" /> </a>
+                            }
+                        }
+                        else
+                        {
+                              <img src="../../Content/uploadimages/user-avatar.jpg" width="40" height="40" alt="Photo" /> 
+                        }
+                    </td>
+                    <td>
+                        @if (item.Audited == true)
+                        {
+                            <span class="system positive">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="system negative">No</span>
+                        }
+                    </td>
+                </tr>
+            }
+             @foreach (var item in Model.driverList)
+             {
+                <tr>
+                    <td>
+                        @Html.CheckBox("chkdoc_driver" + item.ID, false)
+                        @{
+                   string ext = item.DocPath.Split('.')[1];
+                           }
+                    </td>
+                    <td>
+                        @objcore.GetDocumentType((long)item.DocTypeID)
+                    </td>
+                    <td>
+                        @if (item.DocPath != null)
+                        {
+                            if (ext == "pdf")
+                            {
+                                <a href="@Url.Action("ViewDocument", "Home", new { @foldername = "Driver", @filename = item.DocPath })" target="_blank">
+                                  <img src="../../Content/images/pdf-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else if (ext == "docx")
+                            {
+                                <a href="/Content/Documents/Driver/@item.DocPath" target="_blank">
+                                  <img src="../../Content/images/Word-doc-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else if (ext == "txt")
+                            {
+                                <a href="/Content/Documents/Driver/@item.DocPath" target="_blank">
+                                  <img src="../../Content/images/text-doc-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else
+                            {
+                              <a href="/Content/Documents/Driver/@item.DocPath" target="_blank">
+                               <img src="../../Content/Documents/Driver/@item.DocPath" width="40" height="40" alt="Photo" /> </a>
+                            }
+                        }
+                        else
+                        {
+                            <img src="../../Content/uploadimages/user-avatar.jpg" width="40" height="40" alt="Photo" />
+                        }
+                    </td>
+                  <td>
+            @if (item.Audited == true)
+            {
+                <span class="system positive">Yes</span>
+            }
+            else
+            {
+                <span class="system negative">No</span>
+            }
+                 </td>
+                    
+                </tr>
+             }
+             @foreach (var item in Model.vendorList)
+             {
+                <tr>
+                    <td>
+                        @Html.CheckBox("chkdoc_vendor" + item.ID, false)
+                        @{
+                   string ext = item.DocPath.Split('.')[1];
+                           }
+                    </td>
+                    <td>
+                        @objcore.GetDocumentType((long)item.DocTypeID)
+                    </td>
+                    <td>
+                        @if (item.DocPath != null)
+                        {
+                            if (ext == "pdf")
+                            {
+                                <a href="@Url.Action("ViewDocument", "Home", new { @foldername = "Vendor", @filename = item.DocPath })" target="_blank">
+                                  <img src="../../Content/images/pdf-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else if (ext == "docx")
+                            {
+                                 <a href="/Content/Documents/Vendor/@item.DocPath" target="_blank">
+                                  <img src="../../Content/images/Word-doc-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else if (ext == "txt")
+                            {
+                                  <a href="/Content/Documents/Vendor/@item.DocPath" target="_blank"> 
+                                  <img src="../../Content/images/text-doc-icon.png" width="40" height="40" alt="Photo" /> </a>
+                            }
+                            else
+                            {
+                              <a href="/Content/Documents/Vendor/@item.DocPath" target="_blank"> 
+                              <img src="../../Content/Documents/Vendor/@item.DocPath" width="40" height="40" alt="Photo" /> </a>
+                            }
+                        }
+                        else
+                        {
+                            <img src="../../Content/uploadimages/user-avatar.jpg" width="40" height="40" alt="Photo" />
+                        }
+                    </td>
+                  <td>
+            @if (item.Audited == true)
+            {
+                <span class="system positive">Yes</span>
+            }
+            else
+            {
+                <span class="system negative">No</span>
+            }
+        </td>
+                  
+                </tr>
+             }
+        </tbody>
+    </table>
+}
+</div>
+    <script type="text/javascript">
+        function SendDocmentsASMail() {
+            $("#divEMailDet").show();
+            var frmColl = $("#frmViewDocs").serialize();
+            var VehicleID = $("#hdnVehicleID").val();
+            
+            var Email = $("#mail").val();
+            var Subject = $("#txtSubject").val();
+            var msg = isValidEmailAddress(Email);
+            if (msg) {
+                if (Subject == "") {
+                    var r = confirm('Are you want to sure send mail without subject?');
+                    if (r == true) {
+                        if ($('input[type=checkbox]:checked').length != 0) {
+                            $("#div_loading").fadeIn('slow');
+                            $("#SpanValidateMsg1").hide();
+                            $.ajax({
+                                type: "POST",
+                                url: "../DocumentType/SendMail",
+                                data: "frm=" + frmColl + "&VehicleID=" + VehicleID,
+                                dataType: "html",
+                                success: function (result) {
+                                    alert(result);
+                                    $("#div_loading").fadeOut('slow');
+                                },
+                                error: function (error) {alert(error);
+                                }
+                            });
+                        }
+                        else { alert('Please select atleast on document.'); }
+                    }
+                    else {
+                        $("#SpanValidateMsg1").show();
+                        $("#SpanValidateMsg1").html("please enter email subject.");
+                        $("#txtSubject").focus();
+                    }
+                }
+                else {
+                    if ($('input[type=checkbox]:checked').length != 0) {
+                        $("#div_loading").fadeIn('slow');
+                        $("#SpanValidateMsg1").hide();
+                        $.ajax({
+                            type: "POST",
+                            url: "../DocumentType/SendMail",
+                            data: "frm=" + frmColl + "&VehicleID=" + VehicleID,
+                            dataType: "html",
+                            success: function (result) {
+                                $('#divViewDocs').html(result);
+                                $("#div_loading").fadeOut('slow');
+                            },
+                            error: function (error) {
+                            
+                            }
+                        });
+                    }
+                    else {
+                        alert('Please select atleast one document.');
+                    }
+                }
+            }
+            else {
+                $("#SpanValidateMsg1").show();
+                $("#SpanValidateMsg1").html("please enter valid email id.");
+                $("#mail").focus();
+            }
+        }
+        function HideMailDetalisDiv() {
+            $("#divEMailDet").hide();
+        }
+        $("#chkdocAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+        function AuditDocments() {
+            var frmColl = $("#frmViewDocs").serialize();
+            var VehicleID = $("#hdnVehicleID").val();
+            if ($('input[type=checkbox]:checked').length != 0) {
+                $("#div_loading").fadeIn('slow');
+                $.ajax({
+                    type: "POST",
+                    url: "../DocumentType/AuditDocments",
+                    data: "frm=" + frmColl + "&VehicleID=" + VehicleID,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#divViewDocs').html(result);
+                        $("#div_loading").fadeOut('slow');
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+            else {
+                alert('Please select atleast one document.'); 
+            }
+        }
+</script>

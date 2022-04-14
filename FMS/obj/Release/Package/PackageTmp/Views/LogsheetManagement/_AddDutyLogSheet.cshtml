@@ -1,0 +1,983 @@
+﻿@model FMS.Models.tbl_log_sheets
+@{
+    Session["LogsheetEntryList"] = null;
+}
+
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+
+<style type="text/css">
+    .txtAutoComplete {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        maxlength ="30";
+    }
+
+    .txtInput {
+        width: 220px !important;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .txtInputtime {
+        width: 71px !important;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+
+    .ac_loading {
+        background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+    }
+
+    #btnAddlogentry:focus {
+        border: yellow 2px solid;
+        background-color: #0A99D1;
+    }
+</style>
+
+<div class="clsmodalheader">Add Duty Log Sheet</div>
+
+@using (Html.BeginForm("SaveLogSheetEntry", "LogsheetManagement", FormMethod.Post, new { id = "frmLogSheet", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div style="overflow: auto;z-index:9999;height:520px;" id="divNewDutylog">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <p style="color: Red; font-style: italic;">
+                        @(ViewBag.message)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Client Name <span style="color: Red;">*</span>
+                    <input type="hidden" id="cid" name="cid" />
+                    <input type="hidden" id="vid" name="vid" />
+                    <input type="hidden" id="eid" name="eid" />
+                    <input type="hidden" id="hdncid" name="hdncid" />
+                    <input type="hidden" id="hdnBillType" name="hdnBillType" />
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ClientID, new { @class = "txtAutoComplete", @tabindex = 1 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Veh. Reg# <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleID, new { @class = "txtAutoComplete", @tabindex = 2 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Driver <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="DriverID" name="DriverID" class="txtInput" tabindex="3">
+                        <option value="0">--Select Driver--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Veh. Type <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { @class = "txtInput", @tabindex = 4 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Veh. Model <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="VehicleModelID" name="VehicleModelID" class="txtInput" tabindex="5">
+                        <option value="0">--Select Vehicle Model--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Trip Type <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="TripeType" name="TripeType" class="txtInput" tabindex="6">
+                        <option value="">--Select Trip Type--</option>
+                        <option value="PICKUP">PICK UP</option>
+                        <option value="DROP">DROP</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Date <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LogDate, new { @class = "txtInput validDate", @tabindex = 7 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Log Sheet# <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LogSheetNum, new { @class = "txtInput", @tabindex = 8 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Actual PAX
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Pax, new { @class = "txtInput isNumeric", @tabindex = 9 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Travel PAX
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.TravelPax, new { @class = "txtInput isNumeric", @tabindex = 10 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Login/Logout Time<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShiftTime, new { @class = "txtInputtime", @tabindex = 11 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Passenger Emp#
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PassengerEmpID, new { @class = "txtInput", @tabindex = 12 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pickup/Drop Location <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="Location" name="Location" class="txtInput" tabindex="13">
+                        <option value="0">--Select Location--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Full Location
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FullLocation, new { @class = "txtInput", @tabindex = 14 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Start KM
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.StartKM, new { @class = "txtInput km", @tabindex = 15 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    End KM
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.EndKM, new { @class = "txtInput km", @tabindex = 16 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Total KM
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.TotalKM, new { @class = "txtInput", @readonly = true, @style = "background-color:#EEE" })
+                    <p style="color: Red;">
+                        (Note:Total KM is readonly,calculate based on start and end KM)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Approved KM
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Approved, new { @class = "txtInput isNumeric", @tabindex = 17, @readonly = true, @style = "background-color:#EEE" })<p style="color: Red; margin-top: 10px ! important;">
+                        (Note:Approved KM is readonly)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Final Approved KM
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FinalApprovedKM, new { @class = "txtInput isNumeric", @tabindex = 18 })
+                </td>
+            </tr>
+            <tr id="tr_slabrate" style="display: none;">
+                <td>
+                    SLAB Rate
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SlabRate, new { @class = "txtInput", @readonly = true, @style = "background-color:#EEE" })<p style="color: Red; margin-top: 10px ! important;">
+                        (Note:Slab rate is readonly)
+                    </p>
+                </td>
+            </tr>
+            <tr id="tr_slabrate1" style="display: none;">
+                <td>
+                    Final SLAB Rate
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FinalSlabRate, new { @class = "txtInput", @tabindex = 19 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cash
+                </td>
+                <td>
+                    @Html.CheckBox("IsCash", new { @tabindex = 20 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Remark
+                </td>
+                <td>
+                    @Html.TextAreaFor(Model => Model.Remark, new { @cols = 36, @class = "txtInput", @tabindex = 21, @style = "background-color:#ffffe0;" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" style="margin-top: 5px;" id="btnAddlogentry" class="btnnewlog"
+                           value="Add Log" tabindex="21" onfocus="focus();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+
+    $('#div_loading').hide();
+    $(document).ready(function () {
+        $("#btnaddDriver").hide();
+        $("#divlog_loading").fadeOut('slow');
+        $("#ClientID").autocomplete("/LogsheetManagement/getAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: selectItem });
+        $("#VehicleID").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+        $("#PassengerEmpID").autocomplete("/LogsheetManagement/getEmployeeAjaxResult", { minChars: 2, matchContains: true, onItemSelect: OnselectEmpItem });
+        $("#btnSaveAllLogentries").hide();
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+
+
+        $("#ClientID").focus();
+        var myDate = new Date();
+        var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+        $("#LogDate").val(prettyDate);
+        $('#LogDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm/dd/yy',
+            maxDate: prettyDate,
+            onSelect: function () {
+                $('input[tabindex="7"]').focus();
+            }
+        });
+        // $("#LogDate").blur(function (e) { $(this).datepicker("hide"); });
+
+
+    });
+
+
+    function selectItem(li) {
+        $('#cid').val(0);
+        if (li == null) $('#cid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            GetClientLocation(sValue);
+            GetBillTypeByClient(sValue);
+        }
+        else var sValue = li.selectValue;
+
+        $('#cid').val(sValue);
+
+        $('input[tabindex="2"]').focus();
+    }
+    function OnselectItem(li) {
+        $('#vid').val(0);
+        if (li == null) $('#vid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            GetVehicleDriver(sValue);
+            GetVehicleModel(sValue);
+            $('input[tabindex="3"]').focus();
+        }
+        else var sValue = li.selectValue;
+        $('#vid').val(sValue);
+        $('input[tabindex="3"]').focus();
+    }
+    function OnselectEmpItem(li) {
+        $('#eid').val(0);
+        if (li == null) $('#eid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            GetClientLocationByEmployee(sValue);
+            // LoadSLABRateByEmpID(sValue);
+        }
+        else var sValue = li.selectValue;
+        $('#eid').val(sValue);
+    }
+    function GetBillTypeByClient(ClientID) {
+        $.ajax({
+
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetBillTypeByClient?ClientID=" + ClientID + "",
+            dataType: "json",
+            success: function (data) {
+                var res = data.BillTypeID;
+                $('#hdnBillType').val(res);
+                if ((res == "TRIPS")) {
+                    $("#tr_slabrate").show(); $("#tr_slabrate1").show();
+                }
+                else if (res == "KILO METER") {
+                    $("#tr_slabrate").hide(); $("#tr_slabrate1").hide();
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    function GetVehicleDriver(VehicleID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").hide();
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#DriverID").append(options);
+                    $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#DriverID option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").show();
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#DriverID").append(options);
+                        $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetVehicleModel(VehicleID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleModel?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].VehicleModelName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#VehicleModelID").append(options);
+                    $("#VehicleModelID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#VehicleModelID option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetClientLocation(ClientID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetLoaction?ClientID=" + ClientID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#Location').html('<option value="0">--Select Location--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Text1 + "'>" + data[i].Text2 + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#Location").append(options);
+                    // $("#Location option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#Location option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#Location').html('<option value="0">--Select Location--</option>');
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].Text1 + "'>" + data[i].Text2 + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#Location").append(options);
+                        //  $("#Location option[value=" + sModel + "]").attr("selected", "selected");
+
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetClientLocationByEmployee(EmployeeID) {
+        $("#divlog_loading").fadeIn('slow');
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var VehicleTypeID = $("#VehicleTypeID").val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetLoactionByEmployee?ClientID=" + ClientID + "&EmployeeID=" + EmployeeID,
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#Location').html('<option value="0">--Select Location--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Text1 + "'>" + data[i].Text2 + "</option>";
+                        sModel = data[i].Text1;
+                    }
+                    $("#Location").append(options);
+                    $("#Location option[value='" + sModel + "']").attr("selected", "selected");
+                    LoadSlabRateByEmployee(sModel, ClientID, VehicleID, EmployeeID, VehicleTypeID);
+                    $('#Location option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#Location').html('<option value="0">--Select Location--</option>');
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].Text1 + "'>" + data[i].Text2 + "</option>";
+                            sModel = data[i].Text1;
+                        }
+                        $("#Location").append(options);
+                        $("#Location option[value='" + sModel + "']").attr("selected", "selected");
+                        LoadSlabRateByEmployee(sModel, ClientID, VehicleID, EmployeeID, VehicleTypeID);
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    $('#Location').change(function () {
+        var billType = $('#hdnBillType').val();
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var EmployeeID = $("#eid").val();
+        var VehicleTypeID = $("#VehicleTypeID").val();
+
+        if ($(this).val() == 0) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select location');
+            $("#Location").focus();
+            return false;
+        }
+        else if (EmployeeID == "") {
+            $("#SpanValidateMsg").hide();
+            if (billType == "TRIPS") {
+                LoadSlabRateByLocation($(this).val(), ClientID, VehicleID, VehicleTypeID);
+            }
+            else {
+                // Load Kilo Meter By Location
+                LoadApprovedKMByLocation($(this).val(), ClientID, VehicleID);
+            }
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+            if (billType == "TRIPS") {
+                LoadSlabRateByEmployee($(this).val(), ClientID, VehicleID, EmployeeID, VehicleTypeID);
+            }
+            else {
+                // Load Kilo Meter By Location
+                LoadApprovedKMByLocation($(this).val(), ClientID, VehicleID);
+            }
+        }
+    });
+    $('#VehicleTypeID').change(function () {
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        var EmployeeID = $("#eid").val();
+        var Location = $("#Location").val();
+        if ($(this).val() == 0) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle type');
+            $("#Location").focus();
+            return false;
+        }
+        else if (EmployeeID == "" && Location == "") {
+            $("#SpanValidateMsg").hide();
+        }
+        else if (EmployeeID != "") {
+            $("#SpanValidateMsg").hide();
+            LoadSlabRateByEmployee(Location, ClientID, VehicleID, EmployeeID, $(this).val());
+        }
+        else if (EmployeeID == "") {
+            $("#SpanValidateMsg").hide();
+            LoadSlabRateByLocation(Location, ClientID, VehicleID, $(this).val());
+        }
+    });
+    function LoadSlabRateByEmployee(Location, ClientID, VehicleID, EmployeeID, VehicleTypeID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/LoadSlabRateByEmployee?Location=" + Location + "&ClientID=" + ClientID + "&VehicleID=" + VehicleID + "&EmployeeID=" + EmployeeID + "&VehicleTypeID=" + VehicleTypeID,
+            dataType: "json",
+            success: function (data) {
+                $("#SlabRate").val(data.VendorRate);
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function LoadSlabRateByLocation(Location, ClientID, VehicleID, VehicleTypeID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/LoadSlabRateByLocation?Location=" + Location + "&ClientID=" + ClientID + "&VehicleID=" + VehicleID + "&VehicleTypeID=" + VehicleTypeID,
+            dataType: "json",
+            success: function (data) {
+                $("#SlabRate").val(data.VendorRate);
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function LoadApprovedKMByLocation(Location, ClientID, VehicleID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/LoadApprovedKMByLocation?Location=" + Location + "&ClientID=" + ClientID + "&VehicleID=" + VehicleID,
+            dataType: "json",
+            success: function (data) {
+                $("#Approved").val(data.ApprovedKM);
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function LoadSLABRateByEmpID(ID) {
+        var ClientID = $("#cid").val();
+        var Location = $("#Location").val();
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/LoadSlabRateByEmpID?Location=" + Location + "&ClientID=" + ClientID + "&EmpId=" + ID,
+            dataType: "json",
+            success: function (data) {
+                $("#SlabRate").val(data.VendorRate);
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    $(".isNumeric").change(function () {
+        var KMID = this.id;
+        var title = isNumeric(this.value);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please enter numerics only.");
+            document.getElementById("" + this.id + "").value = '';
+            $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+    });
+    //Caliculate total kilometeres
+    $(".km").change(function () {
+        var KMID = this.id;
+        var result = isNumeric(this.value);
+        if (KMID == "StartKM") {
+            var EndKM = $("#EndKM").val();
+            var StartKM = $("#StartKM").val();
+            if (EndKM != "") {
+                if (parseInt(EndKM) == parseInt(StartKM)) {
+                    $("#SpanValidateMsg").show();
+                    $("#SpanValidateMsg").html("Starting KM and Ending KM can not be same!");
+                    $(this).val('');
+                    $("#TotalKM").val('');
+                    $(this).focus();
+                    $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                }
+                else {
+                    if (parseInt(EndKM) > parseInt(StartKM)) {
+                        var TotalKM = (EndKM - StartKM)
+                        $("#TotalKM").val(TotalKM);
+                        $("#SpanValidateMsg").hide();
+                    }
+                    else if (result == false) {
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").text("Please enter numerics only.");
+                        document.getElementById("" + this.id + "").value = '';
+                        $(this).focus();
+                        $("#TotalKM").val('');
+                        $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                    }
+                    else {
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").html("You can't enter more than " + EndKM + "  Kilometres");
+                        $(this).val('');
+                        $(this).focus();
+                        $("#TotalKM").val('');
+                        $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                    }
+                }
+            }
+            else {
+                if (result == false) {
+                    $("#SpanValidateMsg").show();
+                    $("#SpanValidateMsg").text("Please enter numerics only.");
+                    document.getElementById("" + this.id + "").value = '';
+                    $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                }
+                $(this).focus();
+                $("#EndKM").val('');
+                $("#TotalKM").val('');
+            }
+        }
+        else {
+            var StartKM = $("#StartKM").val();
+            var EndKM = $("#EndKM").val();
+            if (parseInt(EndKM) == parseInt(StartKM)) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Starting KM and Ending KM can not be same!");
+                $(this).val('');
+                $("#TotalKM").val('');
+                $(this).focus();
+                $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            }
+            else {
+                if (StartKM != "") {
+                    if (parseInt(EndKM) > parseInt(StartKM)) {
+                        var TotalKM = (EndKM - StartKM)
+                        $("#TotalKM").val(TotalKM);
+                        $("#SpanValidateMsg").hide();
+                    }
+                    else if (result == false) {
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").text("Please enter numerics only.");
+                        document.getElementById("" + this.id + "").value = '';
+                        $(this).focus();
+                        $("#TotalKM").val('');
+                        $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                    }
+                    else {
+                        $("#SpanValidateMsg").show();
+                        $("#SpanValidateMsg").html("You can't enter less than " + StartKM + "  Kilometres");
+                        $(this).val('');
+                        $(this).focus();
+                        $("#TotalKM").val('');
+                        $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                    }
+                }
+                else {
+                    $("#SpanValidateMsg").show();
+                    $("#SpanValidateMsg").html("Please enter start Kilometres");
+                    $(this).val('');
+                    $(this).focus();
+                    $("#TotalKM").val('');
+                    $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                }
+            }
+        }
+    });
+</script>
+<script type="text/javascript">
+    var i = 0;
+    $("#btnAddlogentry").click(function () {
+
+        if (!ValidateMsg()) {
+            $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return;
+        }
+        var ClientID = $("#cid").val();
+        var VehicleID = $("#vid").val();
+        $("#SpanValidateMsg").hide();
+        var frmColl = $("#frmLogSheet").serialize();
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax(
+            {
+                type: "POST",
+                url: "../LogsheetManagement/AddLogSheetEntry",
+                dataType: "html",
+                data: "frm=" + frmColl + "&CID=" + ClientID + "&VID=" + VehicleID,
+                success: function (result, textStatus, jqXHR) {
+                    $('#divLogSheetEntryList').html('');
+                    $('#divLogSheetEntryList').html(result);
+                    $("#btnSaveAllLogentries").show();
+                    var status = $("#Status").val();
+                    if (i < 9) {
+                        var msg = 'Are you want to Add one more Log Entry in the List?';
+                        if (confirm(msg)) {
+                            i = i + 1;
+                            ClearAll();
+                            $("#divlog_loading").hide();
+                            $("#divlog_loading").fadeOut('slow');
+                            $('#VehicleID').select();
+                            //var myDate = new Date();
+                            //var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+                            //$("#LogDate").val(prettyDate);
+                        }
+                        else {
+                            document.getElementById("frmLogSheet").submit();
+                            i = 0;
+                            ClearAll();
+                            $("#divlog_loading").hide();
+                            $("#divlog_loading").fadeOut('slow');
+                        }
+                    }
+                    else {
+                        alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                        document.getElementById("frmLogSheet").submit();
+                        i = 0;
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+    });
+    $("#btnSaveAllLogentries").click(function () {
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        document.getElementById("frmLogSheet").submit();
+        $("#btnSaveAllLogentries").hide();
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+    });
+    // Validate Fields
+    function ValidateMsg() {
+
+        var txtClient = $("#ClientID").val();
+        var txtVehicleRegNo = $("#VehicleID").val();
+        var ddVehicleDriver = $("#DriverID").val();
+        var ddVehicleType = $("#VehicleTypeID").val();
+
+        var ddVehicleModel = $("#VehicleModelID").val();
+
+        var ddTriptype = $("#TripeType").val();
+        var txtDate = $("#LogDate").val();
+
+        var txtLogSNo = $("#LogSheetNum").val();
+        var txtPax = $("#Pax").val();
+        var txtTravelPax = $('#TravelPax').val();
+        var txtShiftTime = $("#ShiftTime").val();
+
+        var Location = $("#Location").val();
+        var fullLocation = $('#FullLocation').val();
+        var txtStartKM = $("#StartKM").val();
+
+        var txtEndKM = $("#EndKM").val();
+        var txtTotalKM = $("#TotalKM").val();
+        var txtApprovKM = $("#Approved").val();
+        var txtEmpID = $("#PassengerEmpID").val();
+
+        if (txtClient == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search client name');
+            $("#ClientID").focus();
+            return false;
+        }
+        if (txtVehicleRegNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle reg number');
+            $("#VehicleID").focus();
+            return false;
+        }
+
+        if (ddVehicleDriver == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select Driver.');
+            $("#DriverID").focus();
+            return false;
+        }
+        if (ddVehicleType == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle type.');
+            $("#VehicleTypeID").focus();
+            return false;
+        }
+        if (ddVehicleModel == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select vehicle model.');
+            $("#VehicleModelID").focus();
+            return false;
+        }
+        if (ddTriptype == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select trip type');
+            $("#TripeType").focus();
+            return false;
+        }
+        if (txtDate == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter date');
+            $("#LogDate").focus();
+            return false;
+        }
+        if (txtLogSNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter log sheet number');
+            $("#LogSheetNum").focus();
+            return false;
+        }
+
+        if (txtShiftTime == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter login/logout time.');
+            $("#ShiftTime").focus();
+            return false;
+        }
+        if (Location == "0") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select location');
+            $("#Location").focus();
+            return false;
+        }
+
+        return true;
+    }
+    // Refresh Fields
+    function ClearAll() {
+
+        //        $("#cid").val('');
+        //        $("#vid").val('');
+        //        $("#ClientID").val('');
+        //        $("#VehicleID").val('');
+        //        $("#DriverID").val('');
+        //        $("#VehicleModelID").val('');
+        //        $("#VehicleTypeID").val('');
+        $("#TripeType").val('');
+        //$("#LogDate").val('');
+
+        $("#LogSheetNum").val('');
+        $("#Pax").val(''); $("#TravelPax").val('');
+        $("#ShiftTime").val('');
+        $("#Location").val('0');
+        $("#StartKM").val('');
+        $('#FullLocation').val('');
+        $("#EndKM").val('');
+        $("#TotalKM").val('');
+        $("#Approved").val('');
+        $("#PassengerEmpID").val('');
+        $('#Remark').val('');
+        $('#FinalSlabRate').val('');
+        $('#FinalApprovedKM').val('');
+        //$("#ClientID").focus();
+    }
+
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        var dateval = $("#" + this.id).val();
+        var msg = validateDate(dateval);
+        if (msg != "") {
+            document.getElementById("" + this.id + "").value = '';
+            this.focus();
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html(msg);
+            $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+
+    });
+    $("#LogSheetNum").change(function () {
+        $("#SpanValidateMsg").hide();
+        var result = isPureAlphaNumeric(this.value);
+        if (result == false) {
+            document.getElementById("" + this.id + "").value = '';
+            this.focus();
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Log sheet number should be numeric.");
+            $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        $.post('/LogSheetManagement/VerifyLogSheetNumber?logsheetnum=' + this.value, function (data) {
+            if (data == 'False') {
+                document.getElementById('LogSheetNum').value = '';
+                document.getElementById('LogSheetNum').focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Log sheet number has already exists.");
+                $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+
+        });
+    });
+</script>

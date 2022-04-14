@@ -1,0 +1,89 @@
+﻿@model FMS.Models.InventoryUnitsMaster
+
+@{
+    ViewBag.Title = "Create Unit";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+<h2>
+   Create Unit</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Unit")">
+        Cancel</a></li>
+             
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+    {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>UOM Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    <span id="errormsg" class="clsmark"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Unit <span class="symbol required">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.UnitsText, new { @maxlength = 30, @class = "validate" })
+                    @Html.ValidationMessageFor(model => model.UnitsText)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Short Name <span class="symbol required">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.UnitsShortText, new { @maxlength = 20, @class = "validate" })
+                    @Html.ValidationMessageFor(model => model.UnitsShortText)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn btn-primary" value="Create" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    }
+   
+ 
+<script type="text/javascript">
+    $('#loading').hide();
+    $(".validate").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#errormsg").show();
+                    $("#errormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#errormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#errormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+
+    });
+</script>

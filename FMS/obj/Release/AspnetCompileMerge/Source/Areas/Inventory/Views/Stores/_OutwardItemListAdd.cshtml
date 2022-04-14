@@ -1,0 +1,224 @@
+﻿@model IEnumerable<FMS.Models.InventoryIssuedDetail>
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+@{
+ FMSDBEntities _dataContext = new FMSDBEntities();
+ StoresController objStore = new StoresController();
+ int QtyTot = 0;
+ decimal Amt = 0;
+}
+<h2 class="clsmark">@ViewBag.ErrorMessage</h2>
+@if (Model.ToList().Count > 0)
+{
+     <h3>
+      <i class="clip-list"></i> Issued Item(s) </h3>
+
+   <table class="table table-striped table-condensed dTableR dataTable">
+        <thead>
+        <tr>
+            <th>
+                Sl.No
+            </th>
+            <th>
+                Particulars
+            </th>
+            <th>
+                Issue Qty.
+            </th>
+          @*  @if (ViewData["IsEdit"].ToString() == "1")
+            {  
+                <th>
+                    Avail Qty
+                </th>
+            }*@
+            <th style="text-align: right;">
+                Amount
+            </th>
+            <th style="text-align: right;">
+                Total Amt.
+            </th>
+            <th>
+            </th>
+        </tr>
+        </thead>
+        @{
+            QtyTot = 0; Amt = 0;
+            decimal AvailQty = 0;  
+        }
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @{
+                   InventoryItemsMaster _itemMaster = _dataContext.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                   decimal openBal = _itemMaster.OpeningBalance == null ? 0 : (decimal)_itemMaster.OpeningBalance;
+                }
+                @if (ViewData["IsEdit"].ToString() == "1")
+                {
+                    InventoryIssuedMaster _IssuedMaster = _dataContext.InventoryIssuedMasters.Where(a => a.IssueNo == item.IssueNo).FirstOrDefault();
+                    long VehicleId = Convert.ToInt64(_IssuedMaster.VehicleId);
+                    AvailQty = (decimal)objStore.GetAvailQty("",(int)item.ItemId, VehicleId);
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slno)
+                </td>
+                <td>
+                    @Html.Encode(item.ItemText)
+                </td>
+                
+                <td>
+                    @Html.Encode(item.IssuedQty)
+                    @{
+                        QtyTot += (int)item.IssuedQty;
+                        decimal AvaiQty = (openBal - QtyTot);
+                    }
+                </td>
+              @*  @if (ViewData["IsEdit"].ToString() == "1")
+                {
+                    <td>
+                        @Html.Encode(AvaiQty)
+                    </td>
+                }*@
+                <td style="text-align: right;">
+                    @String.Format("{0:N}", _itemMaster.Amount)
+                </td>
+                <td style="text-align: right;">
+                    @{
+                        decimal TotAmt = ((int)item.IssuedQty * (decimal)_itemMaster.Amount);
+                    }
+                    @String.Format("{0:N}", TotAmt)
+                    @{
+                        Amt += TotAmt;
+                    }
+                </td>
+                <td style="width:60px;">
+                    @if (ViewData["IsEdit"].ToString() == "1")
+                    {
+                        var Id = _dataContext.InventoryIssuedMasters.Where(a => a.IssueNo == item.IssueNo).FirstOrDefault().Id;
+                        <input type="hidden" value="@Id" name="hdn_issue_id" id="hdn_issue_id" />   
+                        <a data-toggle="modal" href="#" id="@item.Id" onclick="EditIssuedItems('@item.Id')"  title="Edit Issued Details" class="cls_edit">
+                        </a>
+                        <a href="#" onclick="DeleteIssuedDetails(1,'@item.Id');" class="cls_delete"  title="delete Stock Details">
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" onclick="DeleteIssuedDetails(0,'@item.Slno');" class="cls_delete" title="delete Stock Details">
+                        </a>
+                    }
+                </td>
+            </tr>
+                
+        }
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+            </td>
+            <td>@QtyTot
+            </td>
+            <td>
+            </td>
+          @*  @if (ViewData["IsEdit"].ToString() == "1")
+            {
+                <td>
+                </td>
+            }*@
+            <td style="text-align: right;">
+              <span class="label-important"> @String.Format("{0:N}", Amt) </span> 
+            </td>
+            <td>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+}
+else
+{
+    <h3>
+        No Item was added.  
+    </h3>
+}
+<div id="devDialog"></div>
+
+
+<script type="text/javascript" language="javascript">
+    $('#loading').hide();
+    function EditIssuedItems(Id) {
+        if (!ValidateMsg()) {
+            return false;
+        }
+        else {
+            $("#div_loading").fadeIn('slow');
+            $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 520,
+                 height: 350
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 $("#btnItemAdd").attr("href", "#");
+                 $('#div_loading').show();
+                 EditIssuedDetails(Id);
+             }
+         });
+        }
+    }
+    function EditIssuedDetails(id) {
+        $('#div_loading').show();
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("EditIssuedDetails", "Stores", new { area = "Inventory" })?Id=' + id,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function DeleteIssuedDetails(IsEdit, Id) {
+        if (confirm('Are you sure want to delete this item?')) {
+            var Actions = Id + "_" + IsEdit;
+            $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("DeleteIssuedDetails", "Stores", new { area = "Inventory" })?Id=' + Actions,
+                  dataType: "html",
+                  success: function (result) {
+                      if (IsEdit == 0) {
+                          $('#IssuedDetList').html(result);
+                      }
+                      else {
+                          window.location.href = '@Url.Action("OutwardEdit","Stores",new{ area = "Inventory"})?Id=' + $("#hdn_issue_id").val();
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+        }
+      }
+
+      $(function () {
+          $(".cls_anchor_rect").click(function () {
+              var id = $(this).attr('id')
+              $("#devDialog").html("")
+                .dialog("option", "title", "Edit Stock Details")
+                .load("/Stores/EditIssuedDetails?Id=" + id, function (data) {
+                    $("#devDialog").dialog("open");
+                    $('#devDialog').html(data);
+                });
+
+          });
+
+      });     
+</script>

@@ -1,0 +1,155 @@
+﻿@model IEnumerable<FMS.Controllers.DutyLogSheetReportList>
+@using FMS.Models;
+@using FMS.Controllers;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+    List<DutyLogSheetReportList> list = TempData["lstDutyLogDets"] as List<DutyLogSheetReportList>;
+    TempData["lstDutyLogDets"] = list;
+    bool IsPack = Convert.ToBoolean(TempData["PackCols"]);
+    TempData["PackCols"] = IsPack;
+}
+<p style=" line-height:25px;">
+    No. of entries @(ViewBag.ListCount) showing
+</p>
+<table class="table table-striped table-condensed dTableR dataTable">
+    <thead>
+    <tr>
+        <th>
+            Book Ref#   
+        </th>
+        <th>
+            Client Name
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Type
+        </th>
+        <th>
+            Model
+        </th>
+        <th>
+            Driver Name
+        </th>
+        <th>
+            Log Date
+        </th>
+        <th>
+            End Date
+        </th>
+        <th>
+            LogSheet#
+        </th>
+        <th>
+            In-Time
+        </th>
+        <th>
+            Out-Time
+        </th>
+        <th>
+            Extra KM
+        </th>
+        <th>
+            Extra Hr
+        </th>
+        <th>
+            Total Hrs
+        </th>
+        <th>
+            Gross Amount
+        </th>
+        <th>
+            Toll Chrg.
+        </th>
+        <th>
+            Parking Chrg.
+        </th>
+        <th>
+            Fuel Hike
+        </th>
+        <th>
+            Net Amount
+        </th>
+        <th>
+            Final Net Amt.
+        </th>
+        <th>
+        </th>
+    </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+        <tr>
+            <td>
+                @item.BookRefNum
+            </td>
+            <td>
+                @item.Client
+            </td>
+            <td>
+                @item.VehicleReg
+            </td>
+            <td>
+                @item.VehicleType
+            </td>
+            <td>
+                @item.VehicleModel
+            </td>
+            <td>
+                @item.Driver
+            </td>
+            <td>
+                @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+            </td>
+            <td>
+                @(string.IsNullOrEmpty(item.LogEndDt) ? "" : String.Format("{0:dd/MM/yyyy}", Convert.ToDateTime(item.LogEndDt)))
+            </td>
+            <td>
+                @item.LogSheetNum
+            </td>
+            <td>
+                @item.ShiftTime
+            </td>
+            <td>
+                @item.ReachTime
+            </td>
+            <td>
+                @item.ExtraKM
+            </td>
+            <td>
+                @item.ExtraHr
+            </td>
+            <td>
+                @item.TotalHrs
+            </td>
+            <td>
+                @item.GrossAmt
+            </td>
+            <td>
+                @item.TollChrg
+            </td>
+            <td>
+                @item.ParkingChrg
+            </td>
+            <td>
+                @item.FuelHike
+            </td>
+            <td>
+                @item.NetAmount
+            </td>
+            <td>
+                @item.FinalNetAmt
+            </td>
+            <td>
+                
+            </td>
+        </tr>
+        </tbody>
+        }
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>

@@ -1,0 +1,1644 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="FMSDBModelStoreContainer" CdmEntityContainer="FMSDBEntities">
+    <EntitySetMapping Name="tbl_advances">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_advances">
+        <MappingFragment StoreEntitySet="tbl_advances">
+          <ScalarProperty Name="PrevClosedDate" ColumnName="PrevClosedDate" />
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+          <ScalarProperty Name="VehicleRegNum" ColumnName="VehicleRegNum" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Towards" ColumnName="Towards" />
+          <ScalarProperty Name="Narration" ColumnName="Narration" />
+          <ScalarProperty Name="PayMode" ColumnName="PayMode" />
+          <ScalarProperty Name="ChequeDDNo" ColumnName="ChequeDDNo" />
+          <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="TransactionNum" ColumnName="TransactionNum" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_billing_types">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_billing_types">
+        <MappingFragment StoreEntitySet="tbl_billing_types">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="BillingType" ColumnName="BillingType" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_client_log_sheet_cols">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_client_log_sheet_cols">
+        <MappingFragment StoreEntitySet="tbl_client_log_sheet_cols">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FID" ColumnName="FID" />
+          <ScalarProperty Name="FieldText" ColumnName="FieldText" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="SlNo" ColumnName="SlNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_clients">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_clients">
+        <MappingFragment StoreEntitySet="tbl_clients">
+          <ScalarProperty Name="IsEmpBased" ColumnName="IsEmpBased" />
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="AgreementDocument" ColumnName="AgreementDocument" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="BillingTypeID" ColumnName="BillingTypeID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_ehs_codes">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_ehs_codes">
+        <MappingFragment StoreEntitySet="tbl_ehs_codes">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EHSCode" ColumnName="EHSCode" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_ehs_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_ehs_details">
+        <MappingFragment StoreEntitySet="tbl_ehs_details">
+          <ScalarProperty Name="PrevClosedDate" ColumnName="PrevClosedDate" />
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="VehicleRegNum" ColumnName="VehicleRegNum" />
+          <ScalarProperty Name="EHSCodeID" ColumnName="EHSCodeID" />
+          <ScalarProperty Name="EHSAmt" ColumnName="EHSAmt" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_locations">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_locations">
+        <MappingFragment StoreEntitySet="tbl_locations">
+          <ScalarProperty Name="RouteId" ColumnName="RouteId" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_penalties">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_penalties">
+        <MappingFragment StoreEntitySet="tbl_penalties">
+          <ScalarProperty Name="PrevClosedDate" ColumnName="PrevClosedDate" />
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="LogSheetID" ColumnName="LogSheetID" />
+          <ScalarProperty Name="LogSheetNum" ColumnName="LogSheetNum" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="PenalityAmt" ColumnName="PenalityAmt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_seaters">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_seaters">
+        <MappingFragment StoreEntitySet="tbl_seaters">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Seater" ColumnName="Seater" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vehicle_clients">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vehicle_clients">
+        <MappingFragment StoreEntitySet="tbl_vehicle_clients">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vehicle_driver">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vehicle_driver">
+        <MappingFragment StoreEntitySet="tbl_vehicle_driver">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+          <ScalarProperty Name="AssignedOn" ColumnName="AssignedOn" />
+          <ScalarProperty Name="RelievedOn" ColumnName="RelievedOn" />
+          <ScalarProperty Name="IsProxy" ColumnName="IsProxy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vehicle_models">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vehicle_models">
+        <MappingFragment StoreEntitySet="tbl_vehicle_models">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="VehicleModelName" ColumnName="VehicleModelName" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vehicle_types">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vehicle_types">
+        <MappingFragment StoreEntitySet="tbl_vehicle_types">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vendor_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vendor_details">
+        <MappingFragment StoreEntitySet="tbl_vendor_details">
+          <ScalarProperty Name="AdharNo" ColumnName="AdharNo" />
+          <ScalarProperty Name="PlatformCode" ColumnName="PlatformCode" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="FixedDeposit" ColumnName="FixedDeposit" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+          <ScalarProperty Name="PanCardNumber" ColumnName="PanCardNumber" />
+          <ScalarProperty Name="PhotoUrl" ColumnName="PhotoUrl" />
+          <ScalarProperty Name="AccountHolderName" ColumnName="AccountHolderName" />
+          <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+          <ScalarProperty Name="AccountType" ColumnName="AccountType" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="SubVendor" ColumnName="SubVendor" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Applications">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Applications">
+        <MappingFragment StoreEntitySet="aspnet_Applications">
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+          <ScalarProperty Name="LoweredApplicationName" ColumnName="LoweredApplicationName" />
+          <ScalarProperty Name="ApplicationName" ColumnName="ApplicationName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Membership">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Membership">
+        <MappingFragment StoreEntitySet="aspnet_Membership">
+          <ScalarProperty Name="Comment" ColumnName="Comment" />
+          <ScalarProperty Name="FailedPasswordAnswerAttemptWindowStart" ColumnName="FailedPasswordAnswerAttemptWindowStart" />
+          <ScalarProperty Name="FailedPasswordAnswerAttemptCount" ColumnName="FailedPasswordAnswerAttemptCount" />
+          <ScalarProperty Name="FailedPasswordAttemptWindowStart" ColumnName="FailedPasswordAttemptWindowStart" />
+          <ScalarProperty Name="FailedPasswordAttemptCount" ColumnName="FailedPasswordAttemptCount" />
+          <ScalarProperty Name="LastLockoutDate" ColumnName="LastLockoutDate" />
+          <ScalarProperty Name="LastPasswordChangedDate" ColumnName="LastPasswordChangedDate" />
+          <ScalarProperty Name="LastLoginDate" ColumnName="LastLoginDate" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="IsLockedOut" ColumnName="IsLockedOut" />
+          <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+          <ScalarProperty Name="PasswordAnswer" ColumnName="PasswordAnswer" />
+          <ScalarProperty Name="PasswordQuestion" ColumnName="PasswordQuestion" />
+          <ScalarProperty Name="LoweredEmail" ColumnName="LoweredEmail" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="MobilePIN" ColumnName="MobilePIN" />
+          <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+          <ScalarProperty Name="PasswordFormat" ColumnName="PasswordFormat" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Paths">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Paths">
+        <MappingFragment StoreEntitySet="aspnet_Paths">
+          <ScalarProperty Name="LoweredPath" ColumnName="LoweredPath" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="PathId" ColumnName="PathId" />
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_PersonalizationAllUsers">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_PersonalizationAllUsers">
+        <MappingFragment StoreEntitySet="aspnet_PersonalizationAllUsers">
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="PageSettings" ColumnName="PageSettings" />
+          <ScalarProperty Name="PathId" ColumnName="PathId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_PersonalizationPerUser">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_PersonalizationPerUser">
+        <MappingFragment StoreEntitySet="aspnet_PersonalizationPerUser">
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="PageSettings" ColumnName="PageSettings" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="PathId" ColumnName="PathId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Profile">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Profile">
+        <MappingFragment StoreEntitySet="aspnet_Profile">
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="PropertyValuesBinary" ColumnName="PropertyValuesBinary" />
+          <ScalarProperty Name="PropertyValuesString" ColumnName="PropertyValuesString" />
+          <ScalarProperty Name="PropertyNames" ColumnName="PropertyNames" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Roles">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Roles">
+        <MappingFragment StoreEntitySet="aspnet_Roles">
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="LoweredRoleName" ColumnName="LoweredRoleName" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_SchemaVersions">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_SchemaVersions">
+        <MappingFragment StoreEntitySet="aspnet_SchemaVersions">
+          <ScalarProperty Name="IsCurrentVersion" ColumnName="IsCurrentVersion" />
+          <ScalarProperty Name="CompatibleSchemaVersion" ColumnName="CompatibleSchemaVersion" />
+          <ScalarProperty Name="Feature" ColumnName="Feature" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_Users">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_Users">
+        <MappingFragment StoreEntitySet="aspnet_Users">
+          <ScalarProperty Name="LastActivityDate" ColumnName="LastActivityDate" />
+          <ScalarProperty Name="IsAnonymous" ColumnName="IsAnonymous" />
+          <ScalarProperty Name="MobileAlias" ColumnName="MobileAlias" />
+          <ScalarProperty Name="LoweredUserName" ColumnName="LoweredUserName" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="aspnet_WebEvent_Events">
+      <EntityTypeMapping TypeName="FMSDBModel.aspnet_WebEvent_Events">
+        <MappingFragment StoreEntitySet="aspnet_WebEvent_Events">
+          <ScalarProperty Name="Details" ColumnName="Details" />
+          <ScalarProperty Name="ExceptionType" ColumnName="ExceptionType" />
+          <ScalarProperty Name="RequestUrl" ColumnName="RequestUrl" />
+          <ScalarProperty Name="MachineName" ColumnName="MachineName" />
+          <ScalarProperty Name="ApplicationVirtualPath" ColumnName="ApplicationVirtualPath" />
+          <ScalarProperty Name="ApplicationPath" ColumnName="ApplicationPath" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="EventDetailCode" ColumnName="EventDetailCode" />
+          <ScalarProperty Name="EventCode" ColumnName="EventCode" />
+          <ScalarProperty Name="EventOccurrence" ColumnName="EventOccurrence" />
+          <ScalarProperty Name="EventSequence" ColumnName="EventSequence" />
+          <ScalarProperty Name="EventType" ColumnName="EventType" />
+          <ScalarProperty Name="EventTime" ColumnName="EventTime" />
+          <ScalarProperty Name="EventTimeUtc" ColumnName="EventTimeUtc" />
+          <ScalarProperty Name="EventId" ColumnName="EventId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="aspnet_UsersInRoles" TypeName="FMSDBModel.aspnet_UsersInRoles" StoreEntitySet="aspnet_UsersInRoles">
+      <EndProperty Name="aspnet_Users">
+        <ScalarProperty Name="UserId" ColumnName="UserId" />
+      </EndProperty>
+      <EndProperty Name="aspnet_Roles">
+        <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <EntitySetMapping Name="tbl_doc_client_nodes">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_doc_client_nodes">
+        <MappingFragment StoreEntitySet="tbl_doc_client_nodes">
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="DocTypeID" ColumnName="DocTypeID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DocPath" ColumnName="DocPath" />
+          <ScalarProperty Name="Folder" ColumnName="Folder" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_doc_driver_nodes">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_doc_driver_nodes">
+        <MappingFragment StoreEntitySet="tbl_doc_driver_nodes">
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="DocTypeID" ColumnName="DocTypeID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DocPath" ColumnName="DocPath" />
+          <ScalarProperty Name="Folder" ColumnName="Folder" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_doc_vehicle_nodes">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_doc_vehicle_nodes">
+        <MappingFragment StoreEntitySet="tbl_doc_vehicle_nodes">
+          <ScalarProperty Name="Validity" ColumnName="Validity" />
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="DocTypeID" ColumnName="DocTypeID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DocPath" ColumnName="DocPath" />
+          <ScalarProperty Name="Folder" ColumnName="Folder" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_doc_vendor_nodes">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_doc_vendor_nodes">
+        <MappingFragment StoreEntitySet="tbl_doc_vendor_nodes">
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="DocTypeID" ColumnName="DocTypeID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DocPath" ColumnName="DocPath" />
+          <ScalarProperty Name="Folder" ColumnName="Folder" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_documents">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_documents">
+        <MappingFragment StoreEntitySet="tbl_documents">
+          <ScalarProperty Name="IsConsider" ColumnName="IsConsider" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DocCode" ColumnName="DocCode" />
+          <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_km_client_rate">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_km_client_rate">
+        <MappingFragment StoreEntitySet="tbl_km_client_rate">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="VendorRate" ColumnName="VendorRate" />
+          <ScalarProperty Name="ClientRate" ColumnName="ClientRate" />
+          <ScalarProperty Name="ApprovedKM" ColumnName="ApprovedKM" />
+          <ScalarProperty Name="VehicleTypeID" ColumnName="VehicleTypeID" />
+          <ScalarProperty Name="SeaterID" ColumnName="SeaterID" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="KMID" ColumnName="KMID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_slab_client_rate">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_slab_client_rate">
+        <MappingFragment StoreEntitySet="tbl_slab_client_rate">
+          <ScalarProperty Name="VendorSlab" ColumnName="VendorSlab" />
+          <ScalarProperty Name="EmpGender" ColumnName="EmpGender" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+          <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="VendorRate" ColumnName="VendorRate" />
+          <ScalarProperty Name="ClientRate" ColumnName="ClientRate" />
+          <ScalarProperty Name="ClientSlab" ColumnName="ClientSlab" />
+          <ScalarProperty Name="VehicleTypeID" ColumnName="VehicleTypeID" />
+          <ScalarProperty Name="SeaterID" ColumnName="SeaterID" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="SLABID" ColumnName="SLABID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vendor_payments">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vendor_payments">
+        <MappingFragment StoreEntitySet="tbl_vendor_payments">
+          <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+          <ScalarProperty Name="TransactionNum" ColumnName="TransactionNum" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="DDChequeNo" ColumnName="DDChequeNo" />
+          <ScalarProperty Name="DDChequeDate" ColumnName="DDChequeDate" />
+          <ScalarProperty Name="PayMode" ColumnName="PayMode" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="PaidDate" ColumnName="PaidDate" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="ReceptNo" ColumnName="ReceptNo" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vendor_transactions">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vendor_transactions">
+        <MappingFragment StoreEntitySet="tbl_vendor_transactions">
+          <ScalarProperty Name="Descr" ColumnName="Descr" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="TransactionDt" ColumnName="TransactionDt" />
+          <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_sequences">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_sequences">
+        <MappingFragment StoreEntitySet="tbl_sequences">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Auto" ColumnName="Auto" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_departments">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_departments">
+        <MappingFragment StoreEntitySet="tbl_departments">
+          <ScalarProperty Name="IndentMgrUserId" ColumnName="IndentMgrUserId" />
+          <ScalarProperty Name="ReqItem" ColumnName="ReqItem" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_designations">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_designations">
+        <MappingFragment StoreEntitySet="tbl_designations">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_employees">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_employees">
+        <MappingFragment StoreEntitySet="tbl_employees">
+          <ScalarProperty Name="BioMetricCode" ColumnName="BioMetricCode" />
+          <ScalarProperty Name="IsTDS" ColumnName="IsTDS" />
+          <ScalarProperty Name="IsPF" ColumnName="IsPF" />
+          <ScalarProperty Name="IsPTax" ColumnName="IsPTax" />
+          <ScalarProperty Name="IsESI" ColumnName="IsESI" />
+          <ScalarProperty Name="DOE" ColumnName="DOE" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="PhotoPath" ColumnName="PhotoPath" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="BankAccNo" ColumnName="BankAccNo" />
+          <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="LICNo" ColumnName="LICNo" />
+          <ScalarProperty Name="ESIRegNo" ColumnName="ESIRegNo" />
+          <ScalarProperty Name="EPFNo" ColumnName="EPFNo" />
+          <ScalarProperty Name="PayMode" ColumnName="PayMode" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Phone2" ColumnName="Phone2" />
+          <ScalarProperty Name="Phone1" ColumnName="Phone1" />
+          <ScalarProperty Name="PinCode" ColumnName="PinCode" />
+          <ScalarProperty Name="PerState1" ColumnName="PerState1" />
+          <ScalarProperty Name="PerDist" ColumnName="PerDist" />
+          <ScalarProperty Name="PerCity" ColumnName="PerCity" />
+          <ScalarProperty Name="PerAddress2" ColumnName="PerAddress2" />
+          <ScalarProperty Name="PerAddress1" ColumnName="PerAddress1" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="WeddingDt" ColumnName="WeddingDt" />
+          <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+          <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+          <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+          <ScalarProperty Name="DesgID" ColumnName="DesgID" />
+          <ScalarProperty Name="DOJ" ColumnName="DOJ" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="FatherName" ColumnName="FatherName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="EmpNo" ColumnName="EmpNo" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_emp_attendance_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_emp_attendance_details">
+        <MappingFragment StoreEntitySet="tbl_emp_attendance_details">
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="TotalHours" ColumnName="TotalHours" />
+          <ScalarProperty Name="Site" ColumnName="Site" />
+          <ScalarProperty Name="LogOutTime" ColumnName="LogOutTime" />
+          <ScalarProperty Name="LogOutDate" ColumnName="LogOutDate" />
+          <ScalarProperty Name="LogInTime" ColumnName="LogInTime" />
+          <ScalarProperty Name="LogInDate" ColumnName="LogInDate" />
+          <ScalarProperty Name="EmpNo" ColumnName="EmpNo" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_pay_fields">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_pay_fields">
+        <MappingFragment StoreEntitySet="tbl_pay_fields">
+          <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CalcType" ColumnName="CalcType" />
+          <ScalarProperty Name="Formula" ColumnName="Formula" />
+          <ScalarProperty Name="EntryMode" ColumnName="EntryMode" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="PayName" ColumnName="PayName" />
+          <ScalarProperty Name="PayID" ColumnName="PayID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_pay_master">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_pay_master">
+        <MappingFragment StoreEntitySet="tbl_pay_master">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Formula" ColumnName="Formula" />
+          <ScalarProperty Name="PayFieldID" ColumnName="PayFieldID" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_emp_payable_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_emp_payable_details">
+        <MappingFragment StoreEntitySet="tbl_emp_payable_details">
+          <ScalarProperty Name="PayableID" ColumnName="PayableID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="PayFieldValue" ColumnName="PayFieldValue" />
+          <ScalarProperty Name="PayFieldID" ColumnName="PayFieldID" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_emp_payables">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_emp_payables">
+        <MappingFragment StoreEntitySet="tbl_emp_payables">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
+          <ScalarProperty Name="ApprovedDate" ColumnName="ApprovedDate" />
+          <ScalarProperty Name="Approved" ColumnName="Approved" />
+          <ScalarProperty Name="NetSalary" ColumnName="NetSalary" />
+          <ScalarProperty Name="PerDay" ColumnName="PerDay" />
+          <ScalarProperty Name="Salary" ColumnName="Salary" />
+          <ScalarProperty Name="YearName" ColumnName="YearName" />
+          <ScalarProperty Name="MonthName" ColumnName="MonthName" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="TotalHours" ColumnName="TotalHours" />
+          <ScalarProperty Name="TotalPresent" ColumnName="TotalPresent" />
+          <ScalarProperty Name="TotalAbsent" ColumnName="TotalAbsent" />
+          <ScalarProperty Name="TotalDays" ColumnName="TotalDays" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_emp_advances">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_emp_advances">
+        <MappingFragment StoreEntitySet="tbl_emp_advances">
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="AdvanceAmt" ColumnName="AdvanceAmt" />
+          <ScalarProperty Name="AdvDate" ColumnName="AdvDate" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_user_access">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_user_access">
+        <MappingFragment StoreEntitySet="tbl_user_access">
+          <ScalarProperty Name="View" ColumnName="View" />
+          <ScalarProperty Name="List" ColumnName="List" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Audit" ColumnName="Audit" />
+          <ScalarProperty Name="Delete" ColumnName="Delete" />
+          <ScalarProperty Name="Edit" ColumnName="Edit" />
+          <ScalarProperty Name="Add" ColumnName="Add" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="PageID" ColumnName="PageID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_pages">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_pages">
+        <MappingFragment StoreEntitySet="tbl_pages">
+          <ScalarProperty Name="PageNo" ColumnName="PageNo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="PageName" ColumnName="PageName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_diesel_books">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_diesel_books">
+        <MappingFragment StoreEntitySet="tbl_diesel_books">
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Site" ColumnName="Site" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="PricePerLiter" ColumnName="PricePerLiter" />
+          <ScalarProperty Name="TokenValue" ColumnName="TokenValue" />
+          <ScalarProperty Name="TokenNumber" ColumnName="TokenNumber" />
+          <ScalarProperty Name="BookNo" ColumnName="BookNo" />
+          <ScalarProperty Name="FuelStationID" ColumnName="FuelStationID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_fuel_stations">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_fuel_stations">
+        <MappingFragment StoreEntitySet="tbl_fuel_stations">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="FuelStation" ColumnName="FuelStation" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_client_invoice">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_client_invoice">
+        <MappingFragment StoreEntitySet="tbl_client_invoice">
+          <ScalarProperty Name="IGST" ColumnName="IGST" />
+          <ScalarProperty Name="SGST" ColumnName="SGST" />
+          <ScalarProperty Name="CGST" ColumnName="CGST" />
+          <ScalarProperty Name="InvDocFile" ColumnName="InvDocFile" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Paid" ColumnName="Paid" />
+          <ScalarProperty Name="PaidDate" ColumnName="PaidDate" />
+          <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
+          <ScalarProperty Name="NetTotal" ColumnName="NetTotal" />
+          <ScalarProperty Name="TDS" ColumnName="TDS" />
+          <ScalarProperty Name="VatTax" ColumnName="VatTax" />
+          <ScalarProperty Name="ServiceTax" ColumnName="ServiceTax" />
+          <ScalarProperty Name="InvoiceAmount" ColumnName="InvoiceAmount" />
+          <ScalarProperty Name="InvoiceParticular" ColumnName="InvoiceParticular" />
+          <ScalarProperty Name="MonthYear" ColumnName="MonthYear" />
+          <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="InvoiceNum" ColumnName="InvoiceNum" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_client_payments">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_client_payments">
+        <MappingFragment StoreEntitySet="tbl_client_payments">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="TransactionNum" ColumnName="TransactionNum" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="DDChequeNo" ColumnName="DDChequeNo" />
+          <ScalarProperty Name="DDChequeDate" ColumnName="DDChequeDate" />
+          <ScalarProperty Name="PayMode" ColumnName="PayMode" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="PaidDate" ColumnName="PaidDate" />
+          <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="ReceptNo" ColumnName="ReceptNo" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_logging_entries">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_logging_entries">
+        <MappingFragment StoreEntitySet="tbl_logging_entries">
+          <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Action" ColumnName="Action" />
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vendor_invoice_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vendor_invoice_details">
+        <MappingFragment StoreEntitySet="tbl_vendor_invoice_details">
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="NetTotalAmt" ColumnName="NetTotalAmt" />
+          <ScalarProperty Name="TotalAmt" ColumnName="TotalAmt" />
+          <ScalarProperty Name="Rate" ColumnName="Rate" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Particulars" ColumnName="Particulars" />
+          <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_advance_payments">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_advance_payments">
+        <MappingFragment StoreEntitySet="tbl_advance_payments">
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="ReceivedDt" ColumnName="ReceivedDt" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+          <ScalarProperty Name="AdvId" ColumnName="AdvId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IPRules">
+      <EntityTypeMapping TypeName="FMSDBModel.IPRule">
+        <MappingFragment StoreEntitySet="IPRules">
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="Allow" ColumnName="Allow" />
+          <ScalarProperty Name="IpAddr" ColumnName="IpAddr" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vehicles">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vehicles">
+        <MappingFragment StoreEntitySet="tbl_vehicles">
+          <ScalarProperty Name="IsSelfFinanced" ColumnName="IsSelfFinanced" />
+          <ScalarProperty Name="Isown" ColumnName="Isown" />
+          <ScalarProperty Name="ActivateReason" ColumnName="ActivateReason" />
+          <ScalarProperty Name="ActivatedBy" ColumnName="ActivatedBy" />
+          <ScalarProperty Name="ActivateDt" ColumnName="ActivateDt" />
+          <ScalarProperty Name="DeactivatedBy" ColumnName="DeactivatedBy" />
+          <ScalarProperty Name="DeactivateDt" ColumnName="DeactivateDt" />
+          <ScalarProperty Name="ReasonForDeactive" ColumnName="ReasonForDeactive" />
+          <ScalarProperty Name="ChasNumber" ColumnName="ChasNumber" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="LastODOMeter" ColumnName="LastODOMeter" />
+          <ScalarProperty Name="AcquisitionDt" ColumnName="AcquisitionDt" />
+          <ScalarProperty Name="VendorAcRate" ColumnName="VendorAcRate" />
+          <ScalarProperty Name="IsProxy" ColumnName="IsProxy" />
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="DieselCardNum" ColumnName="DieselCardNum" />
+          <ScalarProperty Name="VendorRate" ColumnName="VendorRate" />
+          <ScalarProperty Name="SeaterId" ColumnName="SeaterId" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ProfileComplete" ColumnName="ProfileComplete" />
+          <ScalarProperty Name="VehiclePriority" ColumnName="VehiclePriority" />
+          <ScalarProperty Name="SIMNumber" ColumnName="SIMNumber" />
+          <ScalarProperty Name="SingleDoubleDriver" ColumnName="SingleDoubleDriver" />
+          <ScalarProperty Name="OwnerCumDriver" ColumnName="OwnerCumDriver" />
+          <ScalarProperty Name="PollutionValidity" ColumnName="PollutionValidity" />
+          <ScalarProperty Name="InsuranceValidity" ColumnName="InsuranceValidity" />
+          <ScalarProperty Name="FitnessValidity" ColumnName="FitnessValidity" />
+          <ScalarProperty Name="PermitValidity" ColumnName="PermitValidity" />
+          <ScalarProperty Name="TaxValidity" ColumnName="TaxValidity" />
+          <ScalarProperty Name="SeatingCapacity" ColumnName="SeatingCapacity" />
+          <ScalarProperty Name="ManufactureYearMonth" ColumnName="ManufactureYearMonth" />
+          <ScalarProperty Name="VehicleTypeID" ColumnName="VehicleTypeID" />
+          <ScalarProperty Name="VehicleModelID" ColumnName="VehicleModelID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="VehicleRegNum" ColumnName="VehicleRegNum" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_diesel_transfer_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_diesel_transfer_details">
+        <MappingFragment StoreEntitySet="tbl_diesel_transfer_details">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="ToVehId" ColumnName="ToVehId" />
+          <ScalarProperty Name="FromVehId" ColumnName="FromVehId" />
+          <ScalarProperty Name="DieselId" ColumnName="DieselId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_vendor_invoices">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_vendor_invoices">
+        <MappingFragment StoreEntitySet="tbl_vendor_invoices">
+          <ScalarProperty Name="DriverSalIds" ColumnName="DriverSalIds" />
+          <ScalarProperty Name="EMIds" ColumnName="EMIds" />
+          <ScalarProperty Name="MonthYear" ColumnName="MonthYear" />
+          <ScalarProperty Name="AdvIds" ColumnName="AdvIds" />
+          <ScalarProperty Name="DieslIds" ColumnName="DieslIds" />
+          <ScalarProperty Name="LogIds" ColumnName="LogIds" />
+          <ScalarProperty Name="FilterDates" ColumnName="FilterDates" />
+          <ScalarProperty Name="ReceiverName" ColumnName="ReceiverName" />
+          <ScalarProperty Name="AuthorizedSign" ColumnName="AuthorizedSign" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Paid" ColumnName="Paid" />
+          <ScalarProperty Name="PaidDate" ColumnName="PaidDate" />
+          <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
+          <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+          <ScalarProperty Name="InvoiceAmt" ColumnName="InvoiceAmt" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="InvoiceNum" ColumnName="InvoiceNum" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_deposits_deductions">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_deposits_deductions">
+        <MappingFragment StoreEntitySet="tbl_deposits_deductions">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="InvAddId" ColumnName="InvAddId" />
+          <ScalarProperty Name="InvDeductId" ColumnName="InvDeductId" />
+          <ScalarProperty Name="TransactionNum" ColumnName="TransactionNum" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="ChequeDt" ColumnName="ChequeDt" />
+          <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
+          <ScalarProperty Name="DepositMode" ColumnName="DepositMode" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDt" ColumnName="ModifiedDt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="DriverId" ColumnName="DriverId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="VendorId" ColumnName="VendorId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_booking_cab_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_booking_cab_details">
+        <MappingFragment StoreEntitySet="tbl_booking_cab_details">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+          <ScalarProperty Name="DriverId" ColumnName="DriverId" />
+          <ScalarProperty Name="VehicleTypeId" ColumnName="VehicleTypeId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="BookingId" ColumnName="BookingId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_bookings">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_bookings">
+        <MappingFragment StoreEntitySet="tbl_bookings">
+          <ScalarProperty Name="GuestMobile" ColumnName="GuestMobile" />
+          <ScalarProperty Name="Priority" ColumnName="Priority" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ReportingTime" ColumnName="ReportingTime" />
+          <ScalarProperty Name="ToLocation" ColumnName="ToLocation" />
+          <ScalarProperty Name="FromLocation" ColumnName="FromLocation" />
+          <ScalarProperty Name="TripType" ColumnName="TripType" />
+          <ScalarProperty Name="VehicleTypeId" ColumnName="VehicleTypeId" />
+          <ScalarProperty Name="VehicleModelId" ColumnName="VehicleModelId" />
+          <ScalarProperty Name="DateofReport" ColumnName="DateofReport" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="BookingMngrBy" ColumnName="BookingMngrBy" />
+          <ScalarProperty Name="BookingMngrDt" ColumnName="BookingMngrDt" />
+          <ScalarProperty Name="BookAckBy" ColumnName="BookAckBy" />
+          <ScalarProperty Name="BookAckDt" ColumnName="BookAckDt" />
+          <ScalarProperty Name="BookingBy" ColumnName="BookingBy" />
+          <ScalarProperty Name="BookingDt" ColumnName="BookingDt" />
+          <ScalarProperty Name="AdditionalInfo" ColumnName="AdditionalInfo" />
+          <ScalarProperty Name="BookingText" ColumnName="BookingText" />
+          <ScalarProperty Name="GuestDetails" ColumnName="GuestDetails" />
+          <ScalarProperty Name="GuestName" ColumnName="GuestName" />
+          <ScalarProperty Name="FromMail" ColumnName="FromMail" />
+          <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+          <ScalarProperty Name="BookRefNo" ColumnName="BookRefNo" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_odometer_readings">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_odometer_readings">
+        <MappingFragment StoreEntitySet="tbl_odometer_readings">
+          <ScalarProperty Name="ReadingValue" ColumnName="ReadingValue" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="ODMDate" ColumnName="ODMDate" />
+          <ScalarProperty Name="ModeOfEntry" ColumnName="ModeOfEntry" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_service_sch_master">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_service_sch_master">
+        <MappingFragment StoreEntitySet="tbl_service_sch_master">
+          <ScalarProperty Name="VehModelId" ColumnName="VehModelId" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Days" ColumnName="Days" />
+          <ScalarProperty Name="MaxKM" ColumnName="MaxKM" />
+          <ScalarProperty Name="MinKM" ColumnName="MinKM" />
+          <ScalarProperty Name="SSNO" ColumnName="SSNO" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryIssuedDetails">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryIssuedDetail">
+        <MappingFragment StoreEntitySet="InventoryIssuedDetails">
+          <ScalarProperty Name="IssuedFor" ColumnName="IssuedFor" />
+          <ScalarProperty Name="Pair" ColumnName="Pair" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="IssuedQty" ColumnName="IssuedQty" />
+          <ScalarProperty Name="IssuedDt" ColumnName="IssuedDt" />
+          <ScalarProperty Name="ItemText" ColumnName="ItemText" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="ReceiptNo" ColumnName="ReceiptNo" />
+          <ScalarProperty Name="IssueNo" ColumnName="IssueNo" />
+          <ScalarProperty Name="Slno" ColumnName="Slno" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryItemCategories">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryItemCategory">
+        <MappingFragment StoreEntitySet="InventoryItemCategories">
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ItemCatText" ColumnName="ItemCatText" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryItemsMasters">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryItemsMaster">
+        <MappingFragment StoreEntitySet="InventoryItemsMaster">
+          <ScalarProperty Name="InSummary" ColumnName="InSummary" />
+          <ScalarProperty Name="EffectedFrom" ColumnName="EffectedFrom" />
+          <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+          <ScalarProperty Name="MessItem" ColumnName="MessItem" />
+          <ScalarProperty Name="Size" ColumnName="Size" />
+          <ScalarProperty Name="UnitId" ColumnName="UnitId" />
+          <ScalarProperty Name="ItemCode" ColumnName="ItemCode" />
+          <ScalarProperty Name="Specification" ColumnName="Specification" />
+          <ScalarProperty Name="ReorderLevel" ColumnName="ReorderLevel" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="IsItem" ColumnName="IsItem" />
+          <ScalarProperty Name="ItemCatId" ColumnName="ItemCatId" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ItemText" ColumnName="ItemText" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryStockRegDetails">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryStockRegDetail">
+        <MappingFragment StoreEntitySet="InventoryStockRegDetails">
+          <ScalarProperty Name="QOH" ColumnName="QOH" />
+          <ScalarProperty Name="IssuedSlod" ColumnName="IssuedSlod" />
+          <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
+          <ScalarProperty Name="Rate" ColumnName="Rate" />
+          <ScalarProperty Name="ReceQty" ColumnName="ReceQty" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="UnitsId" ColumnName="UnitsId" />
+          <ScalarProperty Name="ItemText" ColumnName="ItemText" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Slno" ColumnName="Slno" />
+          <ScalarProperty Name="StockRegId" ColumnName="StockRegId" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryUnitsMasters">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryUnitsMaster">
+        <MappingFragment StoreEntitySet="InventoryUnitsMaster">
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="UnitsShortText" ColumnName="UnitsShortText" />
+          <ScalarProperty Name="UnitsText" ColumnName="UnitsText" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_inv_indent_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_inv_indent_details">
+        <MappingFragment StoreEntitySet="tbl_inv_indent_details">
+          <ScalarProperty Name="Specification" ColumnName="Specification" />
+          <ScalarProperty Name="PurposeFor" ColumnName="PurposeFor" />
+          <ScalarProperty Name="Procure" ColumnName="Procure" />
+          <ScalarProperty Name="LeadTime" ColumnName="LeadTime" />
+          <ScalarProperty Name="ReorderLevel" ColumnName="ReorderLevel" />
+          <ScalarProperty Name="QtyReq" ColumnName="QtyReq" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="IndentId" ColumnName="IndentId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_inv_indents">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_inv_indents">
+        <MappingFragment StoreEntitySet="tbl_inv_indents">
+          <ScalarProperty Name="Delivery" ColumnName="Delivery" />
+          <ScalarProperty Name="AddInfo" ColumnName="AddInfo" />
+          <ScalarProperty Name="IndRefNo" ColumnName="IndRefNo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CancelDt" ColumnName="CancelDt" />
+          <ScalarProperty Name="CancelUserId" ColumnName="CancelUserId" />
+          <ScalarProperty Name="IndRejDt" ColumnName="IndRejDt" />
+          <ScalarProperty Name="IndRejUserId" ColumnName="IndRejUserId" />
+          <ScalarProperty Name="IndAppDt" ColumnName="IndAppDt" />
+          <ScalarProperty Name="IndAppUserId" ColumnName="IndAppUserId" />
+          <ScalarProperty Name="IndentType" ColumnName="IndentType" />
+          <ScalarProperty Name="Priority" ColumnName="Priority" />
+          <ScalarProperty Name="PurchasesFor" ColumnName="PurchasesFor" />
+          <ScalarProperty Name="RequiredDt" ColumnName="RequiredDt" />
+          <ScalarProperty Name="DtOfInd" ColumnName="DtOfInd" />
+          <ScalarProperty Name="IndUserId" ColumnName="IndUserId" />
+          <ScalarProperty Name="DepartId" ColumnName="DepartId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_PurchaseOrderItemDetails">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_PurchaseOrderItemDetails">
+        <MappingFragment StoreEntitySet="tbl_PurchaseOrderItemDetails">
+          <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+          <ScalarProperty Name="Taxes" ColumnName="Taxes" />
+          <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="ScheduleDt" ColumnName="ScheduleDt" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="POId" ColumnName="POId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_SuppliersMaster">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_SuppliersMaster">
+        <MappingFragment StoreEntitySet="tbl_SuppliersMaster">
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="OtherNotes" ColumnName="OtherNotes" />
+          <ScalarProperty Name="JobPosition" ColumnName="JobPosition" />
+          <ScalarProperty Name="Title1" ColumnName="Title1" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Website" ColumnName="Website" />
+          <ScalarProperty Name="PinCode" ColumnName="PinCode" />
+          <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="IsCompany" ColumnName="IsCompany" />
+          <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+          <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryStockRegisters">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryStockRegister">
+        <MappingFragment StoreEntitySet="InventoryStockRegister">
+          <ScalarProperty Name="SourceDoc" ColumnName="SourceDoc" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+          <ScalarProperty Name="ReceivedBy" ColumnName="ReceivedBy" />
+          <ScalarProperty Name="ReceiptNO" ColumnName="ReceiptNO" />
+          <ScalarProperty Name="ReceivedDt" ColumnName="ReceivedDt" />
+          <ScalarProperty Name="EntryDt" ColumnName="EntryDt" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_jobcard_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_jobcard_details">
+        <MappingFragment StoreEntitySet="tbl_jobcard_details">
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="ServiceTax" ColumnName="ServiceTax" />
+          <ScalarProperty Name="VatTax" ColumnName="VatTax" />
+          <ScalarProperty Name="Specifications" ColumnName="Specifications" />
+          <ScalarProperty Name="PurposeFor" ColumnName="PurposeFor" />
+          <ScalarProperty Name="Procure" ColumnName="Procure" />
+          <ScalarProperty Name="LeadTime" ColumnName="LeadTime" />
+          <ScalarProperty Name="ReorderLevel" ColumnName="ReorderLevel" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="JobcardId" ColumnName="JobcardId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_service_stations">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_service_stations">
+        <MappingFragment StoreEntitySet="tbl_service_stations">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ServiceStation" ColumnName="ServiceStation" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_PurchaseOrders">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_PurchaseOrders">
+        <MappingFragment StoreEntitySet="tbl_PurchaseOrders">
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="DeliveryExpectedDt" ColumnName="DeliveryExpectedDt" />
+          <ScalarProperty Name="InvoiceTerms" ColumnName="InvoiceTerms" />
+          <ScalarProperty Name="InvoiceCampusId" ColumnName="InvoiceCampusId" />
+          <ScalarProperty Name="InvoiceReceived" ColumnName="InvoiceReceived" />
+          <ScalarProperty Name="BidValidity" ColumnName="BidValidity" />
+          <ScalarProperty Name="BidReceivedDt" ColumnName="BidReceivedDt" />
+          <ScalarProperty Name="BidTerms" ColumnName="BidTerms" />
+          <ScalarProperty Name="ApprovedDt" ColumnName="ApprovedDt" />
+          <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Terms_Conditions" ColumnName="Terms&amp;Conditions" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="UnTaxed" ColumnName="UnTaxed" />
+          <ScalarProperty Name="Source" ColumnName="Source" />
+          <ScalarProperty Name="ExpectedDt" ColumnName="ExpectedDt" />
+          <ScalarProperty Name="OrderDt" ColumnName="OrderDt" />
+          <ScalarProperty Name="RefNo" ColumnName="RefNo" />
+          <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_veh_service_schedules">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_veh_service_schedules">
+        <MappingFragment StoreEntitySet="tbl_veh_service_schedules">
+          <ScalarProperty Name="ODMeterMax" ColumnName="ODMeterMax" />
+          <ScalarProperty Name="DoneBy" ColumnName="DoneBy" />
+          <ScalarProperty Name="ServiceStation" ColumnName="ServiceStation" />
+          <ScalarProperty Name="IsDone" ColumnName="IsDone" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="DoneDt" ColumnName="DoneDt" />
+          <ScalarProperty Name="DueDt" ColumnName="DueDt" />
+          <ScalarProperty Name="ServiceDays" ColumnName="ServiceDays" />
+          <ScalarProperty Name="ODMeterReading" ColumnName="ODMeterReading" />
+          <ScalarProperty Name="ServiceNo" ColumnName="ServiceNo" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_diesel_tracking">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_diesel_tracking">
+        <MappingFragment StoreEntitySet="tbl_diesel_tracking">
+          <ScalarProperty Name="AuditedDt" ColumnName="AuditedDt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="OdoMeterReading" ColumnName="OdoMeterReading" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="Audited" ColumnName="Audited" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="PrevClosedDate" ColumnName="PrevClosedDate" />
+          <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+          <ScalarProperty Name="IssuedBy" ColumnName="IssuedBy" />
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="CardNum" ColumnName="CardNum" />
+          <ScalarProperty Name="PricePerLiter" ColumnName="PricePerLiter" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="IssuedTo" ColumnName="IssuedTo" />
+          <ScalarProperty Name="TokenValue" ColumnName="TokenValue" />
+          <ScalarProperty Name="DieselTokenNum" ColumnName="DieselTokenNum" />
+          <ScalarProperty Name="FuelStationName" ColumnName="FuelStationName" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_settings">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_settings">
+        <MappingFragment StoreEntitySet="tbl_settings">
+          <ScalarProperty Name="Allow" ColumnName="Allow" />
+          <ScalarProperty Name="SettingsField" ColumnName="SettingsField" />
+          <ScalarProperty Name="SettingsCode" ColumnName="SettingsCode" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_inven_item_price_details">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_inven_item_price_details">
+        <MappingFragment StoreEntitySet="tbl_inven_item_price_details">
+          <ScalarProperty Name="ApprovedDt" ColumnName="ApprovedDt" />
+          <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
+          <ScalarProperty Name="EffectToDt" ColumnName="EffectToDt" />
+          <ScalarProperty Name="EffectFromDt" ColumnName="EffectFromDt" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_veh_emis">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_veh_emis">
+        <MappingFragment StoreEntitySet="tbl_veh_emis">
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="RefNumber" ColumnName="RefNumber" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="ChequeDt" ColumnName="ChequeDt" />
+          <ScalarProperty Name="DDChequeNo" ColumnName="DDChequeNo" />
+          <ScalarProperty Name="Paymode" ColumnName="Paymode" />
+          <ScalarProperty Name="FineAmt" ColumnName="FineAmt" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="MonthYear" ColumnName="MonthYear" />
+          <ScalarProperty Name="EMINo" ColumnName="EMINo" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryIssuedMasters">
+      <EntityTypeMapping TypeName="FMSDBModel.InventoryIssuedMaster">
+        <MappingFragment StoreEntitySet="InventoryIssuedMaster">
+          <ScalarProperty Name="IssueTransDt" ColumnName="IssueTransDt" />
+          <ScalarProperty Name="IssueTransUserId" ColumnName="IssueTransUserId" />
+          <ScalarProperty Name="IssueRejDt" ColumnName="IssueRejDt" />
+          <ScalarProperty Name="IssueRejUserId" ColumnName="IssueRejUserId" />
+          <ScalarProperty Name="IssueUserId" ColumnName="IssueUserId" />
+          <ScalarProperty Name="IndentRefNo" ColumnName="IndentRefNo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="OtherDetails" ColumnName="OtherDetails" />
+          <ScalarProperty Name="ApprovedEmpId" ColumnName="ApprovedEmpId" />
+          <ScalarProperty Name="IssuedEmpId" ColumnName="IssuedEmpId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="IssueQty" ColumnName="IssueQty" />
+          <ScalarProperty Name="IssueDt" ColumnName="IssueDt" />
+          <ScalarProperty Name="IssueNo" ColumnName="IssueNo" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_veh_hypothicated">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_veh_hypothicated">
+        <MappingFragment StoreEntitySet="tbl_veh_hypothicated">
+          <ScalarProperty Name="LifeTax" ColumnName="LifeTax" />
+          <ScalarProperty Name="TotalAmt" ColumnName="TotalAmt" />
+          <ScalarProperty Name="GPSCost" ColumnName="GPSCost" />
+          <ScalarProperty Name="AccressCost" ColumnName="AccressCost" />
+          <ScalarProperty Name="MonthlyEMITo" ColumnName="MonthlyEMITo" />
+          <ScalarProperty Name="MonthlyEMIFrom" ColumnName="MonthlyEMIFrom" />
+          <ScalarProperty Name="MonthlyEMIAmt" ColumnName="MonthlyEMIAmt" />
+          <ScalarProperty Name="OnRoadCost" ColumnName="OnRoadCost" />
+          <ScalarProperty Name="RepaidAmt" ColumnName="RepaidAmt" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="RepaymentTenure" ColumnName="RepaymentTenure" />
+          <ScalarProperty Name="LifeInsurance" ColumnName="LifeInsurance" />
+          <ScalarProperty Name="HypothicatedAmt" ColumnName="HypothicatedAmt" />
+          <ScalarProperty Name="DownPayment" ColumnName="DownPayment" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="HId" ColumnName="HId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_driver_salaries">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_driver_salaries">
+        <MappingFragment StoreEntitySet="tbl_driver_salaries">
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Approve" ColumnName="Approve" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDt" ColumnName="ModifiedDt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="TotalAmt" ColumnName="TotalAmt" />
+          <ScalarProperty Name="Deductions" ColumnName="Deductions" />
+          <ScalarProperty Name="AdvAmt" ColumnName="AdvAmt" />
+          <ScalarProperty Name="Incentive" ColumnName="Incentive" />
+          <ScalarProperty Name="NetSalary" ColumnName="NetSalary" />
+          <ScalarProperty Name="PresentDays" ColumnName="PresentDays" />
+          <ScalarProperty Name="WorkDays" ColumnName="WorkDays" />
+          <ScalarProperty Name="SalaryAmt" ColumnName="SalaryAmt" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="MonthYear" ColumnName="MonthYear" />
+          <ScalarProperty Name="DriverName" ColumnName="DriverName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_jobcard">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_jobcard">
+        <MappingFragment StoreEntitySet="tbl_jobcard">
+          <ScalarProperty Name="BillingInvDt" ColumnName="BillingInvDt" />
+          <ScalarProperty Name="BillingInvNO" ColumnName="BillingInvNO" />
+          <ScalarProperty Name="VatTax" ColumnName="VatTax" />
+          <ScalarProperty Name="NetAmount" ColumnName="NetAmount" />
+          <ScalarProperty Name="DisCountAmt" ColumnName="DisCountAmt" />
+          <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+          <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+          <ScalarProperty Name="ServiceType" ColumnName="ServiceType" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="JobCardDescr" ColumnName="JobCardDescr" />
+          <ScalarProperty Name="ServiceCharges" ColumnName="ServiceCharges" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="JobDoneBy" ColumnName="JobDoneBy" />
+          <ScalarProperty Name="DtTimeActual" ColumnName="DtTimeActual" />
+          <ScalarProperty Name="DtTimeOutEst" ColumnName="DtTimeOutEst" />
+          <ScalarProperty Name="DtTimeIn" ColumnName="DtTimeIn" />
+          <ScalarProperty Name="Fuel" ColumnName="Fuel" />
+          <ScalarProperty Name="OdometerReading" ColumnName="OdometerReading" />
+          <ScalarProperty Name="JobCardDt" ColumnName="JobCardDt" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="JobCardNo" ColumnName="JobCardNo" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_card_assignments">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_card_assignments">
+        <MappingFragment StoreEntitySet="tbl_card_assignments">
+          <ScalarProperty Name="Comment" ColumnName="Comment" />
+          <ScalarProperty Name="IsClosed" ColumnName="IsClosed" />
+          <ScalarProperty Name="MonthDate" ColumnName="MonthDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+          <ScalarProperty Name="PackageId" ColumnName="PackageId" />
+          <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_veh_condition_history">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_veh_condition_history">
+        <MappingFragment StoreEntitySet="tbl_veh_condition_history">
+          <ScalarProperty Name="TyresWheelsPercent" ColumnName="TyresWheelsPercent" />
+          <ScalarProperty Name="AcCondPercent" ColumnName="AcCondPercent" />
+          <ScalarProperty Name="StepneyPercent" ColumnName="StepneyPercent" />
+          <ScalarProperty Name="BreakesPercent" ColumnName="BreakesPercent" />
+          <ScalarProperty Name="SeatingPercent" ColumnName="SeatingPercent" />
+          <ScalarProperty Name="InSidePercent" ColumnName="InSidePercent" />
+          <ScalarProperty Name="OutSidePercent" ColumnName="OutSidePercent" />
+          <ScalarProperty Name="Percentage" ColumnName="Percentage" />
+          <ScalarProperty Name="Comment" ColumnName="Comment" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="TrackTyresWheels" ColumnName="TrackTyresWheels" />
+          <ScalarProperty Name="SeateCovers" ColumnName="SeateCovers" />
+          <ScalarProperty Name="AcCond" ColumnName="AcCond" />
+          <ScalarProperty Name="Prefume" ColumnName="Prefume" />
+          <ScalarProperty Name="Tourch" ColumnName="Tourch" />
+          <ScalarProperty Name="Umbrella" ColumnName="Umbrella" />
+          <ScalarProperty Name="Stepney" ColumnName="Stepney" />
+          <ScalarProperty Name="FirstAidKit" ColumnName="FirstAidKit" />
+          <ScalarProperty Name="ToolKit" ColumnName="ToolKit" />
+          <ScalarProperty Name="SeatBelts" ColumnName="SeatBelts" />
+          <ScalarProperty Name="SpeedoMeterCond" ColumnName="SpeedoMeterCond" />
+          <ScalarProperty Name="WindShieldWipers" ColumnName="WindShieldWipers" />
+          <ScalarProperty Name="SeatingComfort" ColumnName="SeatingComfort" />
+          <ScalarProperty Name="BreakLights" ColumnName="BreakLights" />
+          <ScalarProperty Name="ReverseLamps" ColumnName="ReverseLamps" />
+          <ScalarProperty Name="TurnSignallights" ColumnName="TurnSignallights" />
+          <ScalarProperty Name="ParkingLights" ColumnName="ParkingLights" />
+          <ScalarProperty Name="HeadLights" ColumnName="HeadLights" />
+          <ScalarProperty Name="Horn" ColumnName="Horn" />
+          <ScalarProperty Name="GlassClear" ColumnName="GlassClear" />
+          <ScalarProperty Name="FuelIndicator" ColumnName="FuelIndicator" />
+          <ScalarProperty Name="ConditionOfCabInSide" ColumnName="ConditionOfCabInSide" />
+          <ScalarProperty Name="ConditionOfCabOutSide" ColumnName="ConditionOfCabOutSide" />
+          <ScalarProperty Name="Brakes" ColumnName="Brakes" />
+          <ScalarProperty Name="BothSideMirrors" ColumnName="BothSideMirrors" />
+          <ScalarProperty Name="BodyConditionAndPainting" ColumnName="BodyConditionAndPainting" />
+          <ScalarProperty Name="InspectionDt" ColumnName="InspectionDt" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_package_client_rates_log">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_package_client_rates_log">
+        <MappingFragment StoreEntitySet="tbl_package_client_rates_log">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="LogoutTime" ColumnName="LogoutTime" />
+          <ScalarProperty Name="LoginTime" ColumnName="LoginTime" />
+          <ScalarProperty Name="ExpiredDt" ColumnName="ExpiredDt" />
+          <ScalarProperty Name="EffectiveDt" ColumnName="EffectiveDt" />
+          <ScalarProperty Name="VehicleModelId" ColumnName="VehicleModelId" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDt" ColumnName="ModifiedDt" />
+          <ScalarProperty Name="WorkingDays" ColumnName="WorkingDays" />
+          <ScalarProperty Name="TimeUnit" ColumnName="TimeUnit" />
+          <ScalarProperty Name="PackageAmt" ColumnName="PackageAmt" />
+          <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+          <ScalarProperty Name="VehicleTypeId" ColumnName="VehicleTypeId" />
+          <ScalarProperty Name="PackId" ColumnName="PackId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_projects">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_projects">
+        <MappingFragment StoreEntitySet="tbl_projects">
+          <ScalarProperty Name="MgrMobile" ColumnName="MgrMobile" />
+          <ScalarProperty Name="MgrMailId" ColumnName="MgrMailId" />
+          <ScalarProperty Name="MgrName" ColumnName="MgrName" />
+          <ScalarProperty Name="SpocMobile" ColumnName="SpocMobile" />
+          <ScalarProperty Name="SpocMailId" ColumnName="SpocMailId" />
+          <ScalarProperty Name="SpocName" ColumnName="SpocName" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="BillingTypeId" ColumnName="BillingTypeId" />
+          <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+          <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+          <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_drivers">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_drivers">
+        <MappingFragment StoreEntitySet="tbl_drivers">
+          <ScalarProperty Name="AadharNum" ColumnName="AadharNum" />
+          <ScalarProperty Name="ReferenceName" ColumnName="ReferenceName" />
+          <ScalarProperty Name="DieselCardNum" ColumnName="DieselCardNum" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ProfileComplete" ColumnName="ProfileComplete" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+          <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+          <ScalarProperty Name="BadgeValidity" ColumnName="BadgeValidity" />
+          <ScalarProperty Name="BadgeNumber" ColumnName="BadgeNumber" />
+          <ScalarProperty Name="LicenceValidity" ColumnName="LicenceValidity" />
+          <ScalarProperty Name="LicenceNumber" ColumnName="LicenceNumber" />
+          <ScalarProperty Name="NameonLicence" ColumnName="NameonLicence" />
+          <ScalarProperty Name="PhotoUrl" ColumnName="PhotoUrl" />
+          <ScalarProperty Name="IDProof" ColumnName="IDProof" />
+          <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+          <ScalarProperty Name="Address2" ColumnName="Address2" />
+          <ScalarProperty Name="Address1" ColumnName="Address1" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="CurrentVehicleID" ColumnName="CurrentVehicleID" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TmpUserLogReport1">
+      <EntityTypeMapping TypeName="FMSDBModel.TmpUserLogReport1">
+        <MappingFragment StoreEntitySet="TmpUserLogReport1">
+          <ScalarProperty Name="DesAudCnt" ColumnName="DesAudCnt" />
+          <ScalarProperty Name="DesAddCnt" ColumnName="DesAddCnt" />
+          <ScalarProperty Name="LogAudCnt" ColumnName="LogAudCnt" />
+          <ScalarProperty Name="LogEditCnt" ColumnName="LogEditCnt" />
+          <ScalarProperty Name="LogAddCnt" ColumnName="LogAddCnt" />
+          <ScalarProperty Name="UserDt" ColumnName="UserDt" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_log_sheets">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_log_sheets">
+        <MappingFragment StoreEntitySet="tbl_log_sheets">
+          <ScalarProperty Name="IsNoCab" ColumnName="IsNoCab" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+          <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+          <ScalarProperty Name="AlterVehNum" ColumnName="AlterVehNum" />
+          <ScalarProperty Name="IsAdhoc" ColumnName="IsAdhoc" />
+          <ScalarProperty Name="CardNumber" ColumnName="CardNumber" />
+          <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+          <ScalarProperty Name="IsCash" ColumnName="IsCash" />
+          <ScalarProperty Name="PackId" ColumnName="PackId" />
+          <ScalarProperty Name="ExtraHrRate" ColumnName="ExtraHrRate" />
+          <ScalarProperty Name="ExtraKMRate" ColumnName="ExtraKMRate" />
+          <ScalarProperty Name="TotalHrs" ColumnName="TotalHrs" />
+          <ScalarProperty Name="GuestName" ColumnName="GuestName" />
+          <ScalarProperty Name="BoookRefNum" ColumnName="BoookRefNum" />
+          <ScalarProperty Name="FinalNetAmt" ColumnName="FinalNetAmt" />
+          <ScalarProperty Name="PackModel" ColumnName="PackModel" />
+          <ScalarProperty Name="NetAmount" ColumnName="NetAmount" />
+          <ScalarProperty Name="FuelHike" ColumnName="FuelHike" />
+          <ScalarProperty Name="ParkingChrg" ColumnName="ParkingChrg" />
+          <ScalarProperty Name="TollChrg" ColumnName="TollChrg" />
+          <ScalarProperty Name="GrossAmt" ColumnName="GrossAmt" />
+          <ScalarProperty Name="LogEndDate" ColumnName="LogEndDate" />
+          <ScalarProperty Name="ExtraHr" ColumnName="ExtraHr" />
+          <ScalarProperty Name="ExtraKM" ColumnName="ExtraKM" />
+          <ScalarProperty Name="WorkingHrs" ColumnName="WorkingHrs" />
+          <ScalarProperty Name="WorkingDays" ColumnName="WorkingDays" />
+          <ScalarProperty Name="LogSheetType" ColumnName="LogSheetType" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDt" ColumnName="ModifiedDt" />
+          <ScalarProperty Name="AuditedBy" ColumnName="AuditedBy" />
+          <ScalarProperty Name="AuditDt" ColumnName="AuditDt" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="AuditRemark" ColumnName="AuditRemark" />
+          <ScalarProperty Name="TravelPax" ColumnName="TravelPax" />
+          <ScalarProperty Name="FullLocation" ColumnName="FullLocation" />
+          <ScalarProperty Name="FinalSlabRate" ColumnName="FinalSlabRate" />
+          <ScalarProperty Name="FinalApprovedKM" ColumnName="FinalApprovedKM" />
+          <ScalarProperty Name="Paid" ColumnName="Paid" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="ClosedFlag" ColumnName="ClosedFlag" />
+          <ScalarProperty Name="SlabRate" ColumnName="SlabRate" />
+          <ScalarProperty Name="VehicleModelID" ColumnName="VehicleModelID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="PassengerEmpID" ColumnName="PassengerEmpID" />
+          <ScalarProperty Name="Approved" ColumnName="Approved" />
+          <ScalarProperty Name="TotalKM" ColumnName="TotalKM" />
+          <ScalarProperty Name="EndKM" ColumnName="EndKM" />
+          <ScalarProperty Name="StartKM" ColumnName="StartKM" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="ReachTime" ColumnName="ReachTime" />
+          <ScalarProperty Name="ShiftTime" ColumnName="ShiftTime" />
+          <ScalarProperty Name="Pax" ColumnName="Pax" />
+          <ScalarProperty Name="TripeType" ColumnName="TripeType" />
+          <ScalarProperty Name="LogSheetNum" ColumnName="LogSheetNum" />
+          <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+          <ScalarProperty Name="SeaterID" ColumnName="SeaterID" />
+          <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+          <ScalarProperty Name="VehicleTypeID" ColumnName="VehicleTypeID" />
+          <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TmpUserLogReports">
+      <EntityTypeMapping TypeName="FMSDBModel.TmpUserLogReport">
+        <MappingFragment StoreEntitySet="TmpUserLogReport">
+          <ScalarProperty Name="DesAudCnt" ColumnName="DesAudCnt" />
+          <ScalarProperty Name="DesAddCnt" ColumnName="DesAddCnt" />
+          <ScalarProperty Name="LogAudCnt" ColumnName="LogAudCnt" />
+          <ScalarProperty Name="LogEditCnt" ColumnName="LogEditCnt" />
+          <ScalarProperty Name="LogAddCnt" ColumnName="LogAddCnt" />
+          <ScalarProperty Name="UserDt" ColumnName="UserDt" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tbl_package_client_rates">
+      <EntityTypeMapping TypeName="FMSDBModel.tbl_package_client_rates">
+        <MappingFragment StoreEntitySet="tbl_package_client_rates">
+          <ScalarProperty Name="Approved" ColumnName="Approved" />
+          <ScalarProperty Name="TimeUnit" ColumnName="TimeUnit" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+          <ScalarProperty Name="LogoutTime" ColumnName="LogoutTime" />
+          <ScalarProperty Name="LoginTime" ColumnName="LoginTime" />
+          <ScalarProperty Name="ExpiredDt" ColumnName="ExpiredDt" />
+          <ScalarProperty Name="EffectiveDt" ColumnName="EffectiveDt" />
+          <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+          <ScalarProperty Name="PackModel" ColumnName="PackModel" />
+          <ScalarProperty Name="VehicleModelId" ColumnName="VehicleModelId" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDt" ColumnName="CreatedDt" />
+          <ScalarProperty Name="ExtHr" ColumnName="ExtHr" />
+          <ScalarProperty Name="ExtKM" ColumnName="ExtKM" />
+          <ScalarProperty Name="PackageKM" ColumnName="PackageKM" />
+          <ScalarProperty Name="WorkingHrs" ColumnName="WorkingHrs" />
+          <ScalarProperty Name="WorkingDays" ColumnName="WorkingDays" />
+          <ScalarProperty Name="PackageAmt" ColumnName="PackageAmt" />
+          <ScalarProperty Name="VehicleTypeId" ColumnName="VehicleTypeId" />
+          <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

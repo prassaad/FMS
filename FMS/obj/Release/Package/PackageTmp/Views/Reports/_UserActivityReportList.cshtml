@@ -1,0 +1,52 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+
+<p>
+    No. of entries @(ViewBag.ListCount) showing
+</p>
+
+<table class="table table-striped table-condensed dTableR dataTable">
+    <thead>
+        <tr>
+            <th>
+                User Name
+            </th>
+            <th>
+                IP Address    
+            </th>
+            <th>
+                Date & Time
+            </th>
+            <th>
+                Module
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text3)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text4)
+                </td>
+                <td>
+                    @String.Format("{0:dd/MM/yyyy hh:mm tt}", item.Date1.ToString(new System.Globalization.CultureInfo("en-Us")))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text2)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>

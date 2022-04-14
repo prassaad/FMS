@@ -1,0 +1,503 @@
+﻿@model FMS.Models.tbl_deposits_deductions
+           @{
+               Session["DepositsList"] = null; var VehicleList = (Dictionary<long, string>)ViewBag.VehicleID;
+           }
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+<style type="text/css">
+ .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+     .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+     .ac_results ul
+{
+	width: 100%;
+	list-style-position: outside;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.chzn-container
+{
+    margin:0;
+}
+ 
+    .ac_loading {
+	 background : white url("../../Content/images/loading-icon.gif") right center no-repeat;
+    }
+</style>
+<div class="clsmodalheader">Add Deposit Info.</div>
+@using (Html.BeginForm("Create", "Deposits", FormMethod.Post, new { id = "frmDeposit", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+ <div style="overflow: auto;z-index:9999;height:450px;" id="divAdvanceDet">
+     <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+             <td colspan="2" style="height: 12px; padding-top: 10px;">
+                 <span id="SpanValidateMsg" style="color: Red; display: none; font-weight: bold;">
+                    @(TempData["Message"])
+                 </span>
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Veh. Reg# <span style="color: Red;">*</span>
+             </td>
+             <td>
+                 <div class="side-by-side clearfix">
+                     <select id="VehicleId" data-placeholder="Select Vehicle..." class="chzn-select" style="width: 220px;">
+                         <option value=""></option>
+                         @foreach (var item in VehicleList.Keys)
+                         {
+                             <option value="@item">
+                                 @VehicleList[item]
+                             </option>
+                         }
+                     </select>
+                 </div>
+                 <input type="hidden" id="cid" name="cid" />
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Driver <span style="color: Red;">*</span>
+             </td>
+             <td>
+                 <select id="DriverId" name="DriverId" class="txtInput" tabindex="2">
+                     <option value="0">--Select Driver--</option>
+                 </select>
+             </td>
+         </tr>
+         <tr>
+             <td style="width: 25%">
+                 Owner <span style="color: Red;">*</span>
+             </td>
+             <td style="width: 75%">
+                 <select id="VendorId" name="VendorId" class="txtInput" tabindex="3">
+                     <option value="0">--Select Owner--</option>
+                 </select>
+                 <span id="spnDeposit" style="color: Red; font-style: oblique; font-weight: bold;">
+                 </span>
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Date <span style="color: Red;">*</span>
+             </td>
+             <td>
+                 @Html.TextBoxFor(model => model.CreatedDt, new { @class = "txtInput validateDt", @tabindex = 4 , @maxlength = 20 })
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Deposit Mode <span style="color: Red">*</span>
+             </td>
+             <td>
+                 <input type="radio" name="DepositMode" id="Cash" value="Cash" />
+                 Cash
+                 <input type="radio" name="DepositMode" id="ChequeDD" value="Cheque" />
+                 Cheque/DD
+                 <input type="radio" name="DepositMode" id="Transfer" value="Transfer" />
+                 Transfer
+             </td>
+         </tr>
+         <tr id="tr_paymode">
+             <td colspan="2" id="td_paymode">
+                 <table class="table-striped table-condensed dTableR dataTable" id="tbl_cheque">
+                     <tr>
+                         <td>
+                             Cheque/DD No. <span style="color: Red">*</span>
+                         </td>
+                         <td>
+                             @Html.TextBoxFor(model => model.ChequeNo, new { @class = "txtInput" ,@maxlength = 50 })
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Cheque/DD Date <span style="color: Red">*</span>
+                         </td>
+                         <td>
+                             @Html.TextBoxFor(model => model.ChequeDt, new { @class = "txtInput", @maxlength = 20 })
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Bank Name <span style="color: Red">*</span>
+                         </td>
+                         <td>
+                             @Html.TextBoxFor(model => model.BankName, new { @class = "txtInput", @maxlength = 50 })
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Branch <span style="color: Red">*</span>
+                         </td>
+                         <td>
+                             @Html.TextBoxFor(model => model.Branch, new { @class = "txtInput", @maxlength = 50 })
+                         </td>
+                     </tr>
+                 </table>
+                 <table class="table-striped table-condensed dTableR dataTable" id="tbl_transfer">
+                     <tr>
+                         <td>
+                             Transaction No. <span style="color: Red">*</span>
+                         </td>
+                         <td>
+                             @Html.TextBoxFor(model => model.TransactionNum, new { @class = "txtInput" , @maxlength = 50 })
+                         </td>
+                     </tr>
+                 </table>
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Amount <span style="color: Red">*</span>
+             </td>
+             <td>
+                 @Html.TextBoxFor(model => model.Amount, new { @class = "txtInput", @tabindex = 7, @onkeypress = "return numberValidate(event);" , @maxlength = 8 })
+             </td>
+         </tr>
+         <tr>
+             <td>
+             </td>
+             <td>
+                 <input type="button" value="Add Deposit" id="btnCreateDeposit" tabindex="8" />
+             </td>
+         </tr>
+     </table>
+</div>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    var config = {
+        '.chzn-select': {},
+        '.chzn-select-deselect': { allow_single_deselect: true },
+        '.chzn-select-no-single': { disable_search_threshold: 10 },
+        '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chzn-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    // first hide these tr and td 
+    $('#tr_paymode').hide();
+    $('#td_paymode').hide();
+    // Set on focus to vehicle reg number
+    $("#VehicleID").focus();
+    // Set radio Default to Cash for Pay mode
+    $('input:radio[name=DepositMode]').filter('[value="Cash"]').attr('checked', true);
+    var i = 0;
+    $('#VehicleId').change(function () {
+        var sValue = $(this).val();
+        $('#cid').val(sValue);
+        GetVendor(sValue);
+        GetVehicleDriver(sValue);
+    });
+
+    var myDate = new Date();
+    var createdDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+    $("#CreatedDt").val(createdDate);
+    $('#CreatedDt').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function () {
+        }
+    });
+    $('#ChequeDt').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function () {
+        }
+    });
+
+    $("input:radio[name=DepositMode]").click(function () {
+        var selectedVal = $(this).val();
+        if (selectedVal == 'Cheque') {
+            $('#tr_paymode').show(); $('#td_paymode').show(); $('#tbl_transfer').hide(); $('#tbl_cheque').show();
+        }
+        else if (selectedVal == 'Transfer') {
+            $('#tr_paymode').show(); $('#td_paymode').show(); $('#tbl_cheque').hide(); $('#tbl_transfer').show();
+        }
+        else {
+            $('#tr_paymode').hide(); $('#td_paymode').hide(); $('#tbl_cheque').hide(); $('#tbl_transfer').hide();
+        }
+    });
+    // button click event for btnCreateAdvance
+    $("#btnCreateDeposit").click(function () {
+        if (!ValidateFields()) {
+            return;
+        }
+        // Call Ajax Post Method Here 
+        var VehicleID = $("#cid").val();
+        var frmColl = $("#frmDeposit").serialize();
+        $("#div_loading").show();
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "POST",
+                  url: "/Deposits/AddNewDepositDetails",
+                  dataType: "json",
+                  data: "frm=" + frmColl + "&VID=" + VehicleID,
+                  success: function (result, textStatus, jqXHR) {
+                      
+                      if (result.success) {
+                          $('#divDepositsList').html('');
+                          $("#divDepositsList").load("/Deposits/GetDepositList");
+
+                          if (i < 10) {
+                              if (confirm('Are you want to add one more deposit entry in the list?')) {
+                                  i = i + 1;
+                                  ClearAllFields();
+                                  $("#div_loading").hide();
+                                  $("#div_loading").fadeOut('slow');
+                                  var myDate = new Date();
+                                  var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+                                  $("#CreatedDate").val(prettyDate);
+                              }
+                              else {
+                                  document.getElementById("frmDeposit").submit();
+                                  i = 0;
+                                  ClearAllFields();
+                                  $("#div_loading").hide();
+                                  $("#div_loading").fadeOut('slow');
+                              }
+                          }
+                          else {
+                              alert("Unable to add more than 10 records to list.Please click on ok to save!");
+                              document.getElementById("frmDeposit").submit();
+                              i = 0;
+                          }
+                      }
+                      else {
+                          $("#SpanValidateMsg").show();
+                          $("#SpanValidateMsg").html(result.msg); $("#Amount").val(''); $("#Amount").focus();
+                          $("#div_loading").hide();
+                          $("#div_loading").fadeOut('slow');
+                      }
+                  },
+                  error: function (error) {
+                      // alert(error);
+                  }
+              });
+
+    });
+    // Validation Method
+    function ValidateFields() {
+        var vehicleId = $('#VehicleId').val();
+        var driverId = $('#DriverId').val();
+        var vendorId = $("#VendorId").val();
+        var createdDate = $('#CreatedDt').val();
+        var payMode = $('input[name=DepositMode]:radio:checked').val();
+        var Amt = $("#Amount").val();
+        if (vehicleId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle registration number.');
+            $("#VehicleId").focus();
+            return false;
+        }
+        if (driverId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select driver / verify whether driver has assigned to this vehicle or not.');
+            $("#DriverId").focus();
+            return false;
+        }
+        if (vendorId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select owner name');
+            $("#VendorId").focus();
+            return false;
+        }
+        if (createdDate == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please pick the from calendar or enter date');
+            $("#CreatedDt").focus();
+            return false;
+        }
+        if (payMode == 'Cheque') {
+            var chequeNo = $('#ChequeNo').val();
+            var chequeDate = $("#ChequeDt").val();
+            var bankName = $("#BankName").val();
+            var branch = $("#Branch").val();
+
+            if (chequeNo == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter cheque/DD number.');
+                $("#ChequeNo").focus();
+                return false;
+            }
+            if (chequeDate == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please pick date from calendar or enter date');
+                $("#ChequeDt").focus();
+                return false;
+            }
+            if (bankName == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter bank name.');
+                $("#BankName").focus();
+                return false;
+            }
+            if (branch == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter branch.');
+                $("#Branch").focus();
+                return false;
+            }
+        }
+        if (payMode == "Transfer") {
+            var transactionNum = $("#TransactionNum").val();
+            if (transactionNum == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter transaction number.');
+                $("#TransactionNum").focus();
+                return false;
+            }
+        }
+        if (Amt == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter amount.');
+            $("#Amount").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        return true;
+    }
+    
+    // Clear All Fields
+    function ClearAllFields() {
+        $('select[id="VehicleId"]').next('div.chzn-container').find('a.chzn-single span').html('Select Vehicle...');
+        $('#VehicleId').val('');
+        $("#cid").val('');
+        $('#DriverId').val('');
+        $("#VendorId").val('');
+        $('#CreatedDt').val('');
+        $('input:radio[name=DepositMode]').filter('[value="Cash"]').attr('checked', true);
+        $("#Amount").val('');
+        $('#ChequeNo').val('');
+        $("#ChequeDt").val('');
+        $("#BankName").val('');
+        $("#Branch").val('');
+        $("#TransactionNum").val('');
+        $('#spnDeposit').empty();
+        $('#tr_paymode').hide(); $('#td_paymode').hide(); $('#tbl_cheque').hide(); $('#tbl_transfer').hide();
+    }
+    // Json Methods to fill Dropdown List 
+    function GetVendor(VehicleID) {
+        $("#div_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVendor?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#VendorId').html('<option value="">--Select Vendor--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#VendorId").append(options);
+                    $("#VendorId option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#VendorId option:contains("Loading...")').remove();
+                    GetFixedDepositByVendor(sModel);
+                    $("#div_loading").fadeOut('slow');
+                }
+                else {
+                    $('#VendorId').html('<option value="">--Select Vendor--</option>');
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#VendorId").append(options);
+                        $("#VendorId option[value=" + sModel + "]").attr("selected", "selected");
+                        GetFixedDepositByVendor(sModel);
+                    }
+                    $("#div_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetVehicleDriver(VehicleID) {
+        $("#div_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#DriverId').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").hide();
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#DriverId").append(options);
+                    $("#DriverId option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#DriverId option:contains("Loading...")').remove();
+                    $("#div_loading").fadeOut('slow');
+                }
+                else {
+                    $('#DriverId').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").show();
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#DriverId").append(options);
+                        $("#DriverId option[value=" + sModel + "]").attr("selected", "selected");
+
+                    }
+                    $("#div_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    function GetFixedDepositByVendor(vendorId) {
+        $.get("/Deposits/GetFixedDepositByVendor?VendorId=" + vendorId, function (data) {
+            if (data != 0) {
+                $('#spnDeposit').html('Fixed Deposit:' + data);
+            }
+            else {
+                $('#spnDeposit').empty();
+            }
+        });
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>
+

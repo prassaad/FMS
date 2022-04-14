@@ -1,0 +1,52 @@
+﻿@model FMS.Models.tbl_card_assignments
+ @using FMS.Models          
+<div class="clsmodalheader">Close Card Assignment</div>
+<div style="overflow: auto; z-index: 9999; height: 350px;" id="divEditCardAssignment">
+@using (Html.BeginForm("CloseCardWithComments", "CardAssignment", FormMethod.Post, new { id = "frmEditCardAssignment", enctype = "multipart/form-data" }))
+{
+     @Html.ValidationSummary(true)
+          <table class="table table-striped table-condensed dTableR dataTable">
+          <tr>
+              <td colspan="2" style="padding-top: 10px;">
+                  <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                  </span>
+              </td>
+          </tr> 
+          <tr>
+            <td>
+                Comments <span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.Hidden("CardId" ,Model.Id)
+                @Html.TextArea("Comments", "", new { @style = "width:350px;height:150px;", @placeholder = "Enter Your Comments" })
+                </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+                <input type="button" id="btnSaveCardAssignment" value="Submit" />
+            </td>
+          </tr>
+          </table>
+}
+</div>
+
+<script type="text/javascript">
+    $('#btnSaveCardAssignment').click(function () {
+        var comments = $('#Comments').val();
+
+        if (comments == '') {
+            $('#SpanValidateMsg').html('Please enter your comment');
+            $('#SpanValidateMsg').show();
+            $('#Comments').focus();
+            return;
+        }
+        $('#SpanValidateMsg').hide();
+
+        $.post('@Url.Content("~/CardAssignment/CloseCardWithComments/")', $('#frmEditCardAssignment').serialize(), function (data) {
+            alert(data.msg);
+            if (data.success) {
+                $.modal.close();
+            }
+        });
+    });
+</script>

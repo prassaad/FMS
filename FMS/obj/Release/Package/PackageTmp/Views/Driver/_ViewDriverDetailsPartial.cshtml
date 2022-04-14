@@ -1,0 +1,445 @@
+﻿@model FMS.Models.tbl_drivers
+@{
+    long VehicleID = ViewBag.CurrentVehicleID == null ? 0 : Convert.ToInt64(ViewBag.CurrentVehicleID); 
+}
+@using (Html.BeginForm("Edit", "Driver", new { id = Model.ID }, FormMethod.Post, new { id = "frmUpdateDriverForm", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="clsmodalheader">
+        View Driver Details</div>
+    <div style="overflow: auto; z-index: 9999; height: 500px;" id="EditDriverDetDiv">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="DriverValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    First Name :<span style="color: Red;"> * </span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Last Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Permanent Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address1, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Current Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address2, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Contact# :<span style="color: Red;"> * </span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ContactNumber, new { @maxlength = "10", @class = "validPhoneNum" })
+                    @Html.ValidationMessageFor(model => model.ContactNumber)
+                    @Html.Hidden("VendorID", Model.VendorID)
+                </td>
+            </tr>
+            @if (VehicleID == 0)
+            {
+                <tr>
+                    <td>
+                        Current Vehicle :@*<span style="color: Red;"> * </span>*@
+                    </td>
+                    <td>
+                        <select id="CurrentVehicleID" name="CurrentVehicleID" class="validate" style="width: 310px">
+                            <option value="0">--Select Vehicle--</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.CurrentVehicleID)
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @Html.Hidden("CurrentVehicleID", VehicleID)   
+            }
+            <tr>
+                <td>
+                    Photo :
+                </td>
+                <td>
+                    <input type="file" name="PhotoUrl" id="PhotoUrl" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if (Model.PhotoUrl != null)
+                    {
+                        <img src="../../Content/uploadimages/@Model.PhotoUrl" width="80" height="80" alt="Photo" />
+                    }
+                    else
+                    {
+                        <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                    }
+                    @Html.ValidationMessageFor(model => model.PhotoUrl)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ID Proof:
+                </td>
+                <td>
+                    <input type="file" name="IDProof" id="IDProof" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if (Model.IDProof != null)
+                    {
+                        <img src="../../Content/uploadimages/@Model.IDProof" width="80" height="80" alt="Photo" />
+                    }
+                    @Html.ValidationMessageFor(model => model.IDProof)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Aadhar Number:
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AadharNum, new { @class = "isAlphaNumeric" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name on Licence :@*<span style="color: Red;"> * </span>*@
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.NameonLicence, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.NameonLicence)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence# :@*<span style="color: Red;"> * </span>*@
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LicenceNumber, new { @class = "isAlphaNumeric" })
+                    @Html.ValidationMessageFor(model => model.LicenceNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence Validity :@*<span style="color: Red;"> * </span>*@
+                </td>
+                <td>
+                    @Html.TextBox("LicenceValidity", String.Format("{0:dd/MM/yyyy}", Model.LicenceValidity), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.LicenceValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge# :@*<span style="color: Red;"> * </span>*@
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.BadgeNumber, new { @class = "isAlphaNumeric" })
+                    @Html.ValidationMessageFor(model => model.BadgeNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge Validity :@*<span style="color: Red;"> * </span>*@
+                </td>
+                <td>
+                    @* @Html.TextBox("BadgeValidity", Model.BadgeValidity == null ? "" : Model.BadgeValidity.Value.ToShortDateString())*@
+                    @Html.TextBox("BadgeValidity", String.Format("{0:dd/MM/yyyy}", Model.BadgeValidity), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.BadgeValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Reference Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ReferenceName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.ReferenceName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Reference# :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ReferenceNumber, new { @maxlength = "10", @class = "validPhoneNum" })
+                    @Html.ValidationMessageFor(model => model.ReferenceNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Blood Group :
+                </td>
+                <td>
+                    <select id="BloodGroup" name="BloodGroup" style="width: 310px;">
+                        <option value="">--Select Blood Group--</option>
+                        <option value="O +">O +</option>
+                        <option value="O -">O -</option>
+                        <option value="A +">A +</option>
+                        <option value="A -">A -</option>
+                        <option value="B +">B +</option>
+                        <option value="B -">B -</option>
+                        <option value="AB +">AB +</option>
+                        <option value="AB -">AB -</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Remark :
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Remark, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Remark)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="button" id="btnUpdateDriver" value="Update" />
+                    <input type="button" id="btnDeleteDriver" value="Delete" />
+                    <input type="button" id="btnCancelDriver" value="Cancel" />
+                    <input type="hidden" id="DriverID" name="DriverID" value="@Model.ID" />
+                    <input type="hidden" id="VehicleID" name="VehicleID" value="@Model.CurrentVehicleID" />
+                    <input type="hidden" id="Bgroup" name="Bgroup" value="@Model.BloodGroup" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    @Html.ValidationMessageFor(model => model.Status)
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dateToday = new Date();
+        $('#LicenceValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#BadgeValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        var VendorID = $("#VendorID").val();
+        var CurrentVehicleID = $("#VehicleID").val();
+        var Bgroup = $("#Bgroup").val();
+        $("#BloodGroup option[value='" + Bgroup + "']").attr("selected", "selected");
+        LoadVehiclesBasedonVendor(VendorID, CurrentVehicleID)
+    });
+
+    function LoadVehiclesBasedonVendor(VendorID, CurrentVehicleID) {
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Driver/LoadVehiclesByVendor?Vendor=" + VendorID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#CurrentVehicleID').html('<option value="">--Select Vehicle--</option>');
+                    var options = " <option value='-1'>Proxy</option>";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].VehicleRegNum + "</option>";
+                    }
+                    $("#CurrentVehicleID").append(options);
+                    if (CurrentVehicleID == "") {
+                        $("#CurrentVehicleID option[value='-1']").attr("selected", "selected");
+                    }
+                    else
+                        $("#CurrentVehicleID option[value=" + CurrentVehicleID + "]").attr("selected", "selected");
+                    $('#CurrentVehicleID option:contains("Loading...")').remove();
+                }
+                else {
+                    $('#CurrentVehicleID').html('<option value="">--Select Vehicle--</option>');
+                    if (data.length > 0) {
+                        var options = " <option value='-1'>Proxy</option>";
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].VehicleRegNum + "</option>";
+                        }
+                        $("#CurrentVehicleID").append(options);
+                        if (CurrentVehicleID == "") {
+                            $("#CurrentVehicleID option[value='-1']").attr("selected", "selected");
+                        }
+                        else
+                            $("#CurrentVehicleID option[value=" + CurrentVehicleID + "]").attr("selected", "selected");
+                    }
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    $("#btnUpdateDriver").click(function () {
+        var file_data = $("#PhotoUrl").prop("files")[0];
+        var file_data = $("#IDProof").prop("files")[0];
+        var form_data = new FormData(document.getElementById("frmUpdateDriverForm"));
+        form_data.append("file", file_data);
+        $.ajax({
+            url: "/Driver/Edit?Id=" + $("#DriverID").val(),
+            dataType: 'html',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data,
+            type: 'post',
+            success: function (result) {
+                $('#divSimpleModalDet').html(result);
+            }
+        });
+    });
+    $("#btnDeleteDriver").click(function () {
+        if (confirm('Are you sure want to delete this driver?')) {
+            $.post("/Driver/Delete?Id=" + $("#DriverID").val() + "", $("#frmUpdateDriverForm").serialize(), function (result) {
+                $("#divSimpleModalDet").html(result);
+                //                alert(result.msg);
+                //                if (result.success) {
+                //                    $.modal.close();
+                //                    DriversList('@Model.VendorID');
+                //                }
+            });
+        }
+    });
+    $("#btnCancelDriver").click(function () {
+        $.modal.close();
+    });
+    $(".isName").change(function () {
+        var result = IsPureCharsAndSpace($.trim(this.value))
+        $("#DriverValidateMsg").hide();
+        if (this.id == "FirstName") {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("First Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else if (this.id == "LastName") {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Last Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else if (this.id == "NameonLicence") {
+
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Name on licence should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Reference name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+                $("#" + this.id).focus();
+            }
+        }
+    });
+
+    $(".validDate").change(function () {
+        $("#DriverValidateMsg").hide();
+        if (this.id == "BadgeValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html(msg);
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+        else if (this.id == "LicenceValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html(msg);
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+    });
+    $(".isAlphaNumeric").change(function () {
+        var result = isAlphaNumeric($.trim(this.value))
+        $("#DriverValidateMsg").hide();
+        if (this.id == "BadgeNumber") {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Badge number should be alphanumeric.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+            }
+        }
+        //        else {
+        //            if (result == false) {
+        //                $("#DriverValidateMsg").show();
+        //                $("#DriverValidateMsg").html("Licence number  should be alphanumeric.");
+        //                document.getElementById("" + this.id + "").value = '';
+        //                $("#" + this.id).focus();
+        //                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+        //            }
+        //        }
+    });
+    $(".validPhoneNum").change(function () {
+        var result = isValidMobileNumber(this.value)
+        $("#DriverValidateMsg").hide();
+        if (this.id == "ReferenceNumber") {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Reference number should be in digits..");
+                document.getElementById("" + this.id + "").value = '';
+                $('#EditDriverDetDiv').animate({ scrollTop: 0 }, 'slow');
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#DriverValidateMsg").show();
+                $("#DriverValidateMsg").html("Invalid Mobile Number..");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+</script>

@@ -1,0 +1,195 @@
+﻿@model IEnumerable<FMS.Models.tbl_bookings>
+@using FMS.Models
+@{
+    ViewBag.Title = "List of Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Scripts/userStepy.js")"></script>
+<h2>List of Bookings</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(58, User.Identity.Name).Add)
+            { <li> <a href="#" onclick="GetInboxMails()"> InboxMails </a>  </li> }
+            @if ((bool)core.GetUserAccess(58, User.Identity.Name).Add)
+            { <li class="lastactive">@Html.ActionLink("Generate Booking", "GenerateBooking")</li> }
+        </ul>
+    </div>
+    <div style="float: right; width: 55%; margin-top: -5px;">
+        <ul id="tabs" class="wizard-steps">
+            <li id="tab-hd-1" class="step current-tab active-step">@* if completed "completed-step"*@
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>1</span>Draft </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-2" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>2</span>Acknowledge</a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-3" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>3</span>Confirm Booking </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-4" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>4</span>LogSheet </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-5" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>5</span> Booking Done </a>
+                <div class="a-after">
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div style="float: right;width:20%; margin-top: -5px;">
+        <table>
+            <tr>    
+                <td>
+                    Month
+                </td>
+                <td>
+                   @Html.DropDownList("MonthId", (IEnumerable<SelectListItem>)ViewBag.MonthId, "-Select-", new { @style = "width:100px;" , @class = "cls_filter" }) 
+                </td>
+                <td>
+                    Year
+                </td>
+                <td>
+                    @Html.DropDownList("YearId", (IEnumerable<SelectListItem>)ViewBag.YearId, "-Select-", new { @style = "width:100px;", @class = "cls_filter" }) 
+                </td>
+            </tr>
+        </table>
+        </div>
+    
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_booking">
+  
+</table>
+<div id="bookingloading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;display:none;" class="nonPrintable">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+<script type="text/javascript">
+    // Case statement
+    $('#tabs li').click(function () {
+        var val = parseInt($(this).find('a').find('span').text());
+        var ProcStat;
+        ProcStat = GetStatusByNumber(val);
+        GetBookingDataTable(ProcStat,$('#MonthId').val(),$('#YearId').val());
+    });
+
+    $(document).ready(function () {
+        GetBookingDataTable('Edit',null,null);
+    });
+
+    $('.cls_filter').change(function () {
+        var stat = GetStatusByNumber(parseInt($('#tabs li.active-step').find('a').find('span').text()));
+        var MonthId = $('#MonthId').val();
+        var YearId = $('#YearId').val();
+        GetBookingDataTable(stat, MonthId, YearId);
+    });
+
+    function GetInboxMails(){
+        $('#bookingloading').show();
+        window.location.href = '/Bookings/InboxMails';
+    }
+
+    function GetBookingDataTable(Status,MonthId,YearId) {
+        $('#tbl_booking').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "bDestroy": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/Bookings/GetBookingList?Status=" + Status + "&MonthId=" + MonthId + "&YearId=" + YearId,
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+
+                $('td:eq(0)', nRow).html('&nbsp;');
+
+                if (aData[12] == 'Edit') {
+                    $('td:eq(12)', nRow).html('<span class="label-important">Draft</span>');
+                }
+
+                $('td:eq(1)', nRow).html('@if ((bool)core.GetUserAccess(58, User.Identity.Name).Edit){ <a style="cursor:pointer;color:Red;text-decoration:underline;" href="/Bookings/ViewBookingDetails/' + aData[0] + '" > ' + aData[1] + ' </a> }');
+
+                if (aData[12] == "Acknowledgement") {
+                    $('td:eq(12)', nRow).html('<span class="label-warning"> Acknowledgement </span>');
+                }
+                if (aData[12] == "ConfirmBooking") {
+                    $('td:eq(12)', nRow).html('<span class="label-pending"> Confirm Booking </span>');
+                }
+                if (aData[12] == "LogSheet") {
+                    $('td:eq(12)', nRow).html('<span class="label-success"> LogSheet </span>');
+                }
+                if (aData[12] == "BookingDone") {
+                    $('td:eq(12)', nRow).html('<span class="label-success"> Booking Done </span>');
+                }
+                $('td:eq(13)', nRow).html('@if ((bool)core.GetUserAccess(58, User.Identity.Name).Edit){ <a style="cursor:pointer;" href="/Bookings/Edit/' + aData[0] + '" >Edit</a>  }' +
+                                          '@if ((bool)core.GetUserAccess(58, User.Identity.Name).Delete){ <text> | </text> <a href="#" onclick="DeleteBookings(' + aData[0] + ');">Delete</a> }');
+                $('td:eq(12)', nRow).attr('style', 'width:80px;');
+                $('td:eq(13)', nRow).attr('style', 'width:80px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Booking Ref#" },
+            { "sTitle": "Client" },
+            { "sTitle": "From Mail" },
+            { "sTitle": "Guest Name" },
+            { "sTitle": "Booking Dt." },
+            { "sTitle": "Reporting Dt." },
+            { "sTitle": "Reporting Time" },
+            { "sTitle": "Veh. Model" },
+            { "sTitle": "Veh. Type" },
+            { "sTitle": "Priority" },
+            { "sTitle": "Trip Type" },
+            { "sTitle": "Status" },
+            { "sTitle": "" }
+            ]
+        });
+    }
+
+    function DeleteBookings(Id){
+        if (confirm('Are you sure want to delete ?')) {
+            window.location.href = '/Bookings/Delete/' + Id;
+        }
+    }
+
+    function GetStatusByNumber(val) {
+        var ProcStat;
+        switch (val) {
+            case 1:
+                ProcStat = 'Edit';
+                break;
+            case 2:
+                ProcStat = 'Acknowledgement';
+                break;
+            case 3:
+                ProcStat = 'ConfirmBooking';
+                break;
+            case 4:
+                ProcStat = 'LogSheet';
+                break;
+            case 5:
+                ProcStat = 'BookingDone';
+                break;
+        }
+        return ProcStat;
+    }
+</script>

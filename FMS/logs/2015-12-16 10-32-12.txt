@@ -1,0 +1,4 @@
+[2015-12-16 10:32:12.4195] [127.0.0.1] [ERROR] [Value cannot be null.
+Parameter name: source] [superadmin] [   at System.Linq.Enumerable.Contains[TSource](IEnumerable`1 source, TSource value, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.Contains[TSource](IEnumerable`1 source, TSource value)
+   at FMS.Controllers.ProjectsController.SaveBulkApprovedPackages(Int64 ClientId, Int64 ProjectId, FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\ProjectsController.cs:line 197]

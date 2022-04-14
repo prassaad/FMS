@@ -1,0 +1,102 @@
+﻿@model FMS.Models.tbl_diesel_tracking
+
+@{
+    ViewBag.Title = "Add Diesel Tracking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Add Diesel Tracking</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Diesel Tracking", "Index")</li>
+        </ul>
+    </div>
+</div>
+<div style="padding-left: 80%;">
+    <input type="button" onclick="AddDieselTrackDet()" value="Add New Diesel Tracking" />
+</div>
+<fieldset>
+    <legend>Added Diesel Tracking Details</legend>
+    <div id="divDieselTrackEntryList">
+        <div style="margin-top: 2%; padding-left: 35%; text-align: center;">
+            <h1>
+                No Diesel Tracking Details are added.<br />
+            </h1>
+        </div>
+    </div>
+</fieldset>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+   <div id="divlog_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/loading-icon.gif"  alt="Loading..."/>
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    $('html').keydown(function (e) {
+        if (e.keyCode == 8) {
+            if ($('input[type=text]').is(":focus")) {
+                return;
+            } else { e.preventDefault(); }
+        }
+    });
+    AddDieselTrackDet();
+    function AddDieselTrackDet() {
+        $("#divlog_loading").fadeIn('slow');
+        $("#divlog_loading").show();
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 610,
+                 height: 530
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                     if ($('#divDieselTrackEntryList').height() > 0) {
+                         $.ajax({
+                             type: "GET",
+                             url: "/DieselTracking/SaveUnSavedDieselEntries",
+                             dataType: "html",
+                             success: function (data) {
+                                 if (data == 1) {
+                                     window.location = "/DieselTracking/Index";
+                                 }
+                                 else {
+                                     window.location = "/DieselTracking/Create";
+                                 }
+                             }
+                         });
+                     }
+                 });
+                 AddNewDieselTracking()
+             }
+
+         });
+    }
+    function AddNewDieselTracking() {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/DieselTracking/AddNewDieselTrack",
+            dataType: "html",
+            success: function (data) {
+                $("#divSimpleModalDet").html(data);
+                $("#divlog_loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+   
+</script>
+

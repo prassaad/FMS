@@ -1,0 +1,148 @@
+﻿@model IEnumerable<FMS.Controllers.DutyLogSheetReportList>
+@using FMS.Models;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+}
+<p>
+    No. of entries @(ViewBag.ListCount) showing
+</p>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_DutyLogs">
+    <thead>
+        <tr>
+            <th>
+                Client Name
+            </th>
+            <th>
+                Vehicle Reg#
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Driver Name
+            </th>
+            <th>
+                Log Date
+            </th>
+            <th>
+                LogSheet#
+            </th>
+            <th>
+                Tripe Type
+            </th>
+            <th>
+                Act. Pax
+            </th>
+            <th>
+                Trav. Pax
+            </th>
+            <th>
+                Shift Time
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Start KM
+            </th>
+            <th>
+                End KM
+            </th>
+            <th>
+                TotalKM
+            </th>
+          
+            <th>
+                Slab Rate
+            </th>
+            <th>
+                Final Approved KM
+            </th>
+            <th>
+                Final Slab Rate
+            </th>
+            <th>
+                Audit Dt.
+            </th>
+            <th>
+                Audited By
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+             <tr>
+                <td>
+                    @item.Client
+                </td>
+                <td>
+                    @item.VehicleReg
+                </td>
+                <td>
+                    @item.VehicleType
+                </td>
+                <td>
+                    @item.VehicleModel
+                </td>
+                <td>
+                    @item.Driver
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+                </td>
+                <td>
+                    @item.LogSheetNum
+                </td>
+                <td>
+                    @item.TripType
+                </td>
+                <td>
+                    @item.Pax
+                </td>
+                <td>
+                    @item.TravelPax
+                </td>
+                <td>
+                    @item.ShiftTime
+                </td>
+                <td>
+                    @item.Location
+                </td>
+                <td>
+                    @item.StartKM
+                </td>
+                <td>
+                    @item.EndKM
+                </td>
+                <td>
+                    @item.TotalKM
+                </td>
+                
+                <td>
+                    @item.SlabRate
+                </td>
+                <td>
+                    @item.FinalApprovedKm
+                </td>
+                <td>
+                    @item.FinalSlabRate
+                </td>
+               <td>
+                    @(item.AuditDt == null ? "" : item.AuditDt.ToString())
+               </td>
+               <td>
+                    @item.AuditedBy
+               </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>
+ 

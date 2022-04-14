@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Stores ";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+
+<h2>Stores</h2>
+
+<p>
+    <a href="@Url.Action("Index", "Unit", new { area = "Inventory" })">Units </a>
+    <br />
+    <a href="@Url.Action("Index", "Item", new { area = "Inventory" })">Stock Items </a>
+    <br />
+    
+    <a href="@Url.Action("Inward", "Stores", new { area = "Inventory" })">Inward Stock </a>
+     <br />
+    
+    <a href="@Url.Action("Outward", "Stores", new { area = "Inventory" })">Outward Stock </a>
+</p>

@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Audited/UnAudited MISReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var clientList = (Dictionary<long, string>)ViewBag.ClientID;
+}
+<h2>Audited/UnAudited MIS Report</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Report", "Reports", "Home")</li>
+        </ul>
+    </div>
+</div>
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+    left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: fixed;">
+    <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+</div>
+<form id="frmMISReport" enctype="multipart/form-data" method="post">
+<div style="height: 30px; padding-bottom: 10px; padding-top: 10px; background-color: #F5F5F5;">
+    <table>
+        <tr>
+            <td>
+                From Date
+            </td>
+            <td>
+                @Html.TextBox("StartDate", "", new { @style = "width:150px;" })
+            </td>
+            <td>
+                To Date
+            </td>
+            <td>
+                @Html.TextBox("EndDate", "", new { @style = "width:150px;" })
+            </td>
+            <td>
+                <div class="side-by-side clearfix">
+                        <select id="ClientID" data-placeholder="Select Client..." class="chzn-select" multiple
+                            style="width: 250px;">
+                            <option value=""></option>
+                            @foreach (var item in clientList.Keys)
+                            {
+                                <option value="@item">
+                                    @clientList[item]
+                                </option>
+                            }
+                        </select>
+                    </div>
+            </td>
+            <td>
+                <input type="radio" name="ReportType" value="1" checked="checked" />&nbsp; Audited 
+                <input type="radio" name="ReportType" value="0" />&nbsp; Un Audited &nbsp;&nbsp;&nbsp;
+            </td>
+            <td>
+                &nbsp;&nbsp;
+            </td>
+             <td>
+                Selection 
+            </td>
+            <td>
+               @*<input type="radio" name="Selection" value="Vehicle" checked="checked" />&nbsp;<label class="clslabel">Vehicle Document(s)</label>*@
+                <input type="radio" name="Selection" value="LogSheet" checked="checked" />&nbsp; LogSheet(s) 
+                <input type="radio" name="Selection" value="Diesel" />&nbsp; Diesel 
+            </td>
+            <td>
+                <input type="button" value="Get Report" id="btnGetMISReport" />
+            </td>
+            <td>
+                <input type="button" value="Export Excel" id="btnExportExcel" />
+            </td>
+        </tr>
+        <tr>
+           
+           
+        </tr>
+    </table>
+</div>
+</form>
+<div id="MISDivData">
+</div>
+<script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var config = {
+        '.chzn-select': {},
+        '.chzn-select-deselect': { allow_single_deselect: true },
+        '.chzn-select-no-single': { disable_search_threshold: 10 },
+        '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chzn-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    $('#div_loading').hide();
+    var myDate = new Date();
+    var dd = myDate.getDate();
+    var mm = myDate.getMonth() + 1; //January is 0! 
+    var yyyy = myDate.getFullYear();
+    if (dd < 10) { dd = '0' + dd }
+    if (mm < 10) { mm = '0' + mm }
+    var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+    $("#StartDate").val('01' + '/' + (mm) + '/' + yyyy); $("#EndDate").val(TodayDate);
+    $('#StartDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#EndDate").datepicker("option", "minDate", selected);
+        }
+    });
+    $('#EndDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#StartDate").datepicker("option", "maxDate", selected);
+        }
+    });
+    
+    $('#btnGetMISReport').click(function () {
+        $('#div_loading').fadeIn('slow');
+        var ClientID = $('#ClientID').val();
+        var StartDate = $('#StartDate').val();
+        var EndDate = $('#EndDate').val();
+        if (StartDate == '') {
+            alert('Please select start date');
+            $('#StartDate').focus();
+            return false;
+        }
+        if (EndDate == '') {
+            alert('Please select end date');
+            $('#EndDate').focus();
+            return false;
+        }
+        $.post("/Audit/AuditMISReport?ClientID=" + ClientID, $("#frmMISReport").serialize(), function (result) {
+            $("#MISDivData").html(result);
+            $('#div_loading').fadeOut('slow');
+        });
+    });
+
+    $('#btnExportExcel').click(function () {
+        var selectionType = $('input:radio[name=Selection]:checked').val();
+        var i = 0;
+        if (selectionType == 'LogSheet') {
+            i = 1;
+        }
+        else if (selectionType == 'Diesel') {
+            i = 2;
+        }
+
+        // Call Export Excel
+
+        window.location.href = '/Audit/ExportExcel?selectType=' + i;
+    });
+</script>

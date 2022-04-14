@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Add Vehicle EMI";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Add New Vehicle EMI </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Vehicle EMI(s)", "Index")</li>
+        </ul>
+    </div>
+</div>
+<div style="padding-left: 80%;">
+    <input type="button" onclick="AddVehicleEMI()" value="Add New Vehicle EMI" />
+</div>
+    <fieldset>
+    <legend>Added Vehicle EMI</legend>
+    <div id="divVehicleEMI">
+        <div style="margin-top: 2%; padding-left: 35%; text-align: center;">
+            <h1>
+                No Vehicle EMI(s) are added.<br />
+            </h1>
+        </div>
+    </div>
+</fieldset>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loader.gif" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('html').keydown(function (e) {
+        if (e.keyCode == 8) {
+            if ($('input[type=text]').is(":focus") || $('textarea').is(":focus")) {
+                return;
+            } else { e.preventDefault(); }
+        }
+    });
+    AddVehicleEMI();
+    function AddVehicleEMI() {
+        $("#divlog_loading").fadeIn('slow');
+        $("#divlog_loading").show();
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 550,
+                 height: 400
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                     if ($('#divVehicleEMI').height() > 0) {
+                         //  alert('If you close window while adding list.Added list will not be save.\n Please try again and click on cancel to save');   
+                         $.ajax({
+                             type: "GET",
+                             url: "/VehicleEMIs/SaveUnSavedEMIEntries",
+                             dataType: "html",
+                             success: function (data) {
+                                 if (data == 1) {
+                                     window.location = "/VehicleEMIs/Index";
+                                 }
+                                 else {
+                                     window.location = "/VehicleEMIs/Create";
+                                 }
+                             }
+                         });
+                     }
+                 });
+                 AddNewVehicleEMI()
+             }
+
+         });
+    }
+    function AddNewVehicleEMI() {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/VehicleEMIs/AddNewVehicleEMI",
+            dataType: "html",
+            success: function (data) {
+                $("#divSimpleModalDet").html(data);
+                $("#divlog_loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+ 
+</script>

@@ -1,0 +1,265 @@
+﻿@model FMS.Models.tbl_veh_condition_history
+@using FMS.Models;
+@using (Html.BeginForm("VehicleConditionHistory", "Vehicle", FormMethod.Post, new { runat = "server", enctype = "multipart/form-data", id = "frmEditVehConditionHistory" }))
+{
+    @Html.ValidationSummary(true)
+    <table style="width: 100%">
+        <tr style="width: 98%">
+            <td style="width: 49%">
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td colspan="2" style="padding-top: 10px;">
+                            <span id="vehHistoryValidateMsg" style="color: Red; display: none; font-size: 14px;
+                                font-weight: bold;"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Body Conditions and Painting ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("BodyConditionAndPainting", Model.BodyConditionAndPainting.Value)
+                            @Html.Hidden("VehicleId", Model.VehicleId)
+                            @Html.DropDownList("Percentage", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Both Side mirrors ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("BothSideMirrors", Model.BothSideMirrors.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Breakes ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Brakes", Model.Brakes.Value)
+                            @Html.DropDownList("BreakesPercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Condition of the cab (Out side) ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("ConditionOfCabOutSide", Model.ConditionOfCabOutSide.Value)
+                            @Html.DropDownList("OutSidePercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Condition of the cab (In side) ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("ConditionOfCabInSide", Model.ConditionOfCabInSide.Value)
+                            @Html.DropDownList("InSidePercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Fuel indicator ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("FuelIndicator", Model.FuelIndicator.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Glass (Front & Back Glass clear ) ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("GlassClear", Model.GlassClear.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Horn ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Horn", Model.Horn.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Head Lights ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("HeadLights", Model.HeadLights.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Parking Lights ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("ParkingLights", Model.ParkingLights.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Turn Signals lights ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("TurnSignallights", Model.TurnSignallights.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Reverse lamps ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("ReverseLamps", Model.ReverseLamps.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Break Lights ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("BreakLights", Model.BreakLights.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Comment:
+                        </td>
+                        <td>
+                            @Html.TextArea("Comments", Model.Comment, new { @style = "width:72%;height:49%;", @placeholder = "Enter Your Comments" })
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 49%">
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td>
+                            Seating Comfort ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("SeatingComfort", Model.SeatingComfort.Value)
+                            @Html.DropDownList("SeatingPercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Windshield wipers ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("WindShieldWipers", Model.WindShieldWipers.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Speedo meter condition ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("SpeedoMeterCond", Model.SpeedoMeterCond.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Seat Bellts ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("SeatBelts", Model.SeatBelts.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tool Kit ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("ToolKit", Model.ToolKit.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            First Aid kit ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("FirstAidKit", Model.FirstAidKit.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Stepney ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Stepney", Model.Stepney.Value)
+                            @Html.DropDownList("StepneyPercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Umbrella ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Umbrella", Model.Umbrella.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tourch ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Tourch", Model.Tourch.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Prefume ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("Prefume", Model.Prefume.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            A/C Condition ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("AcCond", Model.AcCond.Value)
+                            @Html.DropDownList("AcCondPercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Seat Covers ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("SeateCovers", Model.SeateCovers.Value)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Track, Tyres, Wheels ?
+                        </td>
+                        <td>
+                            @Html.CheckBox("TrackTyresWheels", Model.TrackTyresWheels.Value)
+                            @Html.DropDownList("TyresWheelsPercent", null, "-Select-", new { @style = "width:140px" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" valign="middle">
+                            <input type="button" value="Save Changes" id="btnSaveVehConditonHistory" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+}
+<script type="text/javascript">
+
+    $("#btnSaveVehConditonHistory").click(function () {
+        $.post("/Vehicle/VehicleConditionHistory", $('#frmEditVehConditionHistory').serialize(), function (data) {
+            alert(data.msg);
+            if (data.success) {
+               window.location.href = "/Vehicle/EditVehicle/" + data.VehicleId;
+            }
+        });
+    });
+</script>

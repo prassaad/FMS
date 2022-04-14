@@ -1,0 +1,23 @@
+﻿@model FMS.Models.tbl_package_client_rates
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Packages", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+<h3>Are you sure you want to delete this @Model.PackModel?</h3>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}
+

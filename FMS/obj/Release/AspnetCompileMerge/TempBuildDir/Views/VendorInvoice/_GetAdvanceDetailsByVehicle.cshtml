@@ -1,0 +1,156 @@
+﻿@model IEnumerable<FMS.Models.tbl_advances>
+@{
+    decimal TotalAmt = 0;
+}
+<form id="frmAdvanceList" enctype="multipart/form-data" method="post">
+<input type="hidden" id="hdnhasDiesel" name="hdnhasDiesel" value="@ViewBag.hasDiesel" />
+<input type="hidden" id="hdnVehicleID" name="hdnVehicleID" value="@ViewBag.VehId" />
+<fieldset>
+    <legend>Advance Details</legend>
+    @if (Model.Count() == 0 || Model == null)
+    {
+        <h2 style="text-align: center;">
+            No advance details are available
+        </h2>   
+    }
+    else
+    {
+        <p style="font-weight: bold; font-size: 12px; color: Red;" class="nonPrintable">
+            Please select the Advance details to comes under invoice amount and click on generate
+            invoice.</p>
+        <table class="table table-striped table-condensed dTableR dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.CheckBox("chkadvAll") &nbsp; All
+                    </th>
+                    <th>
+                        Vehicle Reg#
+                    </th>
+                    <th>
+                        Advance Date
+                    </th>
+                    <th>
+                        Pay Mode
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Towards
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ TotalAmt = 0; }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.CheckBox("chkAdvanceId_" + item.ID, new { @class = "chkPrint chkadvSheet" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VehicleRegNum)
+                        </td>
+                        <td>
+                            @Html.Encode(item.CreatedDate == null ? "" : item.CreatedDate.Value.Date.ToShortDateString())
+                        </td>
+                        <td>
+                            @Html.Encode(item.PayMode)
+                        </td>
+                        <td>
+                            @String.Format("{0:N}", item.Amount)
+                            @{ TotalAmt += (decimal)item.Amount; }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Towards)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="nonPrintable">
+                <tr>
+                    <td colspan="4" style="text-align: right;">
+                        Total
+                    </td>
+                    <td>
+                        @Html.Encode(String.Format("{0:N}", TotalAmt))
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <input type="button" value="Generate Invoice " id="btnAddAdvanceAmountInv" class="nonPrintable" />
+    }
+</fieldset>
+</form>
+<div id="VehEMIsDetails">
+</div>
+<script type="text/javascript" language="javascript">
+    $('#btnGenInv').hide();
+    $('#btnAddDieselAmountInv').hide();
+    $('#btnAddAdvanceAmountInv').click(function () {
+        if (confirm('Are you sure want to Generate Invoice ?')) {
+            GetAdvanceDetailPost();
+        }
+    });
+
+    $('#chkadvAll').change(function () {
+        if ($(this).is(':checked')) {
+            $('.chkadvSheet').each(function () {
+                $(this).attr('checked', true);
+            });
+        }
+        else {
+            $('.chkadvSheet').each(function () {
+                $(this).attr('checked', false);
+            });
+        }
+    });
+
+    $('.chkadvSheet').change(function () {
+        var StatusVal = 0;
+        $('.chkadvSheet').each(function () {
+            var IsChecked = $(this).is(':checked');
+            if (IsChecked) {
+                StatusVal = 1;  // If Status is one then uncheck  
+            }
+            else {
+                if (StatusVal == 1) { // If Status is one then uncheck 
+                    StatusVal = 1; // If Status is one then uncheck 
+                }
+                else {
+                    StatusVal = 0 // If Status is zero then check 
+                }
+            }
+        });
+        if (StatusVal == 1) {
+            $('#chkadvAll').attr('checked', false);
+        }
+    });
+
+    function GetAdvanceDetailPost() {
+
+        $.post('/VendorInvoice/GetAdvanceDetailsByVehicle', $('#frmAdvanceList').serialize(), function (data) {
+            if (data.success) {
+                if (data.msg == "") {
+                    DownloadExcel();
+                    $('#div_loading').fadeIn('slow');
+                    GenerateInvoice('@ViewBag.hasDiesel', true, null, null);
+                }
+                else {
+                    DownloadExcel();
+                    $('#div_loading').fadeIn('slow');
+                    GenerateInvoice('@ViewBag.hasDiesel', true, null, null);
+                }
+            }
+            else {
+                alert(data.msg);
+            }
+        });
+        $('#div_loading').fadeOut('slow');
+    }
+    
+    
+</script>

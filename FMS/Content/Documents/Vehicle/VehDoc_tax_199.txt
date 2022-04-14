@@ -1,0 +1,77 @@
+#load libraries
+import clr
+import System
+import System.Object
+clr.AddReference('System.Data')
+clr.AddReference('System.Windows.Forms')
+from System.Windows.Forms import MessageBox
+from System.Data import *
+from System.Diagnostics import Process
+from Spotfire.Dxp.Application.Visuals import VisualContent
+from Spotfire.Dxp.Data import IndexSet, DataValueCursor, RowSelection
+from System.IO import Path
+
+ExportFolder = 'K:\IHS_INBOX'
+IHSDb = 'IHSReference'
+IHSCountyTable = 'IHSCountyReferenceWKB'
+
+dataTable = Document.Data.Tables[IHSCountyTable.ToString()] #we're only sending unique state/county codes that come from this table
+marking = Document.Data.Markings["Marking"] #the default marking
+rowIndexSet = marking.GetSelection(dataTable).AsIndexSet() #"index set" representing marked rows
+columnCursor = DataValueCursor.CreateFormatted(dataTable.Columns["ID"]) #pointer to inside indexset, not as easy as arrays
+#DEBUG:MessageBox.Show(columnCursor.ToString())
+
+#count number of rows in indexset
+numPicked = 0
+for row in rowIndexSet: numPicked = numPicked + 1
+#DEBUG:MessageBox.Show(numPicked.ToString())
+
+#iterate through data table by row/column using the row indexset and column cursor
+UWIstring = ""
+for row in dataTable.GetRows(rowIndexSet,columnCursor):
+	if UWIstring != "": UWIstring = UWIstring + "," #this is a creative way to not add a comma on the last item in the iteration
+	UWIstring = UWIstring + "'" + columnCursor.CurrentValue + "'"
+#DEBUG:
+MessageBox.Show(UWIstring)
+
+#set and open DB connection
+TheConnection = SqlClient.SqlConnection("server=.\;database="+IHSDb+";Trusted_Connection=True")
+try:
+ TheConnection.Open()
+ #DEBUG: MessageBox.Show("Connection Opened!")
+except:
+  MessageBox.Show("Error in opening Sql Connection")
+MyAction = SqlClient.SqlCommand("SELECT POSTAL, StateCode, REPLACE(CountyName,' ',''), CountyCode FROM "+IHSCountyTable+" WHERE ID IN (" + UWIstring + ")", TheConnection)
+
+#create pseudo random number so batchfile is unique
+filePseudoNum = len(UWIstring).ToString()
+MyReader = MyAction.ExecuteReader()
+BatchPath=ExportFolder+'\\SpotfireGeneratedDownloadScript_' + filePseudoNum + '.bat'
+f = open(BatchPath, 'w')
+f.write('@echo off\n')
+f.write('CD /D '+ExportFolder+' \n')
+while MyReader.Read():
+   StateAbbrev = MyReader[0].ToString()
+   StateCode = MyReader[1].ToString().zfill(2) #keep two digits for county code
+   CountyName = MyReader[2].ToString()
+   CountyCode = MyReader[3].ToString().zfill(3) #keep three digits for county code
+   f.write(ExportFolder +"\Export.exe 10 " + StateAbbrev + ' ' + StateCode + ' ' + CountyName + ' ' + CountyCode + '\n')
+   f.write('move /Y ' + StateCode.ToString() + '_' + CountyCode + '*production*.xml FinishedProd\n')
+   f.write('move /Y ' + StateCode + '_' + CountyCode + '*well*.xml FinishedWell\n')
+   f.write('move /Y ' + StateCode + '_' + CountyCode + '*_query FinishedQuery\n')
+f.write('echo Done!\n')
+f.write('pause\n')
+f.close()
+MyReader.Close()
+TheConnection.Close()
+
+program = BatchPath 
+p = Process()
+p.StartInfo.UseShellExecute = True
+p.StartInfo.RedirectStandardOutput = False
+p.StartInfo.FileName = program
+p.StartInfo.Verb = "runas"
+p.Start()
+#p.WaitForExit() 
+
+MessageBox.Show("Data Query of Total " + numPicked.ToString() + " counties(s) launched successfully. \nPlease check for Log for more details.")

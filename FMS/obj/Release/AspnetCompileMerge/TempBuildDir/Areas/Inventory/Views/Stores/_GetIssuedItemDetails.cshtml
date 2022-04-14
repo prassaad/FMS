@@ -1,0 +1,317 @@
+﻿@model FMS.Models.InventoryModel.IssuedStock
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    StoresController objStore = new StoresController();
+    decimal TotAmount = 0;
+    int QtyTot = 0;
+    decimal Amt = 0;
+ 
+}
+<style type="text/css">
+  .footer-Printable { display: none; }
+ @@media print
+{
+    .footer-Printable { display: block; }
+    .dateAlign{text-align: right;}
+      html { width:8.5in; }
+    body { font: 9pt/1.5 Arial, sans-serif; } 
+}
+</style>
+<div class="row">
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    <b style="font-size: 16px;"><i class="fa fa-info-circle"></i>&nbsp;Issue Info.</b>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Issue.No# :
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model._IssuedMaster.IssueNo)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Indent Ref.No# :
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model._IssuedMaster.IndentRefNo)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Issue Dt:
+                </td>
+                <td>
+                    @String.Format("{0:dd/MM/yyyy}", Model._IssuedMaster.IssueDt)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Issue Qty:
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model._IssuedMaster.IssueQty)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Vehicle :
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model._IssuedMaster.tbl_vehicles.VehicleRegNum)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp; Employee :
+                    @{
+                        var fullName = db.tbl_employees.Where(a => a.ID == Model._IssuedMaster.IssuedEmpId).FirstOrDefault();
+                    }
+                </td>
+                <td>
+                    @if (fullName != null)
+                    {  @fullName.FirstName @fullName.LastName 
+                        }
+                </td>
+            </tr>
+            <tr class="nonPrintable">
+                <td style="width: 57%;">
+                    &nbsp;&nbsp;&nbsp;&nbsp; Issue Item Status :
+                </td>
+                <td style="width: 43%;">
+                    @if (Model._IssuedMaster.Status.ToUpper() == "REJECTED")
+                    {
+                        <span class="label label-danger">Rejected</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "EDIT")
+                    {
+                        <span class="label label-primary">Edit</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "CONFIRM")
+                    {
+                        <span class="label label-info">Confirm</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "READYTOTRANSFER")
+                    {
+                        <span class="label label-warning">Ready to Transfer</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "TRANSFER")
+                    {
+                        <span class="label label-success">Transfer</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "CANCELED")
+                    {
+                        <span class="label label-danger">Canceled</span>
+                                    }
+                    else if (Model._IssuedMaster.Status.ToUpper() == "WAITINGFORAVAILABILITY")
+                    {
+                        <span class="label label-warning">Waiting for Availability</span>
+                                    }
+                </td>
+            </tr>
+            @if (Model._IssuedMaster.Status.ToUpper().Trim() == "APPROVED")
+            {
+                <tr id="tr_approved">
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Employee :
+                        @{
+                           var ApprvEmpfullName = db.tbl_employees.Where(a => a.ID == Model._IssuedMaster.ApprovedEmpId).FirstOrDefault();
+                        }
+                    </td>
+                    <td>
+                        @if (ApprvEmpfullName != null)
+                        {  
+                          @ApprvEmpfullName.FirstName     @ApprvEmpfullName.LastName 
+                        }
+                    </td>
+                </tr>
+                            }
+            @if (Model._IssuedMaster.Status.ToUpper().Trim() == "CANCELED")
+            {
+                <tr id="tr_rejected">
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Canceled Date :
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._IssuedMaster.IssueRejDt)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Canceled By :
+                    </td>
+                    <td>
+                        @{
+                   string RejectedUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IssuedMaster.IssueRejUserId).UserName;
+                        }
+                        @RejectedUserName
+                    </td>
+                </tr>
+                            }
+            @if (Model._IssuedMaster.Status.ToUpper().Trim() == "TRANSFER")
+            {
+                <tr id="tr_transfer">
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Transfer Date :
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._IssuedMaster.IssueTransDt)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Transfer By :
+                    </td>
+                    <td>
+                        @{
+                   string TransUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IssuedMaster.IssueTransUserId).UserName;
+                        }
+                        @TransUserName
+                    </td>
+                </tr>
+                            }
+        </tbody>
+    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <b><i class="clip-list-6"></i>&nbsp;Issue item(s) details</b></div>
+        <div class="panel-body">
+            @{
+                TotAmount = 0;
+                QtyTot = 0;
+                Amt = 0;
+            }
+            @if (Model._IssuedDetail.ToList().Count > 0)
+            {
+           
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                SNo.
+                            </th>
+                            <th>
+                                Issue No.
+                            </th>
+                             <th>
+                                                Receipt No.
+                                            </th>
+                            <th>
+                                Product
+                            </th>
+                            @* <th>
+                                                Issued Dt.
+                                            </th>*@
+                            <th>
+                                Issue Qty
+                            </th>
+                            <th>
+                                Avail Qty
+                            </th>
+                            <th>
+                                Amount
+                            </th>
+                            <th>
+                                Total
+                            </th>
+                            <td class="nonPrintable">
+                                Status
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model._IssuedDetail)
+                        {  
+                            <tr>
+                                @{
+                                            InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                                            InventoryIssuedMaster _Issued = db.InventoryIssuedMasters.Where(a => a.IssueNo == item.IssueNo).FirstOrDefault();
+                                            long VehicleId = Convert.ToInt64(_Issued.VehicleId);
+                                            decimal AvailQty = (decimal)objStore.GetAvailQty(item.ReceiptNo,(int)item.ItemId, VehicleId);
+                                }
+                                <td>
+                                    @Html.Encode(item.Slno)
+                                </td>
+                                <td>
+                                    @Html.Encode(item.IssueNo)
+                                </td>
+                                 <td>
+                                                    @Html.Encode(item.ReceiptNo)
+                                                </td>
+                                <td>
+                                    @Html.Encode(item.ItemText)
+                                </td>
+                                @* <td>
+                                                    @Html.Encode(String.Format("{0:g}", item.IssuedDt.Value.ToShortDateString()))
+                                                </td>*@
+                                <td>
+                                    @Html.Encode(item.IssuedQty)
+                                    @{ QtyTot += (int)item.IssuedQty; }
+                                </td>
+                                <td>@Html.Encode(AvailQty)
+                                </td>
+                                <td style="text-align: right;">
+                                    @String.Format("{0:N}", _itemMaster.Amount)
+                                </td>
+                                <td style="text-align: right;">
+                                    @{
+                                            decimal TotAmt = ((int)item.IssuedQty * (decimal)_itemMaster.Amount);
+                                    }
+                                    @String.Format("{0:N}", TotAmt)
+                                    @{
+                                            Amt += TotAmt;
+                                    }
+                                </td>
+                                <td class="nonPrintable">
+                                    @if (item.Status.ToUpper() == "AVAILABLE")
+                                    {
+                                        <span class="label label-success">Available</span>
+                                                    }
+                                    else if (item.Status.ToUpper() == "WAITINGFORAVAILABILITY")
+                                    {
+                                        <span class="label label-warning">Waiting for Availability</span>
+                                                    }
+                                    else
+                                    {
+                                        <span class="label label-pending">@item.Status</span>
+                                                    }
+                                </td>
+                            </tr>
+                                        }
+                        <tr>
+                            <td colspan="3">
+                            </td>
+                            <td>@QtyTot
+                            </td>
+                            <td colspan="2">
+                            </td>
+                            <td style="text-align: right;">@String.Format("{0:N}", Amt)
+                            </td>
+                            <td class="nonPrintable">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            }
+            else
+            {
+                <h3>
+                    No Issue item(s) found to display.
+                </h3>
+            }
+        </div>
+    </div>
+    <p style="float:right;margin-bottom:10px;">
+        Generated By: <span class="label-important"> @User.Identity.Name </span> &nbsp;&nbsp;
+        Date : <span class="label-important">  @string.Format("{0:dd/MM/yyyy}", DateTime.Now) </span>
+    </p>
+</div>

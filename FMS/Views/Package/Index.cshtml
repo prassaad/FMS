@@ -1,0 +1,146 @@
+﻿@model IEnumerable<FMS.Models.tbl_package_client_rates>
+           @{
+               ViewBag.Title = "Index";
+               }
+               <style type = "text/css">
+               .tooltip-inner
+    {
+        display: inline;
+        position: relative;
+    }
+</style>
+<h2>
+    List of Packages</h2>
+   <div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("Create New", "Create")</li>
+            </ul></div></div>
+    <fieldset><table>
+<tr>
+            <td>
+               Client:<span style=" color:red;"> * </span> 
+            </td>
+            <td> 
+               @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.ClientId, "-Select Client-", new { @style = "width:220px;display:inline;" })  
+               <span id="errClientId" style=" display:none; color:Red"> Select Client</span>
+             
+              </td>
+            <td>
+                Project:<span style=" color:red;"> * </span> 
+            </td>
+            <td>
+                <select id="ProjectId" name="ProjectId" class="clsPackage" style="width: 220px;display:inline;">
+                    <option value="0">-Select Project-</option>
+                </select>
+                <span id="errProjectId" style=" display:none; color:Red"> Please Select Project</span></td>
+            <td>
+                Package Period
+            </td>
+            <td>
+                @Html.DropDownList("Package", null, "-Select-", new { @style = "width:120px" })
+                <span id="errPackageId" style=" display:none; color:Red"> Select Month</span>
+            </td>
+           
+            <td>
+                <input type="button" id="btnGetPackages" value="Get Packages" />
+            </td>
+           
+        </tr>
+    </table>
+    <div id="divGetPackagelist">
+        
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+
+    function _GetPackageList(ClientId, ProjectId, Package) {
+        $.ajax(
+    {
+        type: "Post",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/Package/_GetPackageList",
+        data: "ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&PackageMonth=" + Package,
+        dataType: "html",
+        success: function (result) {
+
+            $('#divGetPackagelist').html(result);
+            $('#LocationId').val();
+
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+    $('#btnGetPackages').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var package = $('#Package').val();
+        $("#errClientId").hide(); $("#errProjectId").hide(); $("#errPackageId")
+
+        if (clientId != '') {
+
+            if (projectId != '') {
+                if (package != '') {
+                    _GetPackageList(clientId, projectId, package);
+                }
+                else {
+                    $("#errPackageId").show();
+                }
+            }
+            else {
+                //  alert("Please Select Project ")
+                $("#errProjectId").show();
+            }
+
+        }
+        else {
+            //  alert("Please Select Client")
+            $("#errClientId").show();
+        }
+    });
+
+    $('#ClientId').change(function () {
+        var clientId = $(this).val(); $("#errClientId").hide(); $("#errProjectId").hide();
+        if (clientId != '')
+            GetProjectsByClient(clientId);
+        else {
+            $('#ProjectId').empty().append("<option>-Select-</option>");
+        }
+    });
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                    $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+</script>

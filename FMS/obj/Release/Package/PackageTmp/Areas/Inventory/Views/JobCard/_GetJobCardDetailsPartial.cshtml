@@ -1,0 +1,253 @@
+﻿@model FMS.Models.JobCardManagement
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    JobCardController objStore = new JobCardController();
+    List<tbl_jobcard_details> IndentDetList;
+    decimal TotAmount = 0;
+    int QtyTot = 0;
+    decimal Amt = 0;
+    decimal tax = 0;
+    decimal TotAmt = 0;
+}
+
+<table style="width: 100%">
+    <tr style="width: 100%">
+        <td style="width: 35%;float:left;" valign="top">
+            <table class="table table-striped table-condensed dTableR dataTable">
+                <tr>
+                    <td>
+                        Job Card No.
+                    </td>
+                    <td>
+                       <span class="label-important"> @(Model._JobCard.JobCardNo) </span> 
+                        
+                        <input type="hidden" id="hdnIndentId" name="Id" value="@Model._JobCard.Id" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Date
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.JobCardDt.Value.ToShortDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Time In.
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.DtTimeIn)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Odometer Reading
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.OdometerReading)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Service Charges
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.ServiceCharges)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Job Card Description
+                    </td>
+                    <td>
+                        @(Model._JobCard.JobCardDescr)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="width: 30%;float:left;margin-left:10px;" valign="top">
+            <table class="table table-striped table-condensed dTableR dataTable">
+                <tr>
+                    <td>
+                        Vehicle
+                    </td>
+                    <td>
+                        @(Model._JobCard.tbl_vehicles.VehicleRegNum)
+                        <input type="hidden" id="vehId" name="vehId" value="@(Model._JobCard.VehicleId)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Time Out <small>(estimation)</small>
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.DtTimeOutEst.Value.ToShortDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Job Done By
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.tbl_service_stations.ServiceStation)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Fuel
+                    </td>
+                    <td>@Html.Encode(Model._JobCard.Fuel)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Status
+                    </td>
+                    <td>
+                         @if (Model._JobCard.Status.ToUpper() == "APPROVED")
+                            {
+                                <span class="label-success">Approved</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "REJECTED")
+                            {
+                                <span class="label-important">Rejected</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "EDIT")
+                            {
+                                <span class="label-info">Edit</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "CONFIRM")
+                            {
+                                <span class="label-info">Confirm</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "INPROGRESS")
+                            {
+                                <span class="label-pending">In Progress</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "RECEIVED")
+                            {
+                                <span class="label-success">Received</span>
+                                    }
+                            else if (Model._JobCard.Status.ToUpper() == "WAITINGFORAPPROVAL")
+                            {
+                                <span class="label-pending">Waiting for Approval</span>
+                                    }
+                        <input type="hidden" id="Status" name="Status" value="@Model._JobCard.Status" />
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+            </table>
+        </td>
+        <td style="width: 25%;float:right;" valign="top">
+            @if (Model._JobCardDetList.ToList().Count > 0)
+            {
+                <p style="font-weight:bold;font-size:12px;">
+                    Job Card summary
+                </p>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                            </th>
+                            <th style="text-align: right">
+                                Net Amount
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model._JobCardDetList)
+                    {
+                                                <tr>
+                            @{
+                        InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                        tbl_jobcard IndentReg = db.tbl_jobcard.Where(a => a.Id == item.JobcardId).FirstOrDefault();
+
+                        decimal AvailQty = (decimal)objStore.GetAvailQty((int)item.ItemId);
+                                        
+                            }
+                            <td>
+                                @_itemMaster.ItemText<small>( @Html.DisplayFor(modelItem => item.Qty))
+                                    @{
+                        QtyTot += (int)item.Qty;
+                                          
+                                    }
+                                </small>
+                            </td>
+                            <td style="text-align: right">
+                                @String.Format("{0:N}", (_itemMaster.Amount) * (decimal?)item.Qty)
+                            </td>
+                        </tr>
+                                                <tr>
+                            <td>
+                                @{
+                           tax = 0;
+                           if (item.VatTax == null)
+                           {
+                               tax = ((decimal)item.ServiceTax / 100 * (decimal)_itemMaster.Amount) * (int)item.Qty;
+                           }
+                           else
+                           {
+                               tax = ((decimal)item.VatTax / 100 * (decimal)_itemMaster.Amount) * (int)item.Qty;
+                           }
+
+                           TotAmt = ((int)item.Qty * (decimal)_itemMaster.Amount) + tax;
+                                }
+                                @{
+                        Amt += TotAmt;
+                                }
+                                Tax <small>(@if (item.VatTax != null)
+                                            {
+                                    @String.Format("{0:N}", item.VatTax)
+                                             
+                                            }
+                                            else
+                                            {
+                                    @String.Format("{0:N}", item.ServiceTax)
+                                                
+                                            })%</small>
+                            </td>
+                            <td style="text-align: right">
+                                @String.Format("{0:N}", @tax)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Net Amount
+                            </td>
+                            <td style="text-align: right">@TotAmt
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="1">
+                            Grand Total
+                        </td>
+                        <td style="text-align:right">
+                           <span class="label-important"> @String.Format("{0:N}", Amt) </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h3>
+                    No JobCard item(s) found to display.
+                </h3>
+            }
+        </td>
+    </tr>
+    
+</table>
+
+<br />
+<fieldset>
+    <legend>JobCard item(s) details </legend>
+    @if (Model._JobCardDetList.ToList().Count > 0)
+    {
+        { IndentDetList = Model._JobCardDetList; }
+        if (IndentDetList != null)
+        {
+            Html.RenderAction("LoadJobCardItems", new { @JobcardId = Model._JobCard.Id, @Status = "progress" });
+        }
+    }
+</fieldset>

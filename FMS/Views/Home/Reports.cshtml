@@ -1,0 +1,325 @@
+﻿@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using FMS.Models;
+  @if (User.IsInRole("superadmin"))
+     {
+    <div id="tileContainer" class="container" style="display: block; margin-left: 10%">
+        <div class="sidebyside">
+            <a href="@Url.Action("VehicleAttendanceReport", "Reports")" class="tile" style=" width: 300px;
+         height: 145px; background-color: rgb(74, 168, 66); display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp; Vehicle Attendance Report</h1>
+                <div class="vehicle-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("EhsAndPenalityReport", "Reports")" class="tile" style=" width: 145px; height: 145px; background-color: rgb(255, 153, 0);
+                 display: block; opacity: 1;">
+                <h1 style="color: white">
+                    EHS & Penalty Report</h1>
+                <div class="ehs-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("MISAdvanceReport", "Reports")" class="tile" style=" width: 145px; height: 145px; background-color: rgb(173, 21, 143);
+                 display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp; Advances Report</h1>
+                <div class="advance-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("InvoiceReport", "Reports")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(74, 168, 66); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    To Be Generated Ven. Invoice</h1>
+                <div class="billing-mgmt-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("VendorInvoiceReport", "Reports")" class="tile" style="
+                 width: 300px; height: 145px; background-color: rgb(213, 27, 109); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp; Paid Vendor Invoice Report
+                </h1>
+                <div class="billing-mgmt-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("ToBeTrackedTokenReport", "Reports")" id="tileSlideshow0-0-1" class="tile" style="
+         width: 145px; height: 145px; background-color: rgb(105, 80, 171); display: block;
+         opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp; To be Tracked Tokens
+                </h1>
+                <div class="diesel-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("DieselTrackingReport", "Reports")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(10, 153, 209); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp; Diesel Report
+                </h1>
+                <div class="diesel-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("ClientInvoiceReport", "Reports")" id="tileScroll0_1-1" class="tile"
+             style=" width: 300px; height: 145px; background-color: rgb(209, 90, 90);
+             display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;Client Invoice Report
+                </h1>
+                <div class="billing-mgmt-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("MISReport", "Reports")" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(45, 167, 236);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp; MIS Report
+                </h1>
+                <div class="report-icon">
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("DailyLogSheetsReport", "Reports")" class="tile tileSlide up" style="width: 300px; height: 145px; background-color: rgb(50, 113, 194);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Daily Duty LogSheet  
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div> 
+        <div class="sidebyside">
+            <a href="@Url.Action("AuditMISReport", "Audit")" class="tile tileSlide up" style="width: 145px; height: 145px; background-color: rgb(45, 167, 236);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Audit/UnAudit Report    
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div> 
+        <div class="sidebyside">
+            <a href="@Url.Action("AuditLogSheetReport", "Reports")" class="tile tileSlide up" style="width: 145px; height: 145px; background-color:rgb(74, 168, 66);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Audited MIS Report    
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("MISReport", "Reports", new { reportType = 1 })" class="tile tileSlide up" style="width: 145px; height: 145px; background-color:rgb(173, 21, 143);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Booking MIS Report    
+                </h1>
+                <div class="advance-icon">
+                    
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("VehicleMileAge", "Reports")" class="tile tileSlide up" style="width: 145px; height: 145px; background-color:#FEAE0B;
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Veh. MailAge Report  
+                </h1>
+                <div class="diesel-icon">
+                    
+                </div>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("LogSheetReportByClient", "Reports")" class="tile tileSlide up" style="width: 145px; height: 145px; background-color:#AE0BFE;
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Log Sheet Report By Client  
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+     }
+     else
+     {
+    <div id="tileContainer" class="container" style="display: block; margin-left: 10%">
+        @if ((bool)core.GetUserAccess(16, User.Identity.Name).List)
+        {  
+            <div class="sidebyside">
+                <a href="@Url.Action("VehicleAttendanceReport", "Reports")" class="tile" style="width: 300px;
+         height: 145px; background-color: rgb(74, 168, 66); display: block; opacity: 1;">
+                    <h1 style="color: white">
+                        &nbsp; Vehicle Attendance Report</h1>
+                    <div class="vehicle-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(17, User.Identity.Name).List)
+        {
+            <div class="sidebyside">
+                <a href="@Url.Action("EhsAndPenalityReport", "Reports")" class="tile" style=" width: 145px; height: 145px; background-color: rgb(255, 153, 0);
+                 display: block; opacity: 1;">
+                    <h1 style="color: white">
+                        EHS & Penalty Report</h1>
+                    <div class="ehs-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(18, User.Identity.Name).List)
+        {
+            <div class="sidebyside">
+                <a href="@Url.Action("MISAdvanceReport", "Reports")" class="tile" style=" width: 145px; height: 145px; background-color: rgb(173, 21, 143);
+                 display: block; opacity: 1;" >
+                    <h1 style="color: white">
+                        &nbsp; Advances Report</h1>
+                    <div class="advance-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(19, User.Identity.Name).List)
+        {
+            <div class="sidebyside">
+                <a href="@Url.Action("InvoiceReport", "Reports")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(74, 168, 66); display: block;
+                 opacity: 1;" >
+                    <h1 style="color: white">
+                        To Be Generated Ven. Invoice</h1>
+                    <div class="billing-mgmt-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(20, User.Identity.Name).List)
+        {
+            <div class="sidebyside">
+                <a href="@Url.Action("VendorInvoiceReport", "Reports")" class="tile" style="
+                 width: 300px; height: 145px; background-color: rgb(213, 27, 109); display: block;
+                 opacity: 1;" >
+                    <h1 style="color: white">
+                        &nbsp; Paid Vendor Invoice Report
+                    </h1>
+                    <div class="billing-mgmt-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(41, User.Identity.Name).List)
+        { 
+            <div class="sidebyside">
+                <a href="@Url.Action("ToBeTrackedTokenReport", "Reports")" id="tileSlideshow0-0-1" class="tile" style="
+         width: 145px; height: 145px; background-color: rgb(105, 80, 171); display: block;
+         opacity: 1;">
+                    <h1 style="color: white">
+                        &nbsp; To be Tracked Tokens
+                    </h1>
+                    <div class="diesel-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(42, User.Identity.Name).List)
+        {   
+            <div class="sidebyside">
+                <a href="@Url.Action("DieselTrackingReport", "Reports")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(10, 153, 209); display: block;
+                 opacity: 1;" >
+                    <h1 style="color: white">
+                        &nbsp; Diesel Report
+                    </h1>
+                    <div class="diesel-icon">
+                    </div>
+                </a>
+            </div> }
+        @if ((bool)core.GetUserAccess(45, User.Identity.Name).List)
+        {    <div class="sidebyside">
+         <a href="@Url.Action("ClientInvoiceReport", "Reports")" id="tileScroll0_1-1" class="tile"
+             style="width: 300px; height: 145px; background-color: rgb(209, 90, 90);
+             display: block; opacity: 1;" >
+             <h1 style="color: white">
+                 &nbsp;Client Invoice Report
+             </h1>
+             <div class="billing-mgmt-icon">
+             </div>
+         </a>
+     </div> }
+        @if ((bool)core.GetUserAccess(46, User.Identity.Name).List)
+        { 
+            <div class="sidebyside">
+                <a href="@Url.Action("MISReport", "Reports")" class="tile tileSlide up" style="width: 145px; height: 145px; background-color: rgb(45, 167, 236);
+                     padding: 0px; display: block; opacity: 1;">
+                    <h1 style="color: white">
+                        &nbsp; MIS Report
+                    </h1>
+                    <div class="report-icon">
+                    </div>
+                </a>
+            </div> }
+                   @if ((bool)core.GetUserAccess(54, User.Identity.Name).List)
+                   { 
+       <div class="sidebyside">
+            <a href="@Url.Action("DailyLogSheetsReport", "Reports")" class="tile tileSlide up" style="width: 300px; height: 145px; background-color: rgb(50, 113, 194);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Daily Duty LogSheet  
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div>
+        }@if ((bool)core.GetUserAccess(56, User.Identity.Name).List)
+         { 
+         <div class="sidebyside">
+            <a href="@Url.Action("AuditMISReport", "Audit")" class="tile tileSlide up" style="width: 300px; height: 145px; background-color: rgb(45, 167, 236);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Audit/UnAudit Report    
+                </h1>
+                <div class="report-icon">
+                    
+                </div>
+            </a>
+        </div>
+       }
+       @if ((bool)core.GetUserAccess(59, User.Identity.Name).List)
+       {
+           <div class="sidebyside">
+            <a href="@Url.Action("MISReport", "Reports", new { reportType = 1 })" class="tile tileSlide up" style="width: 145px; height: 145px; background-color:rgb(173, 21, 143);
+                padding: 0px; display: block; opacity: 1;">
+                <h1 style="color:White;">
+                    &nbsp; Booking MIS Report    
+                </h1>
+                <div class="advance-icon">
+                    
+                </div>
+            </a>
+        </div>
+       }
+        </div>
+     }
+  
+<script type="text/javascript" language="javascript">
+    $('#Report').addClass('navActive');
+</script>

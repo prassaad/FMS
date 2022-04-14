@@ -1,0 +1,11 @@
+[2016-01-21 09:40:23.1805] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Controllers.LogsheetManagementController.GetDutyLogSheetList(DateTime StartDt, DateTime EndDt, String LogSheetType) in D:\ProjectRelatedfiles\SuryaTravels\Backup\Abdhul\FMS\Controllers\LogsheetManagementController.cs:line 100
+   at FMS.Controllers.LogsheetManagementController.GetDutyLogSheets(Int32 iDisplayStart, Int32 iDisplayLength, String sSearch, Int32 iColumns, Int32 iSortingCols, Int32 iSortCol_0, String sSortDir_0, Int32 sEcho, String mDataProp_Key, String StartDate, String EndDate, String LogSheetType) in D:\ProjectRelatedfiles\SuryaTravels\Backup\Abdhul\FMS\Controllers\LogsheetManagementController.cs:line 52
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

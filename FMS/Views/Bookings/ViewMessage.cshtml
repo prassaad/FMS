@@ -1,0 +1,40 @@
+﻿@model FMS.Models.WebEmail
+
+<title>
+    View Message
+</title>
+
+<h2>Message</h2>
+
+@Html.ActionLink("Go Back", "InboxMails", "Bookings")  &nbsp;&nbsp; <a href="@Url.Action("GenerateBooking", "Bookings", new { EmailAddress = Model.SenderId, DateOfMail = Model.DateSent.Date.ToShortDateString(), CC = Model.CC, BCC = Model.BCC })" style="text-decoration:underline;color:Blue;">Generate Booking</a>
+
+<h3>
+   Subject: <b> @(Model.Subject) </b>
+</h3>
+<p>
+   From : @(Model.From)
+</p>
+<p>
+   Sent : @(Model.DateSent)
+</p>
+<p>
+    To : @(Model.To)
+</p>
+<hr />
+<br />
+<br />
+<div style="width:100%;">
+    @if (Model.FileAttachments.Count() > 0)
+    {
+        <p>
+            File Attachments :
+        </p>
+        foreach (var item in Model.FileAttachments)
+        {
+            System.IO.File.WriteAllBytes(Server.MapPath(@"~/InboxMails/" + item.FileName), item.Content);
+            @Html.ActionLink(item.FileName, "DownloadFile", "Bookings", new { FileName = item.FileName, fileType = item.ContentType }, null)  <br />
+        }
+    }
+    @Html.Raw(Model.Body)
+</div>
+ 

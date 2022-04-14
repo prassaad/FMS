@@ -1,0 +1,5 @@
+[2015-12-09 16:15:42.7005] [127.0.0.1] [ERROR] [An error occurred while updating the entries. See the inner exception for details.] [superadmin] [   at System.Data.Mapping.Update.Internal.UpdateTranslator.Update(IEntityStateManager stateManager, IEntityAdapter adapter)
+   at System.Data.EntityClient.EntityAdapter.Update(IEntityStateManager entityCache)
+   at System.Data.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   at System.Data.Objects.ObjectContext.SaveChanges()
+   at FMS.Controllers.ProjectsController.Edit(Int64 ID, tbl_projects tbl_projects, FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\ProjectsController.cs:line 89]

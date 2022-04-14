@@ -1,0 +1,67 @@
+﻿@model IEnumerable<FMS.Models.WebEmail>
+
+@{
+    ViewBag.Title = "Inbox Mails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Inbox Mails (Unread) </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Refresh", "Refresh", "Bookings") </li>
+        </ul>
+    </div>
+</div>
+<h3>
+    Booking mails from the mail address <span class="label-important">@(ViewBag.EmailAddress)
+    </span>
+   
+</h3>
+ 
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+    <thead>
+        <tr>
+            <th>
+                Message#
+            </th>
+            <th>
+                From
+            </th>
+            <th>
+                Subject
+            </th>
+            <th>
+                Date Sent
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MessageNumber)
+                </td>
+                <td>
+                    <a href="@Url.Action("Message", "Bookings", new { id = item.MessageNumber })" style="text-decoration:underline;color:Red;">
+                        @item.From </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateSent)
+                </td>
+                <td>
+                    <a href="@Url.Action("GenerateBooking", "Bookings", new { EmailAddress = item.SenderId, DateOfMail = item.DateSent.Date.ToShortDateString() , CC = item.CC , BCC = item.BCC })" onclick="return confirm('Are you sure want to generate booking?')" style="text-decoration:underline;color:Red;">
+                        Generate Booking</a> | <a href="@Url.Action("MarkAsRead", "Bookings", new { id = item.MessageNumber })" style="text-decoration:underline;color:Red;">
+                            Mark as Read </a>
+                </td>
+            </tr>
+    }
+    </tbody>
+</table>

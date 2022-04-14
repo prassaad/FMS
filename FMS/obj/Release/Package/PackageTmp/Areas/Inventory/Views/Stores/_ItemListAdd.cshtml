@@ -1,0 +1,150 @@
+﻿@model IEnumerable<FMS.Models.InventoryStockRegDetail>
+@using FMS.Models;
+@if (Model.ToList().Count > 0)
+{
+    <h3>
+        &nbsp;&nbsp; <i class="clip-list"></i>Added Item(s) section</h3>
+    <div class="col-md-8">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Sl.No
+                    </th>
+                    <th>
+                        Particulars
+                    </th>
+                    <th>
+                        Size
+                    </th>
+                    <th>
+                        Qty
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        UOM
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Slno)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemText)
+                        </td>
+                        <td>
+                            @Html.Encode(item.Weight)
+                        </td>
+                        <td>
+                            @Html.Encode(String.Format("{0:F}", item.ReceQty))
+                        </td>
+                        <td>
+                            @Html.Encode(String.Format("{0:F}", item.Rate))
+                        </td>
+                        <td>
+                            @core.GetUnit((int)item.UnitsId)
+                        </td>
+                        <td>
+                            @if (ViewData["IsEdit"].ToString() == "1")
+                            {  
+                                <input type="hidden" value="@item.StockRegId" name="hdn_stock_id" id="hdn_stock_id" />   
+                                <a data-toggle="modal" href="#" id="@item.ID" onclick="EditStockModal('@item.ID')" title="Edit Stock Details"  class="cls_edit">
+                                </a>
+                                <a href="#" onclick="DeleteStockDetails(1,'@item.ID');" class="cls_delete"  title="delete Stock Details">
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" onclick="DeleteStockDetails(0,'@item.Slno');"  class="cls_delete"  title="delete Stock Details">
+                                </a>
+                            }
+                        </td>
+                    </tr>
+       
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <h3>
+        No Item has been added.
+    </h3>
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script type="text/javascript" language="javascript">
+    function EditStockModal(id) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 520,
+                 height: 350
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 EditStockDetails(id);
+             }
+
+         });
+    }
+    function EditStockDetails(id) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("EditStockDetails", "Stores", new { area = "Inventory" })?Id=' + id,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').fadeOut('slow');
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function DeleteStockDetails(IsEdit, Id) {
+        if (confirm('Are you sure want to delete this item?')) {
+            $('#loading').show();
+            var Actions = Id + "_" + IsEdit;
+            $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("DeleteStockDetails", "Stores", new { area = "Inventory" })?Id=' + Actions,
+                  dataType: "html",
+                  success: function (result) {
+                      if (IsEdit == 0) {
+                          $('#loading').hide();
+                          $('#StockRegDetList').html(result);
+                      }
+                      else {
+                          window.location.href = '@Url.Action("InwardEdit", "Stores", new { area = "Inventory" })?Id=' + $("#hdn_stock_id").val();
+                      }
+                  },
+                  error: function (error) {
+                      alert(error); $('#loading').hide();
+                  }
+              });
+        }
+    }
+</script>

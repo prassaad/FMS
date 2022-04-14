@@ -1,0 +1,256 @@
+﻿@model FMS.Models.JobCardManagement
+@{
+    ViewBag.Title = "View Job Card";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    double QtyTot = 0, sno = 0;
+    decimal Amt = 0;
+}
+<style type="text/css">
+    .alignRight
+    {
+        text-align: right !important;
+    }
+</style>
+<h2>
+    View Job Card with reference number [ @Model._JobCard.JobCardNo ] with Status <span
+        class="label-important">@(Model._JobCard.Status)
+    </span>
+</h2>
+<div class="bread_title" style="width: 100%">
+    <div class="bread_navigation" style="width: 30%;">
+        <ul>
+            <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg active" href="@Url.Action("Index", "Jobcard")">
+                Cancel</a> </li>
+        </ul>
+    </div>
+</div>
+<fieldset>
+    <legend>Job Card Details </legend>
+    <table style="width: 100%">
+        <tr style="width: 100%">
+            <td style="width: 49%;float:left" valign="top">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td>
+                            Invoice No.
+                        </td>
+                        <td>
+                            <span class="label-important"> @Model._JobCard.JobCardNo </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Vehicle
+                        </td>
+                        <td>
+                            @Model._JobCard.tbl_vehicles.VehicleRegNum
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date of Service
+                        </td>
+                        <td>
+                            @Model._JobCard.JobCardDt.Value.ToShortDateString()
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Service Type
+                        </td>
+                        <td>
+                            @Model._JobCard.ServiceType
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Service Number
+                        </td>
+                        <td>
+                            @Model._JobCard.tbl_veh_service_schedules.ServiceNo
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+            <td style="width: 49%;float:right;" valign="top">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                     <tr>
+                        <td>
+                            Odometer Reading
+                        </td>
+                        <td>
+                            @Model._JobCard.OdometerReading
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Billing Inv. No.
+                        </td>
+                        <td>
+                            @Model._JobCard.BillingInvNO
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>
+                           Billing Inv. Dt. 
+                        </td>
+                        <td>
+                            @(Model._JobCard.BillingInvDt.HasValue ? Model._JobCard.BillingInvDt.Value.ToShortDateString() : "")
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>
+                            Fuel
+                        </td>
+                        <td>
+                            @Model._JobCard.Fuel
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Service Station 
+                        </td>
+                        <td>
+                            @Model._JobCard.tbl_service_stations.ServiceStation
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td>
+                           Description
+                        </td>
+                        <td>
+                            @Model._JobCard.JobCardDescr
+                        </td>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+     <h2>
+        JobCard Spares / Services
+     </h2>
+     <center>
+        <table class="table table-striped table-condensed dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        SNo.
+                    </th>
+                    <th>    
+                        Category
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Particular
+                    </th>
+                    <th>
+                        Qty
+                    </th>
+                    <th class="alignRight">
+                        Amount
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    QtyTot = 0; Amt = 0; sno = 0;
+                }
+                @foreach (var item in Model._JobCardDetList)
+                {
+                    <tr>
+                        @{ sno++;}
+                        <td>
+                            @sno
+                        </td>
+                        <td>
+                           @item.InventoryItemsMaster.InventoryItemCategory.ItemCatText
+                        </td>
+                        <td>
+                            @(item.InventoryItemsMaster.IsItem == 1 ? "Item" : "Service")
+                        </td>
+                        <td>
+                            @item.InventoryItemsMaster.ItemText
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Qty)
+                            @{
+                       QtyTot += (double)item.Qty;
+                       Amt += (decimal)item.Amount;
+                            }
+                        </td>
+                        <td class="alignRight">
+                           &#x20B9; @String.Format("{0:N}", item.Amount)
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="3">
+                    </td>
+                    <td>
+                        Totals
+                    </td>
+                    <td>
+                        @QtyTot
+                    </td>
+                    <td class="alignRight">
+                       &#x20B9; @String.Format("{0:N}", Amt)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+      </center>
+      <center>
+    <table class="table table-striped table-condensed dTableR dataTable" style="width: 50% !important;">
+        <tr>
+            <td>
+                Service Charges
+            </td>
+            <td class="alignRight">
+                &#x20B9; @String.Format("{0:N}", Model._JobCard.ServiceCharges)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Total Amount
+            </td>
+            <td class="alignRight">
+                &#x20B9; @String.Format("{0:N}", Model._JobCard.TotalAmount)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Discount Amount
+            </td>
+            <td class="alignRight">
+                &#x20B9; @String.Format("{0:N}", Model._JobCard.DisCountAmt)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                VAT Tax Amount
+            </td>
+            <td class="alignRight">
+                &#x20B9; @String.Format("{0:N}", Model._JobCard.VatTax == null ? 0 : Model._JobCard.VatTax)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Grand Total
+            </td>
+            <td class="alignRight">
+                &#x20B9; @String.Format("{0:N}", Model._JobCard.NetAmount)
+            </td>
+        </tr>
+    </table>
+    </center>
+</fieldset>
+ 
+ 
+    
+ 

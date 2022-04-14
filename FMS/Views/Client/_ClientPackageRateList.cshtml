@@ -1,0 +1,152 @@
+﻿@model IEnumerable<FMS.Models.tbl_package_client_rates>
+
+
+    @if (Model.Count() != 0)
+    {
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>
+                        Project
+                    </th>
+                    <th>
+                        Location
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Model
+                    </th>
+                    <th>
+                        Package Amt.
+                    </th>
+                    <th>
+                        Package Type
+                    </th>
+                    <th>
+                        Effected Dt.
+                    </th>
+                    <th>
+                        Expired Dt.
+                    </th>
+                    <th>
+                        LogIn Time
+                    </th>
+                    <th>
+                        LogOut Time
+                    </th>
+                    <th>
+                        Auto Renewal?
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @(item.ProjectId == null ? "" : item.tbl_projects.ProjectName)
+                        </td>
+                        <td>
+                            @(item.LocationId == null ? "" : item.tbl_locations.Location)
+                        </td>
+                        <td>
+                            @(item.tbl_vehicle_types.VehicleType)
+                        </td>
+                        <td>
+                            @(item.VehicleTypeId == null ? "" : item.tbl_vehicle_models.VehicleModelName)
+                        </td>
+                        <td>
+                            @String.Format("{0:N}", item.PackageAmt)
+                        </td>
+                        <td>
+                            @(item.WorkingDays.ToString() + " " + (item.TimeUnit == 1 ? "Days" : "Months"))
+                        </td>
+                        <td>
+                            @Html.Encode(item.EffectiveDt.HasValue ? Convert.ToDateTime(item.EffectiveDt.Value).ToShortDateString() : "")
+                        </td>
+                        <td>
+                            @(item.ExpiredDt.HasValue ? Convert.ToDateTime(item.ExpiredDt.Value).ToShortDateString() : "")
+                        </td>
+                        <td>
+                            @(item.LoginTime)
+                        </td>
+                        <td>
+                            @(item.LogoutTime)
+                        </td>
+                        <td>
+                            @if (item.AutoRenewal.HasValue ? (bool)item.AutoRenewal : false)
+                            {
+                                <span class="system positive">Yes</span>
+                            }
+                            else
+                            {
+                               <span class="system negative">No</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="#" onclick="EditPackStructure('@item.Id');"> Edit </a> | <a href="#" onclick="DeletePackStructure('@item.Id');"> Delete </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2> No package rate has been added.  </h2>
+    }
+
+    <script type="text/javascript">
+        function EditPackStructure(Id) {
+            $("#loading").fadeIn('slow');
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/Client/EditPackStructure",
+                    data: "Id=" + Id,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#divAddClientRateChart').html(result);
+                        $("#loading").fadeOut('slow');
+                    }
+                });
+        }
+        function DeletePackStructure(Id) {
+            $("#loading").fadeIn('slow');
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Client/DeletePackStructure",
+                    data: "Id=" + Id,
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) {
+                            ClientPackageRateList(result.clientid);
+                        }
+                        $('#SpanErrorMsg').html(result.msg);
+                        $("#loading").fadeOut('slow');
+                    }
+                });
+        }
+        function ClientPackageRateList(ClientID) {
+            $("#loading").fadeIn('slow');
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/Client/ClientPackageRateList",
+                    data: "ClientID=" + ClientID,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#divAddedClientRateList').html(result);
+                        $("#loading").fadeOut('slow');
+                    },
+                    error: function (error) {
+
+                    }
+                });
+        }
+    </script>

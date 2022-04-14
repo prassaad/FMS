@@ -1,0 +1,36 @@
+﻿body
+{
+	
+}
+
+  /*  Accordion css at Dash board  */
+    .accordion { list-style-type: none; padding: 0; margin: 0 0 30px; border: 1px solid #17a; border-top: none; border-left: none;}
+	.accordion ul { padding: 0; margin: 0.8px 0; float: left; display: block; width: 100%; }
+	.accordion li { background: #64A5D6; cursor: pointer; list-style-type: none; padding: 0; margin: 0.8px 0; float: left; display: block; width: 100%;color:White ! important;}
+	.accordion li div { padding: 20px; background: #aef; display: block; clear: both; float: left;}
+	.accordion a { text-decoration: none; border-bottom: 1px solid #ccc; font: bold 1.1em/2em Arial, sans-serif; color: #fff ! important; padding: 0 10px; display: block; cursor: pointer;}
+	/* Level 2 */
+	.accordion li ul li { background: #F0F0F0; font-size: 0.9em; }
+	.page-content 
+	{
+		width:100%
+	}
+	
+	
+   label {
+    padding-top: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    float: left;
+    width: 130px;
+    text-align: right;
+    color: #404040;
+}
+  .tfooter_total td
+{
+	background: #058DC7 ! important;
+	font-size: 12px; 
+	font-weight:bold;
+	color:#fff;
+	height:20px;
+}

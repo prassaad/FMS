@@ -1,0 +1,170 @@
+﻿@using (Html.BeginForm("AddProxyVehicle", "Vehicle", FormMethod.Post, new { id = "frmAddProxyVehicle", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="clsmodalheader">
+        Add Proxy Vehicle</div>
+    <div style="overflow: auto; z-index: 9999; height: 500px;">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("VehicleRegNum", null, new { @style = "width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Vendor", null, new { @style = "width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Type :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Model :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleModelID", null, "--Select Vehicle Model--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Seater :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("SeaterID", null, "--Select Seater--", new { style = "width: 210px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Driver :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Driver", null, new { @style = "width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Phone", null, new { @style = "width:200px" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="button" id="btnAddVehicle" value="Add Vehicle" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<script type="text/javascript">
+
+    $('#btnAddVehicle').click(function () {
+        $("#div_loading").fadeIn('slow');
+        // Validate fields here  
+        if (ValidationFields()) {
+            // Ajax Post Call 
+            $.post('/Vehicle/AddProxyVehicle', $('#frmAddProxyVehicle').serialize(), function (data) {
+                if (data.success) {
+                    $.modal.close();
+                    alert(data.msg);
+                    window.location.href = "/Vehicle/ProxyVehicles";
+                    $("#div_loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    document.getElementById('VehicleRegNum').value = '';
+                    document.getElementById('VehicleRegNum').focus();
+                    $("#div_loading").fadeOut('slow');
+                }
+            });
+        }
+    });
+
+    function ValidationFields() {
+        var vehicleReg = $('#VehicleRegNum').val();
+        var vendor = $('#Vendor').val();
+        var vehicleType = $('#VehicleTypeID').val();
+        var vehicleModel = $('#VehicleModelID').val();
+        var seaterID = $('#SeaterID').val();
+        var driver = $('#Driver').val();
+        var phone = $('#Phone').val();
+
+        if (vehicleReg == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter vehicle reg number.');
+            $('#VehicleRegNum').focus();
+            return false;
+        }
+
+        if (vendor == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter vendor name.');
+            $('#Vendor').focus();
+            return false;
+        }
+        if (vehicleType == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select vehicle type.');
+            $('#VehicleTypeID').focus();
+            return false;
+        }
+        if (vehicleModel == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select vehicle model.');
+            $('#VehicleModelID').focus();
+            return false;
+        }
+        if (seaterID == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please select seater.');
+            $('#SeaterID').focus();
+            return false;
+        }
+        if (driver == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter driver name.');
+            $('#Driver').focus();
+            return false;
+        }
+        if (phone == '') {
+            $('#SpanValidateMsg').show();
+            $('#SpanValidateMsg').html('Please enter phone number.');
+            $('#Phone').focus();
+            return false;
+        }
+        $('#SpanValidateMsg').hide();
+        return true;
+    }
+
+    $("#Phone").change(function () {
+        var result = isValidMobileNumber(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Phone number should be digit..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+</script>

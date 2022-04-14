@@ -1,0 +1,23 @@
+﻿@model FMS.Models.tbl_vehicle_types
+@{
+    ViewBag.Title = "Delete Vehicle Type";
+}
+
+<h2>
+    Delete Vehicle Type</h2>
+    <div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                           <li>@Html.ActionLink("Home","Index","Home")</li>
+                            <li class="lastactive">@Html.ActionLink("List of Types", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+<h3>
+    Are you sure you want to delete this @Model.VehicleType ?</h3>
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+}

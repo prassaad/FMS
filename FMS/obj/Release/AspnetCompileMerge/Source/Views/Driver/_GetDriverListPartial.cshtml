@@ -1,0 +1,95 @@
+﻿@model IEnumerable<FMS.Models.tbl_drivers> 
+           @using FMS.Models;
+           @{
+               long DriverId = -1;
+               long VehicleID = ViewBag.VehicleID == 0 ? 0 : Convert.ToInt64(ViewBag.VehicleID);
+                int listCount = Model.Count();
+           }
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_driverList">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Current Vehicle
+        </th>
+        <th>
+            Contact#
+        </th>
+        <th>
+            Licence#
+        </th>
+        <th>
+            Licence Validity
+        </th>
+         <th>
+                Badge#
+            </th>
+            <th>
+                Badge Validity
+            </th>
+        <th>
+            Blood Group
+        </th>
+        <th>
+            Profile Complete
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (VehicleID == 0)
+                {
+                <a style="color:Red;text-decoration:underline;cursor:pointer" onclick="ViewDriverDetails(@item.ID);"> @item.FirstName.ToString().ToUpper() @item.LastName.ToString().ToUpper() </a> 
+                }
+                else
+                {
+                <a style="color:Red;text-decoration:underline;cursor:pointer" onclick="ViewDriverDetails(@item.ID,@item.CurrentVehicleID);"> @item.FirstName.ToString().ToUpper() @item.LastName.ToString().ToUpper() </a> 
+                }
+                @if (DriverId == -1)
+                {
+                    DriverId = item.ID;
+                }
+                @Html.Hidden("DriverId", DriverId)
+            </td>
+            <td>
+                @(item.CurrentVehicleID == null ? "PROXY" : item.tbl_vehicles.VehicleRegNum.ToString().ToUpper())
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenceNumber).ToString().ToUpper()
+            </td>
+            <td>
+                @Html.Encode(item.LicenceValidity == null ? "" : item.LicenceValidity.Value.ToString("dd/MM/yyyy"))
+            </td>
+          
+                <td>
+                    @Html.DisplayFor(modelItem => item.BadgeNumber).ToString().ToUpper()    
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.BadgeValidity))
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BloodGroup).ToString().ToUpper()
+            </td>
+            <td>
+                 @if ((bool)item.ProfileComplete)
+                 {
+                         <span class="system positive">Yes</span>
+                 }
+                 else
+                 {
+                         <span class="system negative">No</span>
+                 } 
+            </td>
+        </tr>
+    }
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+      //  ViewDriverDetails($("#DriverId").val());
+    });
+</script>

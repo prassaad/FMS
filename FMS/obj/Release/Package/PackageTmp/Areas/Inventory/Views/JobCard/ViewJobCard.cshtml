@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "View Job Card Info";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    long IndentId = ViewBag.IndentId;
+    string Status = ViewBag.Status;
+    string IndentManager = ViewBag.IndentManager;
+    string IndentCreatedBy = ViewBag.IndentCreatedBy;
+    string IndRefNo = ViewBag.RefferNo;
+    //bool isinPOOrder = ViewBag.AlreadyInPurchaseOrder;
+}
+<h2>View Job Card information with reference number [ @(IndRefNo) ]</h2>
+<div class="bread_title" style="width:100%">
+    <div class="bread_navigation" style="width:30%;">
+        <ul>
+            <li><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "JobCard", new { area = "Inventory" })">
+                Cancel</a> </li>
+            @if (Status.Trim().ToUpper() == "WAITINGFORAPPROVAL")
+            {
+                <li>
+                    <input type="button" class="btn btn-primary btn-xs" onclick="ApproveJobCard('@IndentId')" value="Approve" style="margin-top: -5px;"/></li>
+                <li>
+                    <input type="button" class="btn btn-orange btn-xs" onclick="RejectJobCard('@IndentId')" value="Reject" style="margin-top: -5px;"/></li>
+            }
+            @if (Status.Trim().ToUpper() == "INPROGRESS" && ViewBag.AlreadyIssue == 0)
+            {
+                <li>
+                    <input type="button" class="btn btn-primary btn-xs" onclick="IssuedProducts('@IndentId')" value="Issue Products" style="margin-top: -5px;"/></li>
+            }
+        </ul>
+    </div>
+    <div style="float: left; width: 0; margin-top: -8px;">
+        
+    </div>
+   <div style="float: right; width: 45%; margin-top: -5px;">
+        <ul id="tabs" class="wizard-steps">
+            <li id="tab-hd-1" class="step">@* if completed "completed-step"*@
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetJobCardDetails(@IndentId,'@Status')"><span>
+                    1</span> JobCard Draft </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-2" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"  onclick="GetJobCardDetails(@IndentId,'@Status')"><span>
+                    2</span> Waiting for Approval </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-3" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetJobCardDetails(@IndentId,'@Status')"><span>
+                    3</span> InProgress </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-4" class="step"  onclick="GetJobCardDetails(@IndentId,'@Status')">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>4</span> Received </a>
+                <div class="a-after">
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div >
+   
+    <ul id="tab">
+        <li>
+            <fieldset>
+                <legend>Job Card Info </legend>
+                <div id="IndentDetList1">
+                </div>
+            </fieldset>
+        </li>
+        <li>
+            <fieldset>
+                <legend> &nbsp; Waiting for JobCard Approval </legend>
+                <div id="IndentDetList2">
+                </div>
+            </fieldset>
+             
+        </li>
+        <li>
+            <fieldset>
+                <legend> &nbsp; JobCard in progress </legend>
+                <div id="IndentDetList3">
+                </div>
+            </fieldset>
+            
+        </li>
+        <li>
+            <fieldset>
+                <legend> &nbsp; JobCard received </legend>
+                <div id="IndentDetList4">
+                </div>
+            </fieldset>
+        </li>
+    </ul>
+   
+</div>
+ 
+
+<script type="text/javascript">
+    GetJobCardDetails('@IndentId', '@Status');
+    SetIndentTabsByStaus('@Status')
+    function GetJobCardDetails(IndentId, Status) {
+        // $("#loading").fadeIn('slow');
+        $.get('@Url.Action("GetJobCardDetails", "JobCard",new{ area = "Inventory" })?IndentId=' + IndentId, function (data) {
+            SetIndentTabsByStaus(Status);
+            SelectDivByStatus(Status, data);
+            $("#loading").fadeOut('slow');
+        });
+    }
+
+    function SelectDivByStatus(Status, data) {
+        if (Status.toLowerCase() == "waitingforapproval") {
+            $('#IndentDetList2').html('');
+            $('#IndentDetList2').html(data);
+        }
+        else if (Status.toLowerCase() == "inprogress") {
+            $('#IndentDetList3').html('');
+            $('#IndentDetList3').html(data);
+        }
+        else if (Status.toLowerCase() == "received") {
+            $('#IndentDetList4').html('');
+            $('#IndentDetList4').html(data);
+        }
+        else {
+            $('#IndentDetList1').html('');
+            $('#IndentDetList1').html(data);
+        }
+    }
+    function SetIndentTabsByStaus(Status) {
+        if (Status.toLowerCase() == "waitingforapproval") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-2").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 2 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "inprogress") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-3").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 3 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "received") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-4").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 4 + ")").addClass("current-tab");
+        }
+        else {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-1").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+        }
+    }
+    function ApproveJobCard(IndentId) {
+        if (!confirm('Are you sure want to approve this jobcard item?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("Approve", "JobCard",new{ area = "Inventory" })?Id=' + IndentId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewJobCard", "JobCard",new{ area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewJobCard", "JobCard",new{ area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function RejectJobCard(JobCardId) {
+        debugger;
+        if (!confirm('Are you sure want to reject this Jobcard item?')) {
+            return;
+        }
+
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("RejectJobCard", "JobCard",new{ area = "Inventory" })?Id=' + JobCardId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("Index", "JobCard",new{ area = "Inventory" })';
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewJobCard", "JobCrad", new { area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function IssuedProducts(IndentId) {
+        if (!confirm('Are you sure want to issue products for this jobCard item?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("IssuedProducts", "JobCard", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + data.Id + '&IsJobCard=1';
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+  
+</script>

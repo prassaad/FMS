@@ -1,0 +1,150 @@
+﻿@model FMS.Models.tbl_service_sch_master
+
+<div class="clsmodalheader">
+    Edit Serivce Schedule</div>
+<div id="EditServiceDiv">
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmEditService", @enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+    <table class="table table-bordered">
+        <tr>
+            <td colspan="2">
+                <span id="ErrorMsg" style="color: Red;font-size:12px;font-weight: bold;padding-top:10px;line-height:30px;"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Veh. Model
+            </td>
+            <td>
+                @Html.DropDownList("VehModelId", null, "-Select-", new { @style = "width:180px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Service No.
+            </td>
+            <td>
+                @Html.DropDownList("SSNO", null, "-Select-", new { @style = "width:180px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Min. KM
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.MinKM, new { @maxlength = "15", @onkeypress = "return numberValidatedot(event);", @style = "width:180px;" })
+                @Html.ValidationMessageFor(model => model.MinKM)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Max. KM
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.MaxKM, new { @maxlength = "15", @onkeypress = "return numberValidatedot(event);", @style = "width:180px;" })
+                @Html.ValidationMessageFor(model => model.MaxKM)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Day(s)
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Days, new { @maxlength = "5", @onkeypress = "return numberValidatedot(event);", @style = "width:180px;" })
+                @Html.ValidationMessageFor(model => model.Days)
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" value="Save" id="btnSaveService" />
+                @Html.Hidden("Status", true)
+            </td>
+        </tr>
+    </table>
+}
+</div>
+<script type="text/javascript" language="javascript">
+    var SelectMaxVal = 0;
+    $("#btnSaveService").click(function () {
+        var VehModelId = parseInt($('#VehModelId').val() == "" ? 0 : $('#VehModelId').val());
+        var SSNo = parseInt($("#SSNO").val() == "" ? 0 : $('#SSNO').val());
+        var MinVal = parseInt($("#MinKM").val() == "" ? 0 : $('#MinKM').val());
+        var MaxVal = parseInt($("#MaxKM").val() == "" ? 0 : $('#MaxKM').val());
+        var Days = parseInt($("#Days").val() == "" ? 0 : $('#Days').val());
+        if (VehModelId == 0) {
+            $("#ErrorMsg").text("Please select vehicle model.");
+            $("#VehModelId").focus();
+            $("#VehModelId").val('');
+            return false;
+        }  
+        if (SSNo == 0) {
+            $("#ErrorMsg").text("Please select service number.");
+            $("#SSNO").focus();
+            $("#SSNO").val('');
+            return false;
+        }
+        if (MinVal == 0) {
+            $("#ErrorMsg").text("Please enter min. kilo meters.");
+            $("#MinKM").focus();
+            $("#MinKM").val('');
+            return false;
+        }
+        else if (MaxVal == 0) {
+            $("#ErrorMsg").text("Please enter max. kilo meters.");
+            $("#MaxKM").focus();
+            $("#MaxKM").val('');
+            return false;
+        }
+        else if (MinVal > MaxVal) {
+            $("#ErrorMsg").text("min. kilo meters should not be greater than max. kilo meters.");
+            $("#MaxKM").focus();
+            $("#MaxKM").val('');
+            return false;
+        }
+        else if (Days == 0) {
+            $("#ErrorMsg").text("Please enter days.");
+            $("#Days").focus();
+            $("#Days").val('');
+            return false;
+        }
+        else {
+            $("#ErrorMsg").empty();
+            SelectMaxVal = $('#MaxKM').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditService", "ServiceSchMaster")',
+                data: "Id=" + '@Model.Id' + "&frm=" + $('#frmEditService').serialize(),
+                dataType: "json",
+                success: function (result) {
+                    if (result.success) {
+                        window.location.href = "/ServiceSchMaster/Index";
+                    }
+                    else {
+                        $("#ErrorMsg").show();
+                        $("#ErrorMsg").html(result.msg);
+                        $("#div_loading").hide();
+                        $("#div_loading").fadeOut('slow');
+                    }
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

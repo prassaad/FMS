@@ -1,0 +1,127 @@
+﻿@model FMS.Models.tbl_clients
+
+@{
+    ViewBag.Title = "Add Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Client</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li class="lastactive">@Html.ActionLink("List of Clients", "Index")</li>
+                            
+                        </ul>
+                    </div>
+            </div>
+@using (Html.BeginForm("Create", "Client", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+  <br />
+     <p style="color:Red;">@ViewBag.message </p>   
+    <fieldset>
+        <legend>Client Details</legend>
+        <div>
+            <span id="client_validate" style="display: none"></span>
+        </div>
+        <table class="table table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                   Company Name :<span style="color:Red;"> * </span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.CompanyName, new { @class="isName"})
+                    @Html.ValidationMessageFor(model => model.CompanyName)
+                </td>
+            </tr>
+           
+            <tr>
+                <td>
+                    Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PhoneNumber ,new { @maxlength = "10" })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Agreement Document :
+                </td>
+                <td>
+                    <input type="file" name="AgreementDocument" id="AgreementDocument" />
+                    @Html.ValidationMessageFor(model => model.AgreementDocument)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Billing Type :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("BillingTypeID", null, "--Select BillType--", new { style = "width:310px" })
+                    @Html.ValidationMessageFor(model => model.BillingTypeID)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Create" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    
+}
+
+<script type="text/javascript">
+   $(document).ready(function () {
+       $('#CreatedOn').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    $(".isName").change(function () {
+        var result = IsPureCharsAndSpace(this.value)
+        $("#SpanValidateMsg").hide();
+        if (this.id == "CompanyName") {
+            if (result == false) {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Company Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+    $("#PhoneNumber").change(function () {
+        var result = isValidMobileNumber(this.value)
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Phone number should be digit..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+
+
+</script>

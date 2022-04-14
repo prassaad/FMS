@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Card Entry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+   Admin Card Entry </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Transactions", "Home")">
+                Cancel </a></li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("CardEntry", "CardAssignment", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmCardEntry" }))
+{
+    @Html.ValidationSummary(true)
+<fieldset>
+    <legend>Card Entry </legend>
+    <table class="table-striped table-condensed dTableR dataTable" style="width:70% !important;">
+        <tr>
+            <td>
+                Date <span style="color: Red;">* </span>
+            </td>
+            <td>
+                @Html.TextBox("LogDate", "", new { @style = "width:150px" })
+                <span id="errLogDate" style=" display: none; color:Red">Please Enter Date</span> 
+            </td>
+            <td>
+                Card No <span style="color:Red;"> * </span>
+            </td>
+            <td>
+                @Html.DropDownList("CardNo", (IEnumerable<SelectListItem>)ViewBag.CardNo, "-Select-", new { @style = "width:180px;" })
+                 <span id="errCardNo" style=" display: none; color:Red">Please Enter Card No</span> 
+            </td>
+            <td>
+                
+            </td>
+            <td>
+                <input type="button" value="Get Card Details" id="btnCardDetails" />
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+    <div id="divCardDetails">
+        
+    </div>
+</fieldset>
+}
+<script type="text/javascript">
+    var myDate = new Date();
+    var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+    $("#LogDate").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        maxDate : prettyDate,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    $('#CardNo').change(function () {
+        $('#divCardDetails').empty();
+    });
+
+
+    $('#btnCardDetails').click(function () {
+        var logDate = $("#LogDate").val();
+        var cardId = $("#CardNo").val();
+
+        if (Validatemsg()) {
+
+            GetCardDetails(logDate, cardId);
+        }
+    });
+
+    function Validatemsg() {
+        var logDate = $("#LogDate").val();
+        var cardId = $("#CardNo").val();
+        if (logDate == '') {
+            $('#errLogDate').show();
+            return false;
+        }
+        if (cardId == '') {
+            $('#errCardNo').show();
+            return false;
+        }
+        return true;
+    }
+
+
+    function GetCardDetails(logDate, cardId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/CardAssignment/GetCardDetails?cardId=" + cardId + "&logDate=" + logDate,
+            dataType: "html",
+            success: function (data) {
+                $('#divCardDetails').html(data);
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+ 
+</script>

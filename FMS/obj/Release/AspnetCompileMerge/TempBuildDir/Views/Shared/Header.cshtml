@@ -1,0 +1,65 @@
+﻿@using FMS.Models;
+<div id="headerWrapper">
+        <div style="float:left;" id="divBack">
+            <a href="#" onclick="GoBack();"><div class="goback-icon"></div></a>
+        </div>
+		<div id="headerCenter">
+			<div id="headerTitles">
+			<a href="/"><img src="@Url.Content("~/Content/images/logo.png")" class="navActive" alt="logo" height="70" style="width:180px"/></a><h2> @FMS.ApplicationSettings.AppName </h2>
+		    </div>
+		    <nav>
+            	<a id="Home" href="@Url.Action("Index", "Home",new{ area = "" })">
+	<img src="@Url.Content("~/Content/images/layout/home.png")" alt="Home"/>
+	Home
+</a>
+<a id="Transaction" href="@Url.Action("Transactions", "Home", new { area = "" })">
+	<img src="@Url.Content("~/Content/images/layout/transactions.png")" alt="Transactions"/>
+	Transactions
+ </a>
+<a id="Report" href="@Url.Action("Reports", "Home", new { area = "" })">
+	<img src="@Url.Content("~/Content/images/layout/report-menu-icon.png")" alt="Report"/>
+	Reports
+</a>
+ @if (Session["UserName"] != null)
+ {
+    <a href="@Url.Action("logoff", "account", new { area = "" })">
+	<img src="@Url.Content("~/Content/images/layout/user-icon-hover.png")" alt="logoff"/>
+	Log Off
+</a>     
+   
+ }
+ else
+ {
+    <a href="@Url.Action("logon", "account", new { area = "" })">
+	<img src="@Url.Content("~/Content/images/layout/user-icon-hover.png")" alt="logoff"/>
+	Log On
+</a>  
+ }
+
+</nav>
+</div>
+@if (Session["UserName"] != null)
+{
+<div id="dropdown" class="ddmenu">
+            <span style="text-transform:capitalize;"> @User.Identity.Name   &nbsp; &#9662; </span> 
+            <ul>
+                @if (User.IsInRole("superadmin"))
+                {
+                <li>@Html.ActionLink("Manage Users", "Index", "Dashboard", new { area = "SecurityGuard" }, null)</li>
+                }
+                <li> @Html.ActionLink("Change Password", "ChangePassword", "SGAccount") </li>
+                 <li>
+                    <a href="@Url.Action("Configurations", "Home", new { area = "" })"> Configurations </a>
+                </li>
+                @if ((bool)core.GetUserAccess(47, User.Identity.Name).List)
+                {   <li>
+                   <a href="@Url.Action("UserActivityReport", "Reports", new { area = "" })">User Activity Report</a>
+                </li>}
+                @if ((bool)core.GetUserAccess(47, User.Identity.Name).List)
+                {   <li>
+                   <a href="@Url.Action("UserLogReport", "Reports", new { area = "" })">User Log Report</a>
+                </li>}
+                </ul>
+</div>
+}
+</div>

@@ -1,0 +1,179 @@
+/*
+ * Responsive Droplist Menu - v2.0
+ * (c) 2013 CSSplay - Stu Nicholls
+ *
+ * http://www.cssplay.co.uk
+ *
+ */
+ html, body {padding:0; margin:0; width:100%; height:100%;}
+.page {max-width:1020px; margin:0 auto; position:relative; z-index:100;}
+.tabletmenu {position:absolute; left:-9999px; display:none;}
+.nav {display:block; font-family:verdana, arial, sans-serif; position:relative; z-index:1000; background:#eee;width:100%;margin-bottom:25px;}
+.menuControl {display:none;}
+.dropdown-menu {margin:0; padding:0; list-style:none; text-align:left;}
+
+.dropdown-menu div {position:absolute; background:#C1C3C7; width:100%; max-width:100%; padding:10px 0; border-radius:5px;}
+
+.dropdown-menu li.top-li {float:left;border-right:2px solid white;}
+
+.dropdown-menu li.top-li a.top-a {display:block; float:left; text-align:center; line-height:40px; padding:0 10px; color:#444; text-decoration:none; font-size:15px; white-space:nowrap;}
+.dropdown-menu li.top-li b {display:block; width:100%; height:40px; background:url(trans.gif); position:relative; z-index:100;
+-webkit-transition:0.75s;
+-o-transition:0.75s;
+-moz-transition:0.75s;
+transition:0.75s;
+}
+.dropdown-menu li.top-li b {*display:none;}
+
+.dropdown-menu label {display:none;}
+
+.clear {clear:both;}
+
+.dropdown-menu div dl {padding:10px 15px; margin:0; cursor:pointer; float:left; width:190px;}
+.dropdown-menu div dt {display:block; padding:5px; margin:0; color:#fc6; font-size:14px; line-height:20px; background:#444; border-radius:3px;}
+
+.dropdown-menu div dl.dl5 {clear:left;}
+
+.dropdown-menu div dd {display:block; padding:0; margin:0;}
+.dropdown-menu div dd a {line-height:28px; color:#fff; background:#666; display:block; margin:2px 0; padding:0 5px; text-decoration:none; font-size:13px; white-space:nowrap; border-radius:3px;}
+.dropdown-menu div dd a:hover {text-decoration:none; background:#aaa; color:#000;}
+
+.dropdown-menu li:hover > b {height:0;}
+.dropdown-menu li.top-li:hover > a,.activemenu a {background:#C1C3C7; color:#fff; border-radius:5px 5px 0 0; text-decoration:none;}
+
+.dropdown-menu li div {left:-9999px; top:-3000px; display:none;}
+
+.dropdown-menu li:hover div {left:0; top:38px; display:block;}
+
+@media only screen and (max-width : 899px) {
+.dropdown-menu div dl.dl5 {clear:none;}
+.dropdown-menu div dl.dl4,
+.dropdown-menu div dl.dl7 {clear:left;}
+}
+
+@media only screen and (max-width : 679px) {
+.dropdown-menu div dl.dl4 {clear:none;}
+.dropdown-menu div dl.dl7 {clear:none;}
+.dropdown-menu div dl.dl3 {clear:left;}
+.dropdown-menu div dl.dl5 {clear:left;}
+.dropdown-menu div dl.dl7 {clear:left;}
+}
+
+
+@media only screen and (max-width : 480px) {
+html, body {width:100%; overflow-x:hidden;}
+.page {display:block; width:100%; left:0;
+-webkit-transition:0.5s;
+-moz-transition:0.5s;
+-o-transition:0.5s;
+transition:0.5s;
+}
+.dropdown-menu li.top-li b {display:none;}
+.dropdown-menu li.top-li > label {display:block; width:100%; height:60px; margin-top:-60px; background: url(trans.gif); position:relative; z-index:100;
+-webkit-transition:0.75s;
+-o-transition:0.75s;
+-moz-transition:0.75s;
+transition:0.75s;
+}
+
+.dropdown-menu li:hover > label {width:0;}
+
+.nav {width:250px; margin:0; position:absolute; left:-250px; top:0; min-height:100%; background:#f8f8f8; box-shadow:inset -3px 0 5px rgba(0,0,0,0.4);
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;
+}
+.menuControl {display:block; position:absolute; left:0; top:180px; width:50px; height:45px; border-radius:0 5px 5px 0;}
+.menuControl label {display:block; height:15px; width:30px; border-top: 5px solid #666; border-bottom:5px solid #666; position:absolute; left:10px; top:10px; cursor:pointer;}
+.menuControl label:after {display:block; content:""; width:30px; height:5px; background:#666; position:absolute; left:0; top:5px;}
+
+.dropdown-menu {width:240px;}
+.dropdown-menu li.top-li {float:none; width:220px; padding:0; min-height:60px;}
+.dropdown-menu li.top-li > a.top-a {float:none; color:#444; width:220px; font-size:25px; height:60px; line-height:60px; text-align:left; text-indent:10px;}
+.dropdown-menu li.has-sub > a.top-a {background: url(top-right.png) no-repeat 180px center;}
+
+.dropdown-menu li.top-li > a:hover,
+.dropdown-menu li.top-li:hover > a {color:#fff;}
+.dropdown-menu li.has-sub > a:hover,
+.dropdown-menu li.has-sub:hover > a {background: #111 url(top-down.png) no-repeat 180px center;}
+
+.dropdown-menu div {position:static; width:240px; display:block; margin-top:-20px; background:#000;}
+
+.dropdown-menu div dl {float:none; width:205px; padding:0 15px;}
+.dropdown-menu div dl dt {position:relative; text-indent:10px; font-size:16px; line-height:35px; margin:1px 0; background:#444 url(sub-right.png) no-repeat 165px center; color:#fc6;}
+
+.dropdown-menu div dl dt label {display:block; position:absolute; left:0; top:0; width:100%; height:100%; z-index:100; background:url(trans.gif);
+-webkit-transition:0.75s;
+-o-transition:0.75s;
+-moz-transition:0.75s;
+transition:0.75s;
+}
+
+.dropdown-menu div dl dd {height:0; overflow:hidden;}
+.dropdown-menu div dl dd a {font-size:14px; line-height:40px; text-indent:10px;}
+
+.dropdown-menu div dl dt:active,
+.dropdown-menu div dl dt:focus {background:#444 url(sub-down.png) no-repeat 165px center;}
+.dropdown-menu div dl dt:active + dd {height:auto;}
+.dropdown-menu div dl dt:focus + dd {height:auto; background:url(trans.gif);}
+.dropdown-menu div dl dd:hover {height:auto;}
+
+#menuOpen:checked ~ .page {left:250px;}
+#menuOpen:checked ~ .page article .menuControl .menuOpen {display:none;}
+
+#sub1:checked ~ .menu #p1,
+#sub2:checked ~ .menu #p2,
+#sub3:checked ~ .menu #p3,
+#sub4:checked ~ .menu #p4 {display:block;}
+
+#sub1:checked ~ .menu label.sub1,
+#sub2:checked ~ .menu label.sub2,
+#sub3:checked ~ .menu label.sub3,
+#sub4:checked ~ .menu label.sub4 {width:0;}
+
+#sub1:checked ~ .menu li.sub1 > a,
+#sub2:checked ~ .menu li.sub2 > a,
+#sub3:checked ~ .menu li.sub3 > a,
+#sub4:checked ~ .menu li.sub4 > a {color:#fff; background: #111 url(top-down.png) no-repeat 180px center;}
+
+#dt1:checked ~ .dl1 #s1,
+#dt2:checked ~ .dl2 #s2,
+#dt3:checked ~ .dl3 #s3,
+#dt4:checked ~ .dl4 #s4,
+#dt5:checked ~ .dl5 #s5,
+#dt6:checked ~ .dl6 #s6,
+#dt7:checked ~ .dl7 #s7,
+#dt8:checked ~ .dl1 #s8,
+#dt9:checked ~ .dl2 #s9,
+#dt10:checked ~ .dl3 #s10,
+#dt11:checked ~ .dl1 #s11,
+#dt12:checked ~ .dl2 #s12,
+#dt13:checked ~ .dl1 #s13,
+#dt14:checked ~ .dl2 #s14,
+#dt15:checked ~ .dl3 #s15,
+#dt16:checked ~ .dl4 #s16,
+#dt17:checked ~ .dl5 #s17,
+#dt18:checked ~ .dl6 #s18 {height:auto;}
+
+#dt1:checked ~ .dl1 dt,
+#dt2:checked ~ .dl2 dt,
+#dt3:checked ~ .dl3 dt,
+#dt4:checked ~ .dl4 dt,
+#dt5:checked ~ .dl5 dt,
+#dt6:checked ~ .dl6 dt,
+#dt7:checked ~ .dl7 dt,
+#dt8:checked ~ .dl1 dt,
+#dt9:checked ~ .dl2 dt,
+#dt10:checked ~ .dl3 dt,
+#dt11:checked ~ .dl1 dt,
+#dt12:checked ~ .dl2 dt,
+#dt13:checked ~ .dl1 dt,
+#dt14:checked ~ .dl2 dt,
+#dt15:checked ~ .dl3 dt,
+#dt16:checked ~ .dl4 dt,
+#dt17:checked ~ .dl5 dt,
+#dt18:checked ~ .dl6 dt {background:#444 url(sub-down.png) no-repeat 165px center;}
+
+}

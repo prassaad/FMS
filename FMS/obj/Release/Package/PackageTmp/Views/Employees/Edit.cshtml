@@ -1,0 +1,387 @@
+﻿@model FMS.Models.tbl_employees
+
+@{
+    ViewBag.Title = "Edit Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="../../Content/jquery.stepy.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery.validate.min.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.stepy.min.js" type="text/javascript"></script>
+ <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 40%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <h4>
+            </h4>
+        <img "../../Content/images/loading-icon.gif"  alt="Loading..."/ >
+    </div>
+<h2>Edit @Model.FirstName  @Model.LastName </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Employees", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("Edit", "Employees", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmEditEmployee" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset title="Employee Details" class="step" id="callback-step-1" style="display: block;
+        width: 98%">
+       <legend>Employee Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+               EmpNo#  <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("EmpNo", Model.EmpNo, new { @class = "error" })
+                @Html.ValidationMessage("EmpNo")
+                @Html.Hidden("ID", Model.ID)
+            </td>
+        </tr> 
+          <tr>
+            <td>
+               First Name  <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("FirstName", Model.FirstName)
+                @Html.ValidationMessage("FirstName")
+            </td>
+        </tr>
+         <tr>
+            <td>
+               Last Name  <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("LastName", Model.LastName)
+                @Html.ValidationMessage("LastName")
+            </td>
+        </tr> 
+         <tr>
+            <td>
+               Father Name  
+            </td>
+            <td>
+                @Html.TextBox("FatherName", Model.FatherName)
+            </td>
+        </tr> 
+         <tr>
+            <td>
+              Gender <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("Gender", null, "--Select Gender--", new { @style = "width:310px;" })
+                @Html.ValidationMessage("Gender")
+            </td>
+        </tr> 
+        <tr>
+            <td>
+              DOB
+            </td>
+            <td>
+                @Html.TextBox("DOB", Model.DOB)
+            </td>
+        </tr> 
+         <tr>
+            <td>
+              DOJ <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("DOJ", Model.DOJ.Value.ToString("dd/MM/yyyy"))
+                @Html.ValidationMessage("DOJ")
+            </td>
+        </tr> 
+        <tr>
+            <td>
+              Department <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("DeptID", null, "--Select Department--", new { @style = "width:310px;" })
+                @Html.ValidationMessage("DeptID")
+            </td>
+        </tr> 
+        <tr>
+            <td>
+              Designation <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("DesgID", null, "--Select Designation--", new { @style = "width:310px;" })
+                @Html.ValidationMessage("DesgID")
+            </td>
+        </tr> 
+         <tr>
+            <td>
+              Mobile <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("Mobile", Model.Mobile)
+                @Html.ValidationMessage("Mobile")
+            </td>
+        </tr> 
+         <tr>
+            <td>
+              Address 
+            </td>
+            <td>
+                @Html.TextArea("Address", Model.Address)
+            </td>
+        </tr> 
+        
+        </table>
+    </fieldset>
+    <fieldset title="Other Details" class="step" id="callback-step-2" style="display: block;
+        width: 98%">
+        <legend>Other Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg1" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr> 
+        <tr>
+            <td>
+               Photo 
+            </td>
+            <td>
+                <input type="file" id="Photo" name="PhotoPath" /> 
+                @if (Model.PhotoPath == null || Model.PhotoPath == "" || Model.PhotoPath.ToUpper() == "USER-AVATAR.JPG")
+                {
+                    <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="user-avatar" />
+                }
+                else
+                { 
+                    <img src="../../Content/uploadimages/employees/@Model.PhotoPath" alt="@Model.PhotoPath" width="80" height="80" />
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+               Email  <span style="color:Red">*</span>
+            </td>
+            <td>
+                <input type="text" id="mail" name="Email" value="@Model.Email" />
+                @Html.ValidationMessage("Email")
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    EPF No.
+                </td>
+                <td>
+                    @Html.TextBox("EPFNo", Model.EPFNo) &nbsp; @Html.CheckBox("IsPF")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ESI Reg No.
+                </td>
+                <td>
+                    @Html.TextBox("ESIRegNo", Model.ESIRegNo) &nbsp; @Html.CheckBox("IsESI")
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    P-Tax & TDS
+                </td>
+                <td>
+                    @Html.CheckBox("IsPTax") &nbsp; P-Tax &nbsp; @Html.CheckBox("IsTDS") &nbsp; TDS
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    LIC No.
+                </td>
+                <td>
+                    @Html.TextBox("LICNo", Model.LICNo)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pay Mode
+                </td>
+                <td>
+                    <input type="radio" name="PayMode" value="Cash" style="cursor:pointer" /> &nbsp; Cash <input type="radio" name="PayMode" value="Cheque" style="cursor:pointer"/> &nbsp; Cheque 
+                    <input type="radio" name="PayMode" value="Bank" style="cursor:pointer"/> &nbsp; Bank 
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>  Bank Details</h2>
+                </td>
+            </tr>
+            <tr>
+            <td>
+                Account Number
+            </td>
+            <td>
+                @Html.TextBox("BankAccNo", Model.BankAccNo)
+            </td>
+            </tr> 
+            <tr>
+            <td>
+               Bank Name
+            </td>
+            <td>
+                @Html.TextBox("BankName", Model.BankName)
+            </td>
+            </tr>
+             <tr>
+            <td>
+               Branch
+            </td>
+            <td>
+                @Html.TextBox("BankBranch", Model.BankBranch)
+            </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>  LogIn Details</h2>
+                </td>
+            </tr>
+            <tr>
+                <td> 
+                    User Name <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("UserName", Model.UserName, new { @readonly = true, @style = "background-color:#DDD" })
+                    @Html.ValidationMessage("UserName")
+                </td>
+            </tr> 
+            <tr>
+                <td>
+                    Password <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.Password("Password", Model.Password, new { @readonly = true, @style = "background-color:#DDD" })
+                    @Html.ValidationMessage("Password")
+                </td>
+            </tr>
+            <tr>
+                <td>    
+                </td>
+                <td>
+                    <input type="submit" value="Save Changes" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    
+ 
+     
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $('#div_loading').hide();
+
+    $('#frmEditEmployee').stepy({ titleClick: true, block: true, errorImage: true, validate: true, select: function (index) {
+        switch (index) {
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+    }
+    });
+
+    if ('@Model.PayMode' == 'Cash') {
+        $('input:radio[name=PayMode]').filter('[value="Cash"]').attr('checked', true);
+        $('#BankAccNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+        $('#BankName').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+        $('#BankBranch').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+    }
+    else if ('@Model.PayMode' == 'Cheque') {
+        $('input:radio[name=PayMode]').filter('[value="Cheque"]').attr('checked', true);
+        $('#BankAccNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+        $('#BankName').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+        $('#BankBranch').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+    }
+    else {
+        $('input:radio[name=PayMode]').filter('[value="Bank"]').attr('checked', true);
+        $('#BankAccNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+        $('#BankName').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+        $('#BankBranch').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+    }
+
+    // Set TDS and P-Tax
+    if ('@Model.IsTDS' == true) {  $('#IsTD').prop('checked', true);  }
+    if ('@Model.IsPTax' == true) {  $('#IsPTax').prop('checked', true); }
+    if ('@Model.IsPF' == true) { $('#IsPF').prop('checked', true); }
+    if ('@Model.IsESI' == true) { $('#IsESI').prop('checked', true); }
+
+    // Set PF No Readonly
+    if (!$("#IsPF").is(":checked")) { $('#EPFNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' }); }
+    else { $('#EPFNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' }); }
+    // Set ESI No Readonly 
+    if (!$("#IsESI").is(":checked")) { $('#ESIRegNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' }); }
+    else { $('#ESIRegNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' }); }
+
+    $("input:radio[name=PayMode]").click(function () {
+        var selectedVal = $(this).val();
+        if (selectedVal == 'Bank') {
+            $('#BankAccNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+            $('#BankName').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+            $('#BankBranch').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' });
+            $('#BankAccNo').focus();
+        }
+        else {
+            $('#BankAccNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+            $('#BankName').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+            $('#BankBranch').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+            }
+    });
+
+    $('#DOB').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+    $('#DOJ').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    $('#EmpNo').change(function () {
+        $.post('/Employees/CheckEmpNo?empNo=' + this.value, function (data) {
+            if (data == 1) {
+                document.getElementById('EmpNo').value = '';
+                document.getElementById('EmpNo').focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html("Employee number already exists.");
+                return false;
+            }
+            $("#SpanValidateMsg").hide();
+        });
+    });
+    // PF Change event
+
+    $('#IsPF').change(function () {
+        if ($('#IsPF').is(':checked')) {
+            $('#EPFNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' }); $('#EPFNo').focus();
+        }
+        else { $('#EPFNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' }); }
+    });
+
+    // ESI Change event
+    $('#IsESI').change(function () {
+        if ($('#IsESI').is(':checked')) {
+            $('#ESIRegNo').attr({ 'readonly': false, 'style': 'background-color:#ffffe0' }); $('#ESIRegNo').focus();
+        }
+        else { $('#ESIRegNo').attr({ 'readonly': true, 'style': 'background-color:#DDD' }); }
+    });
+
+
+</script>

@@ -1,0 +1,231 @@
+﻿ <link href="@Url.Content("~/Content/theme/css/screen.css")" rel="stylesheet" type="text/css" />
+<style type="text/css">
+   p, ul, li, div, nav
+        {
+
+            padding:0;
+            margin-left:300px;
+        }
+        #menu {
+            overflow: auto;
+            position:relative;
+            z-index:2;
+        }
+        .parent-menu {
+            background-color: #0c8fff;
+            min-width:200px;
+            float:left;
+        }
+        #menu ul
+        {
+            list-style-type:none;
+        }
+        #menu ul li a
+        {
+
+            padding:10px 15px;
+            display:block;
+            color:#fff;
+            text-decoration:none;
+        }
+
+
+            #menu ul li a:hover
+            {
+                background-color:#007ee9;
+            }
+            #menu ul li:hover > ul {
+
+                left: 200px;
+
+                -webkit-transition: left 200ms ease-in;
+
+                -moz-transition: left 200ms ease-in;
+
+                -ms-transition: left 200ms ease-in;
+
+                transition: left 200ms ease-in;
+
+            }
+
+
+            #menu ul li > ul {
+
+                position: absolute;
+
+                background-color: #333;
+
+                top: 0;
+
+                 left:-200px;
+
+                min-width: 200px;
+
+                z-index: -1;
+
+                height: 100%;
+
+                -webkit-transition: left 200ms ease-in;
+
+                -moz-transition: left 200ms ease-in;
+
+                -ms-transition: left 200ms ease-in;
+
+                transition: left 200ms ease-in;
+
+            }
+
+
+            #menu ul li > ul li a:hover
+
+            {
+
+                background-color:#2e2e2e;
+
+            }
+ </style>
+   
+   <h2>
+    &nbsp;
+   </h2>
+<nav id="menu">
+        <ul class="parent-menu">
+            <li><a href="#">Home & Kitchen</a>
+                <ul>
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul>
+
+            </li>
+
+            <li><a href="#">Electronics</a>
+
+                <ul>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul></li>
+
+            <li><a href="#">Clothing</a>
+
+                <ul>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul></li>
+
+            <li><a href="#">Cars & Motorbikes</a>
+
+                <ul>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul>
+
+            </li>
+
+            <li><a href="#">Books</a>
+
+                <ul>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul>
+
+            </li>
+
+            <li><a href="#">Support</a>
+
+                <ul>
+
+                    <li><a href="#">Contact Us</a></li>
+
+                    <li><a href="#">Forum</a></li>
+
+                    <li><a href="#">Deliveries</a></li>
+
+                    <li><a href="#">T&C</a></li>
+
+                </ul>
+
+            </li>
+
+        </ul>
+ </nav>
+
+ <div id="dropdown" class="ddmenu open">
+            <span style="text-transform:capitalize;"> superadmin   &nbsp; ▾ </span> 
+            <ul style="display: block;">
+                <li><a href="/SecurityGuard">Manage Users</a></li>
+                <li> <a href="/SGAccount/ChangePassword">Change Password</a> </li>
+                 <li><a href="#">Home & Kitchen</a>
+                <ul>
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                    <li><a href="#">item</a></li>
+
+                </ul>
+
+            </li>
+                <li>
+                   <a href="/VehicleModel/Index">Vehicle Models</a> 
+                </li>                
+                <li>
+                   <a href="/Seater/Index">Seaters</a>
+                </li>                 <li>
+                   <a href="/EHSCodes/Index">EHS Codes</a>
+                </li>                 <li>
+                   <a href="/DocumentType/Index">Document Types</a>
+                </li>                <li>
+                   <a href="/Departments/Index">Departments</a>
+                </li>                 
+                    
+   <li>
+                   <a href="/Reports/UserActivityReport">User Activity Report</a>
+                </li>                </ul>
+</div>
+ 

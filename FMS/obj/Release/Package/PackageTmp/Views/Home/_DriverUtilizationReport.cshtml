@@ -1,0 +1,95 @@
+﻿
+<link href="../../Content/Site.print.css" rel="stylesheet" type="text/css" media="print" />
+ <style type="text/css">
+  #printable { display: none; }
+  @@media print
+        {
+            #printable { display: block; }
+        }
+</style>
+ <div class="nonPrintable" id="printIcon">
+      Click here to print:<a href="#" onclick="javascript:ClickHereToPrint('DriverUtilizationDivData');">
+      <img alt="Print Report" src="../../Content/images/printer.jpeg" /> </a>
+<form id="frmDriverUtilize" enctype="multipart/form-data" method="post">
+<table>
+<tr>
+    <td>
+        Driver
+    </td>
+    <td>
+        @Html.DropDownList("DriverID", null, "All", new { @style = "width:200px;" })
+    </td>
+    <td>
+        From Date
+    </td>
+    <td>
+        @Html.TextBox("StartDate", "", new { @style ="width:200px;" })
+    </td>
+    <td>
+        To Date
+    </td>
+    <td>
+        @Html.TextBox("EndDate", "", new { @style ="width:200px;" })
+    </td>
+    <td>
+        <input type="button" value="Get Report" id="btnGetDriverReport" />
+    </td>
+</tr>
+</table>
+</form>
+</div>
+<h2 id="printable">
+  Driver Utilization   
+</h2>
+<div id="DriverUtilizationDivData" style="margin-top:15px;">
+</div>
+<script type="text/javascript">
+    var myDate = new Date();
+    var dd = myDate.getDate();
+    var mm = myDate.getMonth() + 1; //January is 0! 
+    var yyyy = myDate.getFullYear();
+    if (dd < 10) { dd = '0' + dd }
+    if (mm < 10) { mm = '0' + mm }
+    var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+
+    $("#StartDate").val('01' + '/' + mm + '/' + yyyy); $("#EndDate").val(TodayDate);
+    $('#StartDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy' 
+    });
+    $('#EndDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+    LoadDriverUtilization();
+    // Button click event for Get Report
+
+    $('#btnGetDriverReport').click(function () {
+        LoadDriverUtilization();
+    });
+
+    function LoadDriverUtilization() {
+        $.post("/Home/DriverUtilizationReport", $("#frmDriverUtilize").serialize(), function (result) {
+            $("#DriverUtilizationDivData").html(result);
+        });
+    }
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");  
+            self.print();
+        }
+    }
+</script>

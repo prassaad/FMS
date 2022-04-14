@@ -1,0 +1,260 @@
+﻿@model SecurityGuard.ViewModels.ManageUserPermissions
+@using FMS.Areas.SecurityGuard.Controllers
+@using FMS.Models
+@{
+    ViewBag.Title = "Grant Permissions To User";
+    Layout = "~/Areas/SecurityGuard/Views/Shared/_SecurityGuardLayoutPage.cshtml";
+}
+@{
+    MembershipController objMem = new MembershipController();
+    tbl_user_access userAccess;
+     
+}
+<style type="text/css">
+    thead th
+    {
+        width: 50px;
+    }
+    tbody td
+    {
+        width: 50px;
+    }
+</style>
+
+<h2>
+    Grant Permissions To User</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Dashboard", "Index", "Dashboard") </li>
+            <li>
+                @Html.ActionLink("Manage Users", "Index", "Membership")
+            </li>
+            <li class="active">Grant Permissions To User</li>
+        </ul>
+    </div>
+</div>
+<p style="margin-bottom:10px;font-size:14px;line-height:12px;">
+    Grant any of the following pages to: <span id="username-to-grant-roles">@Model.userName</span></p>
+ <ul class="system_messages" style="display: none;">
+    <li><span class="ico"></span><strong class="system_title"></strong></li>
+</ul>
+<form id="frmGrantAccess" enctype="multipart/form-data" method="post">
+<fieldset style="float: left; ">
+    <div class="section_inner">
+        <div class="table_wrapper">
+            <div class="table_wrapper_inner">
+                <table cellpadding="0" cellspacing="0" width="100%" id="tbl_user_access">
+                    <thead id="th_fixed">
+                        <tr>
+                            <th>
+                            </th>
+                            <th style="width:180px;">
+                                Page
+                            </th>
+                           <th style="width:70px;">
+                                List/Other
+                            </th>
+                            <th>
+                                Add
+                            </th>
+                            <th>
+                                Edit
+                            </th>
+                            <th>
+                                Delete
+                            </th>
+                            <th>
+                                View
+                            </th>
+                            <th>
+                                Audit
+                            </th>
+                            <th>Chk All</th>
+                        </tr>
+                    </thead>
+                    <thead style="top:120px;position:fixed;display:none" id="th_header">
+                        <tr>
+                            <th>
+                            </th>
+                            <th style="width:180px;">
+                                Page
+                            </th>
+                           <th style="width:70px;">
+                                List/Other
+                            </th>
+                            <th>
+                                Add
+                            </th>
+                            <th>
+                                Edit
+                            </th>
+                            <th>
+                                Delete
+                            </th>
+                            <th>
+                                View
+                            </th>
+                            <th>
+                                Audit
+                            </th>
+                             <th>Chk All</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+                        @foreach (var item in Model.pageList)
+                        {
+                            userAccess = objMem.VerifyUserAccess((long)item.ID, Model.userName);
+                            if (userAccess != null)
+                            {
+                            <tr>
+                                <td>
+                                    @Html.CheckBox("chkPage_" + item.ID, true)
+                                </td>
+                                <td style="width:180px;">
+                                    @item.PageName
+                                </td>
+                               <td style="width:70px;">
+                                    @Html.CheckBox("chkList_" + item.ID, (bool)userAccess.List, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkAdd_" + item.ID, (bool)userAccess.Add, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkEdit_" + item.ID, (bool)userAccess.Edit, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkDelete_" + item.ID, (bool)userAccess.Delete, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkView_" + item.ID, (bool)userAccess.View, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkAudit_" + item.ID, (bool)userAccess.Audit, new { @class = "cls_chkbox" })
+                                </td>
+                                 <td>
+                                    @Html.CheckBox("chkAll_" + item.ID, (bool)objMem.VerifyCheckAll((long)item.ID, Model.userName), new { @class = "cls_chkAll" })
+                                </td>
+                            </tr>
+                             }
+                             else
+                             {
+                            <tr>
+                                <td>
+                                    @Html.CheckBox("chkPage_" + item.ID)
+                                </td>
+                                <td>
+                                    @item.PageName
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkList_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkAdd_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkEdit_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkDelete_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkView_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                <td>
+                                    @Html.CheckBox("chkAudit_" + item.ID, false, new { @class = "cls_chkbox" })
+                                </td>
+                                 <td>
+                                    @Html.CheckBox("chkAll_" + item.ID, false, new { @class = "cls_chkAll" })
+                                </td>
+                            </tr>
+                             }
+                         }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <input type="button" id="btn-grant-access" value="Grant Access" style="float: right" />
+    @Html.Hidden("UserName", Model.userName)
+</fieldset>
+</form>
+<script type="text/javascript">
+    var navpos = $('#th_fixed').offset();
+
+    //    console.log(navpos.top);
+    $(window).bind('scroll', function () {
+        if ($(window).scrollTop() > navpos.top) {
+            $('#th_header').show();
+        }
+        else {
+             $('#th_header').hide();
+        }
+    });
+    var message = $(".system_messages");
+
+    $("#btn-grant-access").click(function () {
+
+        // Now execute the command using jQuery ajax.
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GrantPermissionsToUser", "Membership")',
+            data: $('#frmGrantAccess').serialize()  ,
+            dataType: 'json',
+            success: OnGrantedSuccess,
+            error: OnGrantedError
+        });
+
+    });
+
+    function OnGrantedSuccess(data) {
+        $('html,body').animate({ scrollTop: 0 }, 'slow');
+        message.show().delay(5000).fadeOut();    // Show the message
+        $("li", message).addClass("green");      // Apply the Green style
+        $("strong", message).text(data.Message); // Insert the message
+    }
+
+    function OnGrantedError(xhr, status, error) {
+        alert(error);
+    }
+
+    $('.cls_chkAll').change(function () {
+        // Get Current Checkbox Id
+        var curId = $(this).attr('id');
+        // Get PageId by current checked Id
+        var PageId = curId.split('_')[1];
+        var checked = this.checked;
+        $('.cls_chkbox').each(function () {
+            var curValId = $(this).attr('id');
+            var curPageId = curValId.split('_')[1];
+            if (curPageId == PageId) {
+                $('#chkPage_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkList_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkAdd_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkEdit_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkDelete_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkView_' + PageId + '').not(this).prop('checked', checked);
+                $('#chkAudit_' + PageId + '').not(this).prop('checked', checked);
+            }
+        });
+
+    });
+    $('.cls_chkAll').change(function () {
+
+        $('.cls_chkbox').each(function () {
+            var curValId = $(this).attr('id');
+            var curPageId = curValId.split('_')[1];
+            if (curPageId == PageId) {
+                var sThisVal = (this.checked ? $(this).val() : "");
+                if (sThisVal == 'true') {
+                    $('#chkPage_' + PageId + '').not(this).prop('checked', true);
+                    return false;
+                }
+                else {
+                    $('#chkPage_' + PageId + '').not(this).prop('checked', false);
+                }
+            }
+        });
+    });
+</script>

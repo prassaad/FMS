@@ -1,0 +1,79 @@
+﻿@model FMS.Models.InventoryItemCategory
+
+@{
+    ViewBag.Title = "Create Item Category";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+<h2>
+   Create Item Category</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "ItemCategories")">
+        Cancel</a></li>
+             
+        </ul>
+    </div>
+</div>
+<div class="col-md-6">
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Item Category Details</legend>
+    <table class="table-striped table-condensed dTableR dataTable">
+      <tr>
+            <td colspan="2">
+                <span id="errormsg" class="clsmark"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Item Category <span class="symbol required">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ItemCatText, new { @maxlength = 30  })
+                @Html.ValidationMessageFor(model => model.ItemCatText)
+            </td>
+        </tr>
+        <tr>
+             <td></td>
+            <td>
+                <input type="submit" class="btn btn-primary" value="Create" />
+            </td>
+        </tr>
+    </table>
+    </fieldset>
+}
+</div>
+<script type="text/javascript">
+
+    $("#ItemCatText").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#errormsg").show();
+                    $("#errormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#errormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#errormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+ </script>

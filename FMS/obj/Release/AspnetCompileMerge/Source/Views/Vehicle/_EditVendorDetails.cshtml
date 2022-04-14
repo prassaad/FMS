@@ -1,0 +1,189 @@
+﻿@model FMS.Models.tbl_vendor_details
+
+@using (Html.BeginForm("EditVendorDetails", "Vendor", new { id = Model.ID }, FormMethod.Post, new { runat = "server", enctype = "multipart/form-data", id = "frmEditVendorDet" }))
+{
+    @Html.ValidationSummary(true)
+<table class="table-striped table-condensed dTableR dataTable">
+ <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="vendorValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    First Name :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("FirstName", Model.FirstName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                    @Html.Hidden("VendorID", Model.ID)
+                    @Html.Hidden("ID", Model.ID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Last Name :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.LastName, new { @class = "isName" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(a => a.Address, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Contact Number :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.ContactNumber, new { @maxlength = "10" })
+                    @Html.ValidationMessageFor(model => model.ContactNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    PAN Card Number :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.PanCardNumber)
+                    @Html.ValidationMessageFor(model => model.PanCardNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Photo :
+                </td>
+                <td>
+                    <input type="file" id="Photo" name="Photo" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if (Model.PhotoUrl != null)
+                    {
+                        <img src="../../Content/uploadimages/@Model.PhotoUrl" width="80" height="80" alt="Photo" />
+                    }
+                    else
+                    {
+                        <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>
+                        Bank Details:</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Holder Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountHolderName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Bank Name :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.BankName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Branch :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.Branch)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Account Type :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.AccountType)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IFSC Code :
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.IFSCCode)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" value="Save Changes" id="btnSaveVendor" />
+                </td>
+            </tr>
+        </table>  
+}
+<script type="text/javascript">
+
+    $("#btnSaveVendor").click(function () {
+        var vendorId = '@Model.ID';
+        $.post("/Vendor/EditVendorDetails", $('#frmEditVendorDet').serialize(), function (data) {
+            $("#ViewOwnerDetailsdiv").html(data);
+        });
+        
+    });
+    $("#ContactNumber").change(function () {
+        var result = isValidMobileNumber(this.value)
+
+        $("#vendorValidateMsg").hide();
+        if (result == false) {
+            $("#vendorValidateMsg").show();
+            $("#vendorValidateMsg").html("Contact number should be digit..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $("#PanCardNumber").change(function () {
+        var result = isAlphaNumeric(this.value)
+
+        $("#vendorValidateMsg").hide();
+        if (result == false) {
+            $("#vendorValidateMsg").show();
+            $("#vendorValidateMsg").html("Pan card number should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $(".isName").change(function () {
+        var result = IsPureCharsAndSpace(this.value)
+        $("#vendorValidateMsg").hide();
+        if (this.id == "FirstName") {
+            if (result == false) {
+                $("#vendorValidateMsg").show();
+                $("#vendorValidateMsg").html("First Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#vendorValidateMsg").show();
+                $("#vendorValidateMsg").html("Last Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+</script>

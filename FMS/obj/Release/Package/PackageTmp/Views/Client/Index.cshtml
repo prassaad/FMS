@@ -1,0 +1,67 @@
+﻿@model IEnumerable<FMS.Models.tbl_clients>
+@using FMS.Models;
+@using FMS.Controllers
+@{
+    ViewBag.Title = "List of Clients";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ClientController objClient = new ClientController();
+}
+<h2>List of Clients</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                          <li>@Html.ActionLink("Home","Index","Home")</li>
+                          @*@if ((bool)core.GetUserAccess(24, User.Identity.Name).List) { <li>@Html.ActionLink("Documents","Documents","Client")</li>}*@
+                          @if ((bool)core.GetUserAccess(2, User.Identity.Name).Add)
+                          {  <li>@Html.ActionLink("Create New", "Create")</li> }
+                           
+                        </ul>
+                    </div>
+            </div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_dataTable">
+ 
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_dataTable').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/Client/GetClients",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                if (aData[6] == 'True') {
+                    $('td:eq(6)', nRow).html('<span class="system positive">Yes</span>');
+                }
+                else {
+                    $('td:eq(6)', nRow).html('<span class="system negative">No</span>');
+                }
+                $('td:eq(7)', nRow).html('@if((bool)core.GetUserAccess(2, User.Identity.Name).Edit){ <a style="cursor:pointer;" href="/Client/Edit/' + aData[0] + '" >Edit</a>  }' +
+                                         '@if((bool)core.GetUserAccess(2, User.Identity.Name).View) { <text> | </text> <a style="cursor:pointer;" href="/Client/Details/' + aData[0] + '">View</a>  }  ' +
+                                         '@if((bool)core.GetUserAccess(2, User.Identity.Name).Delete) { <text> | </text> <a href="/Client/Delete/' + aData[0] + '">Delete</a> }');
+                $('td:eq(2)', nRow).attr('style', 'width:350px;');
+                $('td:eq(7)', nRow).attr('style', 'width:120px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Client Name" },
+            { "sTitle": "Address" },
+            { "sTitle": "Phone#" },
+            { "sTitle": "BillType" },
+            { "sTitle": "Created on" },
+            { "sTitle": "Profile Complete" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+     
+    function Verify() {
+        return confirm('Are you sure want to delete?');
+    }
+</script>

@@ -1,0 +1,64 @@
+﻿@model FMS.Models.tbl_package_client_rates
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Edit</h2>
+<div class="bread_navigation">
+    <ul>
+        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+        <li class="lastactive">@Html.ActionLink("Packages", "Index")</li>
+    </ul>
+</div>
+
+@using (Html.BeginForm("Edit","Package",FormMethod.Post,new {@id="frmPackage",@enctype = "multipart/form-data"}))
+{ <fieldset>
+        <legend>Edit Project</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+
+                    <tr>
+                <td colspan="2">
+                    <span id="errormsg" class="clsmark"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Location : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LocationId,new { @style = "width:220px" })
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Type : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleTypeId, new { @style = "width:220px" })
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   Model : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleModelId, new { @style = "width:220px" })
+                   </td>
+                   <td>
+                   Package :<span style="color: Red">*</span>
+                   </td>
+                   <td>
+                   @Html.TextBoxFor(model => model.PackageAmt,new { @style = "width:220px"})
+                   </td>
+            </tr>
+           
+            <tr>
+                <td colspan="2">
+                    <input type="button" value="Save" id="btnSubmit" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>

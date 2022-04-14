@@ -1,0 +1,213 @@
+﻿@model FMS.Models.InventoryItemsMaster
+
+@{
+    ViewBag.Title = "Add Item";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+}
+<h2>
+   Add Item</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Item")">
+                Cancel</a></li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-6">
+@using (Html.BeginForm())
+{
+   @Html.ValidationSummary(true)
+     <fieldset>
+         <table style="width: 100%;">
+             <tr style="width: 100%;">
+                 <td style="width: 70%;vertical-align:top;">
+                     <table class="table-striped table-condensed dTableR dataTable">
+                         <tr>
+                             <td colspan="2">
+                                 <span id="errormsg" class="clsmark"></span>
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Item <span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.TextBox("ItemText", Model.ItemText, new { @style = "width:160px", @maxlength = 50, @class = "form-control"})
+                                 @Html.ValidationMessageFor(model => model.ItemText)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Item Code <span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.TextBox("ItemCode", Model.ItemCode, new { @style = "width:160px", @maxlength = 30, @class = "validate form-control" })
+                                 @Html.ValidationMessageFor(model => model.ItemCode)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Item Category <span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.DropDownList("ItemCatId", (IEnumerable<SelectListItem>)ViewBag.ItemCategory, "- Select -", new { @style = "width:160px", @class = "form-control" })
+                                 @Html.ValidationMessageFor(model => model.ItemCatId)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Item Type <span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.DropDownList("IsItem", (IEnumerable<SelectListItem>)ViewBag.IsItem, "- Select -", new { @style = "width:160px", @class = "form-control" })
+                                 @Html.ValidationMessageFor(model => model.IsItem)
+                                 Is Spare Item &nbsp;@Html.CheckBox("MessItem",false)
+                                 @Html.Hidden("InSummary", false)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Date: <span class="symbol reuired">*</span>
+                             </td>
+                             <td>
+                                 @Html.TextBox("EffectedFrom", String.Format(customCulture, "{0:dd/MM/yyyy}", DateTime.Now), new { @style = "width:160px;", @class = "BoxBackground datetimepicker form-control", @onkeypress = "return numberValidate(event);" })
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Price <small>(Per Item) </small><span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.TextBox("Amount", Model.Amount, new { @style = "width:160px;", @maxlength = 8, @class = "validate form-control", @onkeypress = "return numberValidate(event);" })
+                                 @Html.ValidationMessageFor(model => model.Amount)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Available Qty.
+                             </td>
+                             <td>
+                                 @Html.TextBox("OpeningBalance", Model.OpeningBalance, new { @style = "width:160px;", @maxlength = 8, @class = "validate form-control", @onkeypress = "return numberValidate(event);" })
+                                 @Html.ValidationMessageFor(model => model.OpeningBalance)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Size:
+                             </td>
+                             <td>
+                                 @Html.TextBox("Size", Model.Size, new { @style = "width:80px; form-control", @maxlength = 30 })
+                                 @Html.ValidationMessageFor(model => model.Size)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 UOM <span class="symbol required">*</span>
+                             </td>
+                             <td>
+                                 @Html.DropDownList("UnitId", (IEnumerable<SelectListItem>)ViewBag.Units, "- Select -", new { @style = "width:160px", @class = "form-control" })
+                                 @Html.ValidationMessageFor(model => model.UnitId)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Reorder Level
+                             </td>
+                             <td>
+                                 @Html.TextBox("ReorderLevel", Model.ReorderLevel, new { @style = "width:160px;", @maxlength = 8, @class = "validate form-control", @onkeypress = "return numberValidate(event);" })
+                                 @Html.ValidationMessageFor(model => model.ReorderLevel)
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                                 Specification
+                             </td>
+                             <td>
+                                 @Html.TextArea("Specification", Model.Specification, new { @style = "width:180px;resize:none;", @maxlength = 200, @class = "validate form-control" })
+                             </td>
+                         </tr>
+                         <tr>
+                             <td>
+                             </td>
+                             <td>
+                                 <input type="submit" class="btn btn-primary" value="Create" />
+                             </td>
+                         </tr>
+                     </table>
+                 </td>
+                 <td style="width: 30%;vertical-align:top;">
+                     <table class="table-striped taqble-condensed dTableR dataTable">
+                        <tr>
+                            <td>
+                                <h2> Allocated Item Codes </h2> 
+                            </td>
+                           
+                        </tr>
+                        <tr>
+                             <td>
+                                @Html.ListBox("ItemCodeList", (IEnumerable<SelectListItem>)ViewBag.ItemCodes, new { @style = "width:300px;height:180px;" })
+                            </td>
+                        </tr>
+                     </table>
+                 </td>
+             </tr>
+         </table>
+     </fieldset>
+}
+</div>
+<script type="text/javascript">
+    $('#loading').hide();
+    $(function () {
+        $(".datetimepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    $(".validate").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#errormsg").show();
+                    $("#errormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#errormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#errormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+
+    });
+    $('#ItemCode').change(function () {
+        $.get('/Inventory/Item/VerifyItemCode?_ItemCode=' + $(this).val(), function (data) {
+            if (data == 'True') {
+                $("#errormsg").show();
+                $("#errormsg").text("Item Code has already exists.");
+                $('#ItemCode').val('');
+                $('#ItemCode').focus();
+            }
+        });
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

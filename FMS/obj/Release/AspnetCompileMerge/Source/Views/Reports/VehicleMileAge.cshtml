@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "VehicleMileAge";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var VehicleList = (Dictionary<long, string>)ViewBag.VehicleID;
+}
+<h2>Vehicle MileAge Report</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Report", "Reports", "Home")</li>
+        </ul>
+    </div>
+</div>
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+    </div>
+<form id="frmVehMileAge" enctype="multipart/form-data" method="post">
+<div style="height: 20px; padding-bottom: 20px;background-color:#F5F5F5;">
+    <table>
+        <tr>
+            <td colspan="3"style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                From Date
+            </td>
+            <td>
+                @Html.TextBox("StartDate", "", new { @style = "width:200px;" })
+            </td>
+            <td>
+                To Date
+            </td>
+            <td>
+                @Html.TextBox("EndDate", "", new { @style = "width:200px;" })
+            </td>
+            <td>
+                 <div class="side-by-side clearfix">
+                        <select id="VehicleID" data-placeholder="Select Vehicle..." class="chzn-select" multiple
+                            style="width: 250px;">
+                            <option value=""></option>
+                            @foreach (var item in VehicleList.Keys)
+                            {
+                                <option value="@item">
+                                    @VehicleList[item]
+                                </option>
+                            }
+                        </select>
+                    </div>
+            </td>
+            <td>
+                <input type="button" value="Get Report" id="btnGetVehMileAgeReport" />
+            </td>
+        </tr>
+    </table>
+</div>
+</form>
+<div id="VehicleMileAgeDivData">
+ 
+</div>
+<script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var config = {
+        '.chzn-select': {},
+        '.chzn-select-deselect': { allow_single_deselect: true },
+        '.chzn-select-no-single': { disable_search_threshold: 10 },
+        '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chzn-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    $('#div_loading').hide();
+    var myDate = new Date();
+    var dd = myDate.getDate();
+    var mm = myDate.getMonth() + 1; //January is 0! 
+    var yyyy = myDate.getFullYear();
+    if (dd < 10) { dd = '0' + dd }
+    if (mm < 10) { mm = '0' + mm }
+    var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+    $("#StartDate").val('01' + '/' + (mm) + '/' + yyyy); $("#EndDate").val(TodayDate);
+    $('#StartDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#EndDate").datepicker("option", "minDate", selected);
+        }
+    });
+    $('#EndDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#StartDate").datepicker("option", "maxDate", selected);
+        }
+    });
+    $('#btnGetVehMileAgeReport').click(function () {
+        $('#loading').fadeIn('slow');
+        var StartDate = $('#StartDate').val();
+        var EndDate = $('#EndDate').val();
+        if (StartDate == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Please select start date");
+            $('#StartDate').focus();
+            $('#div_loading').fadeOut('slow');
+            return false;
+        }
+        if (EndDate == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Please select end date");
+            $('#EndDate').focus();
+            $('#div_loading').fadeOut('slow');
+            return false;
+        }
+        $.post("/Reports/VehicleMileAge?VehicleID=" + $('#VehicleID').val(), $("#frmVehMileAge").serialize(), function (result) {
+            $("#VehicleMileAgeDivData").html(result);
+            $('#loading').fadeOut('slow');
+        });
+    });
+</script>

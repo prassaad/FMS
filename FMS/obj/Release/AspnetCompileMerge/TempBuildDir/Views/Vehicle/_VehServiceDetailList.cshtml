@@ -1,0 +1,82 @@
+﻿@model IEnumerable<FMS.Models.tbl_veh_service_schedules>
+  
+@if (Model.Count() == 0)
+{
+    <h2>
+        Service schedule has not found to this vehicle
+    </h2>
+}
+else
+{
+    <table class="table table-bordered" id="tbl_veh_serivce_list1">
+        <thead>
+            <tr>
+                <th>
+                    Service No.
+                </th>
+                <th>
+                    Min Odo Meter Reading(s)
+                </th>
+                <th>
+                    Max Odo Meter Reading(s)
+                </th>
+                <th>
+                    Service Days
+                </th>
+              @*  <th>
+                    Date
+                </th>*@
+                <th>
+                    Done
+                </th>
+                <th>
+                    Service Station
+                </th>
+                <th>
+                    Done Dt.
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ODMeterReading)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ODMeterMax)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceDays)
+                    </td>
+                    @*<td>
+                        @Html.Encode(item.DueDt.Value.ToShortDateString())
+                    </td>*@
+                    <td>
+                        @if (item.IsDone == null ? false : (bool)item.IsDone)
+                        {
+                            <span class="system positive">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="system negative">No</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.Encode(item.ServiceStation == null ? "-" : item.tbl_service_stations.ServiceStation)
+                    </td>
+                    <td>
+                        @if (item.IsDone == null ? false : (bool)item.IsDone)
+                        {
+                            @Html.Encode(item.DoneDt.Value.Date.ToShortDateString())
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

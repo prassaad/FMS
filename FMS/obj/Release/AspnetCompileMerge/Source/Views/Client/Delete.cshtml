@@ -1,0 +1,23 @@
+﻿@model FMS.Models.tbl_clients
+
+@{
+    ViewBag.Title = "Delete Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Client</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                          <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li class="lastactive">@Html.ActionLink("List of Clients", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+<h3>Are you sure you want to delete this @Model.CompanyName and rate structure will be deleted for this client?</h3>
+ 
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}

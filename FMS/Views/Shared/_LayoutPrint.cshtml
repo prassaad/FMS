@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="/Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Site.print.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/bootstrap.print.css")" rel="stylesheet" type="text/css" />
+    @RenderSection("Header", false)
+</head>
+<body>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" id="content-table">
+        <tbody>
+            <tr>
+                <th class="sized" rowspan="3">
+                    <img width="20" height="300" alt="" src="../../Content/theme/images/shared/side_shadowleft.jpg">
+                </th>
+                <th class="topleft">
+                </th>
+                <td id="tbl-border-top">
+                    &nbsp;
+                </td>
+                <th class="topright">
+                </th>
+                <th class="sized" rowspan="3">
+                    <img width="20" height="300" alt="" src="../../Content/theme/images/shared/side_shadowright.jpg">
+                </th>
+            </tr>
+            <tr>
+                <td id="tbl-border-left">
+                </td>
+                <td>
+                    <!--  start content-table-inner -->
+                    <div id="content-table-inner">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                            <tbody>
+                                <tr valign="top">
+                                    <td>
+                                        <div class="container-fluid">
+                                            @RenderBody()
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img width="695" height="1" alt="blank" src="../../Content/theme/images/shared/blank.gif">
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clear">
+                        </div>
+                    </div>
+                    <!--  end content-table-inner  -->
+                </td>
+                <td id="tbl-border-right">
+                </td>
+            </tr>
+            <tr>
+                <th class="sized bottomleft">
+                </th>
+                <td id="tbl-border-bottom">
+                    &nbsp;
+                </td>
+                <th class="sized bottomright">
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

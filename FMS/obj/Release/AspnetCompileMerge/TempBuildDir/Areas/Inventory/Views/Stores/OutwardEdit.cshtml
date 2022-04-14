@@ -1,0 +1,345 @@
+﻿@model FMS.Models.InventoryModel.IssuedStock
+@{
+    ViewBag.Title = "Outward Edit";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    
+    // Core code here
+    List<FMS.Models.InventoryIssuedDetail> StockIssueDetList;
+    System.Globalization.CultureInfo customCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+    long Id = Model._IssuedMaster.Id == null ? 0 : Model._IssuedMaster.Id;
+    string Status = Model._IssuedMaster.Status == null ? "" : Model._IssuedMaster.Status;
+    var VehicleList = (Dictionary<long, string>)ViewBag.VehicleID;
+    
+}
+<style type="text/css">
+     .chzn-container
+     {
+         position:relative;
+         margin:0;
+     }   
+</style>
+<h2><i class="fa fa-pencil-square teal"></i>  Outward Edit </h2>
+<form id="OutWardEntryForm" action="@Url.Action("OutwardEdit", "Stores", new { area = "Inventory" })" method="post" enctype="multipart/form-data">
+<div class="bread_title" style="width: 100%">
+        <div class="bread_navigation" style="width: 30%;">
+            <ul>
+                <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Outward", "Stores")">
+                    Cancel</a> </li>
+                <li>
+                    <input type="button" id="btnIssueEdit" class="btn btn-primary btn-xs" value="Save Issue Stock"
+                        style="margin-top: -5px;" /></li>
+            </ul>
+        </div>
+        <div style="float: left; width: 0; margin-top: -8px;">
+        </div>
+         
+    </div>
+<div class="row">
+    <div class="col-md-12">
+        <p class="clsmark" style="color: #ba342a; width: 220px;margin:10px;">
+            &nbsp;(*) marked fields are mandatory
+        </p>
+        <fieldset>
+        <legend> Outward Details </legend>
+        <table cellpadding="5" class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                    Issue No. <span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("txtIssueNo", Model._IssuedMaster.IssueNo, new { @readonly = "true", @class = "BoxBackground", @style = "width:220px;Background-color:#ddd;cursor: no-drop;" })
+                    @Html.Hidden("hdnIssuedId", Model._IssuedMaster.Id)
+                    <input type="hidden" id="status" name="status" value="@Model._IssuedMaster.Status" />
+                </td>
+                <td>
+                    Date: <span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("issued_dt", String.Format(customCulture, "{0:dd/MM/yyyy}", Model._IssuedMaster.IssueDt), new { @style = "width:220px;", @class = "BoxBackground datetimepicker" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# :<span class="clsmark">*</span>
+                </td>
+                <td>
+                    <div class="side-by-side clearfix">
+                        <select id="VehicleId" data-placeholder="Select Vehicle..." class="chzn-select" style="width: 220px;"
+                            name="VehicleId">
+                            <option value=""></option>
+                            @foreach (var item in VehicleList.Keys)
+                            {
+                                <option value="@item">
+                                    @VehicleList[item]
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    Issued To:
+                </td>
+                <td>
+                    <select id="IssuedEmpId" name="IssuedEmpId" class="txtInput form-control" tabindex="3" style="width:220px;">
+                        <option value="0">--Select Driver--</option>
+                    </select>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Remark:
+                </td>
+                <td colspan="3">
+                    @Html.TextArea("txtremark", Model._IssuedMaster.OtherDetails, new { @maxlength = 500, @class = "validate", @style = "width:380px;height:45px;resize:none;", @rows = "3", @cols = "30" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    &nbsp;&nbsp;<span class="label label-important"> Note :</span> Please select a <code>vehicle
+                    </code> before selected items to be issue.
+                    <br />
+                    <h3>
+                        <button type="button" id="btnItemAdd" onclick="AddIssuedItems()" style="vertical-align: middle;"
+                            class="btn btn-primary"> Add Issue Stock
+                        <//button>
+                    </h3>
+                    @{ ViewData["IsEdit"] = "1"; }
+                    <input type="hidden" id="isEdit" value="1" />
+                </td>
+            </tr>
+        </table>
+        </fieldset>
+    </div>
+</div>
+<div class="col-md-12">
+    @{ StockIssueDetList = Model._IssuedDetail; }
+    @if (StockIssueDetList != null)
+    {
+        <div id="IssuedDetList">
+            @{ Html.RenderPartial("_OutwardItemListAdd", StockIssueDetList.OrderBy(a => a.Slno)); }
+        </div>
+    }
+</div>
+</form>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+ <script src="@Url.Content("~/Scripts/chosen.jquery.js")" type="text/javascript"></script>
+ <script type="text/javascript">
+     $('#loading').hide();
+     $('#VehicleId').val('@Model._IssuedMaster.VehicleId');
+     GetVehicleDriver($('#VehicleId').val());
+     var config = {
+         '.chzn-select': {},
+         '.chzn-select-deselect': { allow_single_deselect: true },
+         '.chzn-select-no-single': { disable_search_threshold: 10 },
+         '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+         '.chzn-select-width': { width: "95%" }
+     }
+     for (var selector in config) {
+         $(selector).chosen(config[selector]);
+     }
+     $(function () {
+         $(".datetimepicker").datepicker({
+             changeMonth: true,
+             changeYear: true,
+             dateFormat: 'dd/mm/yy'
+         });
+     });
+     function AddIssuedItems() {
+         if (!ValidateMsg()) {
+             return false;
+         }
+         else {
+             $("#div_loading").fadeIn('slow');
+             $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 520,
+                 height: 350
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 $("#btnItemAdd").attr("href", "#");
+                 $('#div_loading').show();
+                 var VehicleId = $('#VehicleId').val();
+                 AddItems(VehicleId, 1);
+             }
+         });
+         }
+     }
+     function AddItems(VehicleId, IsEdit) {
+         $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("AddIssuedItem", "Stores", new { area = "Inventory" })?VehicleId=' + VehicleId + "&IsEdit=" + IsEdit,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+          }
+          function ValidateMsg() {
+              if ($.trim($('#issued_dt').val()) == "") {
+                  alert("Please enter Issue date.");
+                  $("#btnItemAdd").attr("href", "#");
+                  $('#issued_dt').focus();
+                  return false;
+              }
+              if ($.trim($('#VehicleId').val()) == "" || $.trim($('#VehicleId').val()) == "--Select Vehicle--") {
+                  alert("Please select vehicle to continue process.");
+                  $("#btnItemAdd").attr("href", "#");
+                  $('#VehicleId').focus();
+                  return false;
+              }
+              if ($.trim($('#IssuedEmpId').val()) == "" || $.trim($('#IssuedEmpId').val()) == "--Select Driver--") {
+                  alert("Please select employee to continue process.");
+                  $("#btnItemAdd").attr("href", "#");
+                  $('#IssuedEmpId').focus();
+                  return false;
+              }
+              return true;
+          }
+    
+     $("#hrfAdd").click(function () {
+         $('#divItemEntry').show();
+     });
+ 
+     // Stock register master Validations and save stock
+     $('#btnIssueEdit').click(function () {
+         // validate here 
+         if ($.trim($('#issued_dt').val()) == "") {
+             alert("Please enter Issued date.");
+             $('#issued_dt').focus();
+             return;
+         }
+
+         if ($.trim($('#VehicleId').val()) == "" || $.trim($('#VehicleId').val()) == "--Select Vehicle.--") {
+             alert("Please select vehicle to continue process.");
+             $('#location_id').focus();
+             return;
+         }
+         $('#loading').show();
+         // save Issued stock here  
+         $.post('@Url.Action("OutwardEdit", "Stores", new { area = "Inventory" })', $('#OutWardEntryForm').serialize(), function (data) {
+             if (data.success) {
+                 $('#loading').hide();
+                 alert(data.msg);
+                 //window.location.href = '@Url.Action("OutwardEdit", "Stores", new { area = "Inventory" })?Id=' + data.IssuedId;
+                 window.location.href = '/Inventory/Stores/Outward';
+             }
+             else {
+                 $('#loading').hide();
+                 alert(data.msg);
+             }
+         });
+     });
+     // load invoice numbers 
+     function LoadInvoiceNumbers(ItemId) {
+         $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("LoadInvoiceNoByItem", "Stores", new { area = "Inventory" })',
+                  data: { ItemId: ItemId },
+                  dataType: "json",
+                  success: function (result) {
+                      var options = '';
+                      if (result.msg.length > 0) {
+                          for (var i = 0; i < result.msg.length; ++i) {
+                              options += "<option value='" + result.msg[i].Value + "'>" + result.msg[i].Text + "</option>";
+                          }
+                          $("#invoice_no").append(options);
+                      }
+                      else {
+                          $('#invoice_no').html('<option value="">--Select Receipt--</option>');
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+     }
+     function ConfirmIssuedEntry(IssueId) {
+         if (!confirm('Are you sure want to confirm this Issued Items?')) {
+             return;
+         }
+         else {
+             $("#loading").fadeIn('slow');
+             $.post('@Url.Action("ConfirmIssuedItem", "Stores", new { area = "Inventory" })?Id=' + IssueId, function (data) {
+                 if (data.success) {
+                     alert(data.msg);
+                     var delay = 1000; //1 seconds
+                     setTimeout(function () {                         //your code to be executed after 1 seconds
+                         window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId + '';
+                     }, delay);
+                     $("#loading").fadeOut('slow');
+                 }
+                 else {
+                     alert(data.msg);
+                     $("#loading").fadeOut('slow');
+                 }
+             });
+         }
+     }
+
+     function GetVehicleDriver(VehicleID) {
+         $("#divlog_loading").fadeIn('slow');
+         $.ajax({
+             type: "GET",
+             contentType: "application/json; charset=utf-8",
+             url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+             dataType: "json",
+             success: function (data) {
+
+                 if (data.length > 0) {
+                     $('#IssuedEmpId').html('<option value="">--Select Driver--</option>');
+                     var options = ""; var sModel = "";
+                     for (var i = 0; i < data.length; ++i) {
+                         options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                         sModel = data[i].ID;
+                     }
+                     $("#IssuedEmpId").append(options);
+                     $("#IssuedEmpId option[value=" + sModel + "]").attr("selected", "selected");
+                     $('#IssuedEmpId option:contains("Loading...")').remove();
+                     $("#divlog_loading").fadeOut('slow');
+                 }
+                 else {
+                     $('#IssuedEmpId').html('<option value="">--Select Driver--</option>');
+                     $("#btnaddDriver").show();
+                     var options = ""; var sModel = "";
+                     if (data.length > 0) {
+                         for (var i = 0; i < data.length; ++i) {
+                             options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                             sModel = data[i].ID;
+                         }
+                         $("#IssuedEmpId").append(options);
+                         $("#IssuedEmpId option[value=" + sModel + "]").attr("selected", "selected");
+
+                     }
+                     $("#divlog_loading").fadeOut('slow');
+                 }
+             },
+             error: function (error) {
+                 // alert(error);
+             }
+         });
+     }
+     $('#VehicleId').change(function () {
+         var val = $(this).val();
+         GetVehicleDriver(val);
+     });
+  </script>

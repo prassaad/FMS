@@ -1,0 +1,261 @@
+﻿@model IEnumerable<FMS.Models.UserCardEntryModel>
+@using FMS.Models;
+@{
+    Int64 UniqueId = 0;
+    core objCore = new core();
+}
+@*by vinod 9-2-2016*@
+@if (Model != null)
+{
+    <table class="table table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top: 10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <thead style="background-color: #0A99D1">
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th style="width: 100px;">
+                    Card#
+                </th>
+                <th>
+                    Package
+                </th>
+                <th>
+                    Vehicle#
+                </th>
+                <th>
+                    RouteId
+                </th>
+                <th style="width: 150px;">
+                    Location
+                </th>
+                <th style="width: 150px;">
+                    Trip Type
+                </th>
+                <th>
+                    LogIn
+                </th>
+                <th>
+                    LogOut
+                </th>
+            </tr>
+        </thead>
+        @{ UniqueId = 1; }
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @UniqueId
+                        @Html.Hidden("UniqueId_" + UniqueId, UniqueId)
+                        @Html.Hidden("hdnCount", Model.Count().ToString())
+                    </td>
+                    <td style="width: 100px;">
+                        <span id="spanCard_@(UniqueId)">@item.CardNo </span>
+                        @Html.TextBox("CardNo_" + UniqueId, item.CardNo, new { @style = "width:80px;display:none", @maxlength = "10" })
+                        @Html.Hidden("CardNumber_" + UniqueId, item.CardNo)
+                    </td>
+                    <td>
+                        @{
+                   string Package = objCore.GetPackage((long)item.PackageId);
+                        }
+                        <span title="@Package">
+                            @(Package.Length > 100 ? Package.Substring(0, 29) : Package)
+                        </span>
+                        @Html.Hidden("PackageId_" + UniqueId, item.PackageId)
+                    </td>
+                    <td>
+                        <span id="spanVehicle_@(UniqueId)">@objCore.GetVehicleRegNumber((long)item.VehicleId)
+                        </span><span id="spanTempVeh_@(UniqueId)" style="display:none;">@objCore.GetVehicleRegNumber((long)item.VehicleId)
+                        </span>
+                        @Html.Hidden("VehicleId_" + UniqueId, item.VehicleId)
+                        @Html.Hidden("VehicleTypeId_" + UniqueId, item.VehicleTypeId)
+                        @Html.Hidden("VehicleModelId_" + UniqueId, item.VehicleModelId)
+                        @Html.Hidden("SeaterId_" + UniqueId, item.SeaterId)
+                        @Html.Hidden("DriverId_" + UniqueId, objCore.GetDriverIdByVehicle((long)item.VehicleId))
+                    </td>
+                    <td>
+                        <span id="spanLocation_@(UniqueId)">@objCore.GetLocation((long)item.LocationId)
+                        </span>
+                    </td>
+                    <td style="width: 150px;">
+                        <span id="spanroute_@(UniqueId)">@objCore.GetLocationName((long)item.LocationId)
+                        </span>@* @Html.TextBox("Location_" + UniqueId, objCore.GetLocation((long)item.LocationId), new { @style = "width:120px;display:none", @maxlength = "50" })
+                        @Html.Hidden("LocationId_" + UniqueId, item.LocationId)*@
+                    </td>
+                    <td style="width: 150px;">
+                        @{string s = @objCore.GetLogEntryValues((long)item.PackageId, ViewBag.LogDate);
+                          var k = s.Split(',');
+
+                          bool p = s.Contains("PICKUP");
+                          bool d = s.Contains("DROP");
+
+                        }
+                        <span>
+                            @if (s.Contains("PICKUP") == true)
+                            {
+                                @Html.CheckBox("PickUp_" + UniqueId, true, new { @onclick = "return false", @class = "pickupchk" })
+                            }
+                            else
+                            {
+                                @Html.CheckBox("PickUp_" + UniqueId, false, new { @class = "pickupchk" })
+                            }
+                            &nbsp; PickUp </span><span>
+                                @if (s.Contains("DROP") == true)
+                                {
+                                    @Html.CheckBox("Drop_" + UniqueId, true, new { @onclick = "return false", @class = "dropchk" })
+                                }
+                                else
+                                {
+                                    @Html.CheckBox("Drop_" + UniqueId, false, new { @class = "dropchk" })
+                                }
+                                &nbsp; Drop </span>
+                    </td>
+                    <td>
+                        @{string l = @objCore.GetLogIn((long)item.PackageId, ViewBag.LogDate);
+                       
+                        
+                            @Html.TextBox("LogInTime_" + UniqueId, l, new { @style = "width:80px;" ,@class = "LogIn", @placeholder="00:00" })
+                        }
+                        <span id="errLogInTime" style="display: none; color: Red">Please enter login time</span>
+                    </td>
+                    <td>
+                        @{string o = @objCore.GetLogOut((long)item.PackageId, ViewBag.LogDate);
+                            @Html.TextBox("LogOutTime_" + UniqueId, o, new { @style = "width:80px;", @placeholder = "00:00" })
+                        }
+                    </td>
+                    @* <td>
+                        @* @{ var vehicleList = new SelectList((IEnumerable<SelectListItem>)ViewBag.NoVehicleId, "Value", "Text"); }
+                        @Html.DropDownListFor(m => item.AlterVehId, vehicleList, "-Select-", new { @style = "width:80px;display:none;", Name = "AlterVehId_" + UniqueId })
+                        @Html.TextBox("AlterVehNum_" + UniqueId, "", new { @style = "width:80px;" })
+                    </td>*@ @* <td>
+                        @* @Html.TextBox("ContactNumber_" + UniqueId, "", new { @style = "width:80px;" })
+                    </td>*@ @*  <td>
+                        @* @Html.TextBox("NetAmount_" + UniqueId, "", new { @style = "width:80px;" })
+                    </td>*@ @* <td>
+                        @Html.CheckBox("NoCab_" + UniqueId, false, new { @class = "clsNoCab" })
+                    </td>*@
+                </tr>
+             @*
+                <tr id="NoResult">
+                    <td>
+                        @if (Model.Count() == 0)
+                        {  
+                            <h4>
+                                No Cards</h4> 
+                        }
+                    </td>
+                </tr>      *@
+                
+                        { UniqueId = UniqueId + 1; }
+            }
+        </tbody>
+    </table>
+    
+    <div style="float: right">
+        <input type="button" id="btnSaveCardDetails" value="Submit" />
+    </div>
+}
+<div style="float: left; width: 100% !important;">
+    <input type="button" id="btnAdhoc" value="Ad-hoc" />
+    <input type="button" id="btnNocab" value="NoCab" />
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#LogInTime_").timepicker();
+        $("#LogOutTime_").timepicker();
+    });
+
+    var pickup = 0;
+    var drop = 0;
+    var cnt = $('#hdnCount').val();
+   
+
+    $('#btnSaveCardDetails').click(function () {
+        $('#loading').fadeIn('slow');
+        $('#btnSaveCardDetails').attr('disabled', true);
+        $('#btnSaveCardDetails').attr('style', 'cursor:no-drop');
+       $.post('/CardAssignment/BulkCardEntry', $('#frmBulkCardEntry').serialize(), function (data) {
+            alert(data.msg);
+            $('#loading').fadeOut('slow');
+            $('#btnSaveCardDetails').attr('disabled', false);
+            $('#btnSaveCardDetails').attr('style', 'cursor:pointer');
+            if (data.success) {
+                check();
+                //                window.location.href = "/CardAssignment/BulkCardEntry";
+            }
+        });
+    });
+
+    //By Vinod & Sarath on 09-03-2016
+    function check() {
+    var LogIn =$('#LogInTime_').val();
+    $('.pickupchk').each(function () {
+        if (this.checked == true) {
+            pickup++;
+            
+        }
+    });
+        $('.dropchk').each(function () {
+            if (this.checked == true) {
+                drop++;
+            }
+        });
+        if (pickup < cnt) {
+            alert('You are missing PICKUP(s)\nPlease Click OK to continue');
+        }
+        if (drop < cnt) {
+            alert('You are missing DROP(s)\nPlease Click OK to continue');
+        }
+    }
+
+
+    //By vinod 9-2-2016
+    //    $('.clsNoCab').change(function () {
+    //        var thisId = $(this).attr('id');
+    //        var uniqueId = thisId.split('_')[1];
+
+    //        var spanvehicle = $('#spanVehicle_' + uniqueId);
+    //        var spanlocation = $('#spanLocation_' + uniqueId);
+    //        var txtlocation = $('#Location_' + uniqueId);
+    //        var IsChecked = $(this).is(':checked');
+    //        var spantempveh = $('#spanTempVeh_' + uniqueId);
+    //        var txtcardNo = $('#CardNo_' + uniqueId);
+    //        var spanCard = $("#spanCard_" + uniqueId);
+    //        var alterVehId = $('[name="AlterVehId_' + uniqueId + '"]');
+    //        var alterVehNum = $('#AlterVehNum_' + uniqueId);
+
+    //        if (IsChecked) {
+    //            spanvehicle.html("No CAB");
+    //            spanlocation.hide();
+    //            txtlocation.show();
+    //            txtcardNo.show();
+    //            spanCard.hide();
+    //            alterVehId.show();
+    //            alterVehNum.hide();
+    //        }
+    //        else {
+    //            spanvehicle.html(spantempveh.html());
+    //            spanlocation.show();
+    //            txtlocation.hide();
+    //            txtcardNo.hide();
+    //            spanCard.show();
+    //            alterVehId.hide();
+    //            alterVehNum.show();
+    //        }
+
+    //    });
+
+
+
+   
+
+
+
+    
+</script>

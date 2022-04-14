@@ -1,0 +1,5 @@
+[2015-12-16 14:50:24.9734] [127.0.0.1] [ERROR] [An entity object cannot be referenced by multiple instances of IEntityChangeTracker.] [superadmin] [   at System.Data.Objects.ObjectContext.VerifyContextForAddOrAttach(IEntityWrapper wrappedEntity)
+   at System.Data.Objects.ObjectContext.AddSingleObject(EntitySet entitySet, IEntityWrapper wrappedEntity, String argumentName)
+   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.SaveBulkCardAssignments(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\CardAssignmentController.cs:line 242]

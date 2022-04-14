@@ -1,0 +1,90 @@
+﻿@model FMS.Models.tbl_km_client_rate
+ 
+@using (Html.BeginForm("EditKMDetails", "Client", FormMethod.Post, new { id = "frmEditKMRate", enctype = "multipart/form-data" }))
+{
+    <div class="clsmodalheader">
+        Edit KM Rate Details</div>
+        <div style="overflow: auto; z-index: 9999; height: 500px;" id="EditKMDetDiv">
+            <table class="table-striped table-condensed dTableR dataTable">
+                <tr>
+                <td></td><td></td>
+                </tr>
+                <tr>
+                <td></td><td></td>
+                </tr>
+                <tr>
+                <td></td><td></td>
+                </tr>
+                <tr>
+                <td></td><td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Location: <span style="color: Red;">* </span>
+                    </td>
+                    <td>
+                        @Html.TextBox("EditLocation", Model.Location)
+                        @Html.Hidden("hdnClientID", Model.ClientID)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Approved KM: <span style="color: Red;">* </span>
+                    </td>
+                    <td>
+                        @Html.TextBox("EditApprovedKM", Model.ApprovedKM)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Client Rate:
+                    </td>
+                    <td>
+                        @Html.TextBox("EditClientRate", Model.ClientRate)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="button" id="btnEditKM" value="Update" />
+                        <input type="button" id="btnCancelKM" value="Cancel" />
+                    </td>
+                </tr>
+            </table>
+    </div>
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+       
+    });
+    $("#btnEditKM").click(function () {
+        if (ValidateForm()) {
+            $("#div_loading").fadeIn('slow');
+            $.post("/Client/EditKMDetails?ID=" + '@Model.KMID' + "", $("#frmEditKMRate").serialize(), function (result) {
+                $("#divSimpleModalDet").html(result);
+                $("#div_loading").fadeOut('slow');
+            });
+        }
+    });
+    $("#btnCancelKM").click(function () {
+        $.modal.close();
+    });
+    function ValidateForm() {
+
+        if ($("#EditLocation").val() == "") {
+            alert("Location is missing! Please enter location.");
+            $("#EditLocation").focus();
+            return false;
+        }
+        if ($("#EditApprovedKM").val() == "") {
+            alert("Approved KM  is missing! Please enter Approved KM.");
+            $("#EditApprovedKM").focus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+     
+</script>

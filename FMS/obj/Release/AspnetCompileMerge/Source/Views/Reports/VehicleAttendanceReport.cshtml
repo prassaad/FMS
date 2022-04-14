@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Vehicle Attendance Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var VehicleList = (Dictionary<long, string>)ViewBag.VehicleID;
+}
+<link href="../../Content/Site.print.css" rel="stylesheet" type="text/css" media="print" />
+ <style type="text/css">
+  #printable { display: none; }
+  @@media print
+        {
+            #printable { display: block; }
+        }
+     
+</style>
+<div class="nonPrintable" id="printIcon">
+<h2>
+    Vehicle Attendance
+</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                            <li class="lastactive">@Html.ActionLink("Report","Reports","Home")</li>
+                        </ul>
+                    </div>
+            </div>
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+    </div>
+<form id="frmVehicleAttendance" enctype="multipart/form-data" method="post">
+<table>
+    <tr>
+        <td>
+            Vehicle 
+        </td>
+        <td>
+            <div class="side-by-side clearfix">
+                <select id="VehicleID" data-placeholder="Choose Vehicle..." class="chzn-select" multiple
+                    style="width: 250px;">
+                    <option value=""></option>
+                    @foreach (var item in VehicleList.Keys)
+                    {
+                        <option value="@item">
+                            @VehicleList[item]
+                        </option>
+                    }
+                </select>
+            </div>
+        </td>
+        <td>
+            From Date
+        </td>
+        <td>
+            @Html.TextBox("StartDate", "", new { @style = "width:200px;" })
+        </td>
+        <td>
+            To Date
+        </td>
+        <td>
+            @Html.TextBox("EndDate", "", new { @style = "width:200px;" })
+        </td>
+        <td>
+            <input type="button" value="Get Report" id="btnGetVehicleReport" /> <input type="button" value="Export to Excel" id="btnExportExcel" />
+        </td>
+    </tr>
+</table>
+</form>
+<p style="margin-top:10px;" id="print-icon">
+Click here to print:<a href="#" onclick="javascript:ClickHereToPrint('VehicleAttendanceDivData');">
+      <img alt="Print Report" src="../../Content/images/printer.jpeg" /> </a></p> 
+</div>
+<h2 id="printable">
+  Vehicle Attendance
+</h2>
+<div id="VehicleAttendanceDivData">
+</div>
+ <script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+  <script type="text/javascript">
+      $('#div_loading').hide();
+      $('#print-icon').hide();
+      var myDate = new Date();
+      var dd = myDate.getDate();
+      var mm = myDate.getMonth() + 1; //January is 0! 
+      var yyyy = myDate.getFullYear();
+      if (dd < 10) { dd = '0' + dd }
+      if (mm < 10) { mm = '0' + mm }
+      var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+      $("#StartDate").val('01' + '/' + mm + '/' + yyyy); $("#EndDate").val(TodayDate);
+      $('#StartDate').datepicker({
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: 'dd/mm/yy'
+      });
+      $('#EndDate').datepicker({
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: 'dd/mm/yy'
+      });
+      var config = {
+          '.chzn-select': {},
+          '.chzn-select-deselect': { allow_single_deselect: true },
+          '.chzn-select-no-single': { disable_search_threshold: 10 },
+          '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+          '.chzn-select-width': { width: "95%" }
+      }
+      for (var selector in config) {
+          $(selector).chosen(config[selector]);
+      }
+      $('#btnGetVehicleReport').click(function () {
+          $('#div_loading').fadeIn('slow');
+          var vehicle = $('#VehicleID').val();
+          var StartDate = $('#StartDate').val();
+          var EndDate = $('#EndDate').val();
+          if (StartDate == '') {
+              alert('Please select start date');
+              $('#StartDate').focus();
+              return false;
+          }
+          if (EndDate == '') {
+              alert('Please select end date');
+              $('#EndDate').focus();
+              return false;
+          }
+          $.post("/Reports/VehicleAttendanceReport?vehicleID=" + vehicle, $("#frmVehicleAttendance").serialize(), function (result) {
+              $("#VehicleAttendanceDivData").html(result);
+              $('#div_loading').fadeOut('slow');
+          });
+      });
+      $('#btnExportExcel').click(function () {
+          window.location.href = '/Reports/VehAttendReportExportExcel';
+      });
+      function ClickHereToPrint(divid) {
+          try {
+              var oIframe = document.getElementById('ifrmPrint').contentDocument;
+              var oContent = document.getElementsById(divid).innerHTML;
+              oIframe.document.write("<html><head>");
+              oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+              oIframe.document.write(oContent + "</body></html>");
+              oIframe.document.close();
+              oIframe.focus();
+              // oIframe.print();
+          }
+          catch (e) {
+              $('#wrapper').removeAttr("style");  
+              self.print();
+          }
+      }
+       
+  </script>	

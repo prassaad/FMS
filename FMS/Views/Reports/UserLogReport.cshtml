@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "User Log Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var usersList = (Dictionary<string, string>)ViewBag.Users; 
+}
+<style type="text/css">
+     #UserName_chzn
+     {
+     	margin:0 !important;
+     }
+</style>
+<h2>User Log Report</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Report", "Reports", "Home")</li>
+        </ul>
+    </div>
+</div>
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+    left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: fixed;">
+    <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+</div>
+<form id="frmUserLogReport" enctype="multipart/form-data" method="post">
+<div style="height: 30px; padding-bottom: 10px; padding-top: 10px; background-color: #F5F5F5;">
+    <table>
+        <tr>
+            <td>
+                From Date&nbsp;&nbsp;
+            </td>
+            <td>
+                @Html.TextBox("StartDate", "", new { @style = "width:150px;" })
+            </td>
+            <td>
+                To Date&nbsp;&nbsp;
+            </td>
+            <td>
+                @Html.TextBox("EndDate", "", new { @style = "width:150px;" })
+            </td>
+            <td>
+                Select User&nbsp;&nbsp;
+            </td>
+            <td>
+                <div class="side-by-side clearfix">
+                    <select id="UserName" data-placeholder="Select User..." class="chzn-select" style="width: 250px;">
+                        <option value=""></option>
+                        @foreach (var item in usersList.Keys)
+                            {
+                            <option value="@item">
+                                @usersList[item]
+                            </option>
+                            }
+                    </select>
+                </div>
+            </td>
+             <td valign="middle">
+                 <p>
+                     &nbsp;&nbsp;<a href="#" onclick="ClearUserDataDropDown();">Clear</a>&nbsp;&nbsp;</p>
+             </td>
+            <td>
+                <input type="button" value="Get Report" id="btnGetUserReport" />
+            </td>
+            
+        </tr>
+    </table>
+</div>
+</form>
+<div id="UserLogDivData">
+</div>
+<script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#div_loading').hide();
+    var config = {
+        '.chzn-select': {},
+        '.chzn-select-deselect': { allow_single_deselect: true },
+        '.chzn-select-no-single': { disable_search_threshold: 10 },
+        '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chzn-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    var frmDate, toDate;
+    var myDate = new Date();
+    var dd = myDate.getDate();
+    var mm = myDate.getMonth() + 1;  //January is 0!
+    var yyyy = myDate.getFullYear();
+    if (dd < 10) { dd = '0' + dd }
+    if (mm < 10) { mm = '0' + mm }
+    var TodayDate = dd + '/' + mm + '/' + yyyy;
+
+    $("#StartDate").val('01' + '/' + (mm) + '/' + yyyy);
+    $("#EndDate").val(TodayDate);
+    $('#StartDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#EndDate").datepicker("option", "minDate", selected);
+        }
+    });
+    $('#EndDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+
+        onSelect: function (selected) {
+            $("#StartDate").datepicker("option", "maxDate", selected);
+        }
+    });
+    // Clear Vehicle Div and DropDown
+
+    function ClearUserDataDropDown() {
+        $('select[id="UserName"]').next('div.chzn-container').find('a.chzn-single span').html('Select User...');
+        $('#UserName').val('');
+    }
+    $('#btnGetUserReport').click(function () {
+        $("#UserLogDivData").html('');
+        
+        var UserName = $('#UserName').val();
+        var StartDate = $('#StartDate').val();
+        var EndDate = $('#EndDate').val();
+        if (StartDate == '') {
+            alert('Please select start date');
+            $('#StartDate').focus();
+            return false;
+        }
+        if (EndDate == '') {
+            alert('Please select end date');
+            $('#EndDate').focus();
+            return false;
+        }
+        if (UserName == '') {
+            alert('Please select user name');
+            $('#UserName').focus();
+            return false;
+        }
+        $('#div_loading').fadeIn('slow');
+        $.post("/Reports/UserLogReport?UserName=" + UserName, $("#frmUserLogReport").serialize(), function (result) {
+            $("#UserLogDivData").html(result);
+            $('#div_loading').fadeOut('slow');
+        });
+    });
+</script>

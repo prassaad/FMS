@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  @using FMS.Models;
+  <meta charset="utf-8" />
+    <title>@FMS.ApplicationSettings.OrgName </title>
+    
+   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/layoutcss/layout.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/layoutcss/theme.css")">
+    <link href="@Url.Content("~/Content/layoutcss/tiles.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/css/screen.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/SecurityGuard/commonstyles.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/SecurityGuard/pagination.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/base/jquery.ui.datepicker.css")" rel="stylesheet" type="text/css" />
+    <!-- Chosen -->
+    <link href="@Url.Content("~/Content/chosen.css")" rel="stylesheet" type="text/css" />
+    <!--  jquery core -->
+    <script src="@Url.Content("~/Scripts/Jquery.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/theme/js/jquery/jquery.datePicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/theme/js/jquery/jquery-ui.multidatespicker.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/UserStepy.css")" type="text/css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="@Url.Content("~/Content/Images/favicon.png")">
+    <link href="../../Content/Site.print.css" rel="stylesheet" type="text/css" media="print" />
+    <!--[if IE]>
+<link rel="stylesheet" media="all" type="text/css" href="../../Content/theme/pro_dropline_ie.css" />
+<![endif]-->
+    <style type="text/css">
+        .tile h1
+        {
+            font-size: 1.45em;
+            text-align: center;
+        }
+        
+    </style>
+</head>
+<body class="full desktop">
+<header style="top: 0px;" id="masterheader">
+     <div id="headerWrapper">
+        <div style="float:left;" id="divBack">
+            <a href="#" onclick="GoBack();"><div class="goback-icon"></div></a>
+        </div>
+		<div id="headerCenter">
+			<div id="headerTitles">
+			<a href="/"><img src="@Url.Content("~/Content/images/logo.png")" class="navActive" alt="logo" height="70" style="width:180px"/></a><h2> @FMS.ApplicationSettings.AppName </h2>
+		    </div>
+		     
+</div>
+ 
+</div>
+</header>
+    <div id="wrapper" style="padding-top: 84px;">
+        <div id="centerWrapper" style="display: block;">
+            @RenderBody()
+        </div>
+    </div>
+    <div id="loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;"
+        class="nonPrintable">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <p class="nonPrintable">
+        <a href="#" style="text-decoration: none ! important;" class="back-to-top">Back to Top</a>
+    </p>
+</body>
+<script type="text/javascript">
+     
+    window.onload = function () {
+        //altRows("altrow");
+        $("#loading").fadeOut('slow');
+        $("#loading").hide();
+    }
+     
+</script>
+ 
+</html>

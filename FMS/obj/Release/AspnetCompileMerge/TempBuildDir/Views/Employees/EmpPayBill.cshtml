@@ -1,0 +1,55 @@
+﻿@model FMS.Models.EmployeeManagement
+
+@{
+    ViewBag.Title = "Emp. Pay Bill";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+    </div>
+<h2>Generate Emp. Pay Bill</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("Emp.Pay Bill List", "EmployeePayBillList")</li>
+        </ul>
+    </div>
+</div>
+<table class="table-striped table-condensed dTableR dataTable">
+    <tr>
+        <td>
+            Select Month
+        </td>
+        <td>
+            @Html.DropDownList("MonthId", null, "--Select Month--", new { @style = "width:310px;" }) &nbsp;&nbsp; <input type="button" id="btnGetEmpPayBill" value="Get Pay Bill" />
+        </td>
+    </tr>
+</table>
+<div id="EmpPayBillList">
+</div>
+<script type="text/javascript" language="javascript">
+
+    $('#div_loading').hide();
+
+    $('#btnGetEmpPayBill').click(function () {
+        GetEmpPayBill();
+    });
+
+    // Get Emp Pay Bill
+    function GetEmpPayBill() {
+        $('#div_loading').fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Employees/GenerateEmpPayBill?MonthId=" + $('#MonthId').val(),
+            dataType: "html",
+            success: function (data) {
+                $('#EmpPayBillList').html(data);
+                $('#div_loading').fadeOut('slow');
+            }
+        });
+    }
+    
+</script>

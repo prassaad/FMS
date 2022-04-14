@@ -1,0 +1,281 @@
+﻿@model FMS.Models.tbl_package_client_rates
+@{
+    long ClientId = Convert.ToInt64(ViewBag.ClientID);
+}
+@using (Html.BeginForm("AddClientPackageRateChart", "Client", FormMethod.Post, new { id = "frmAddPackageRate", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+     
+    <h2>
+        Package Rate
+    </h2>
+    <span id="SpanErrorMsg" style="color: Red;font-weight: bold;">
+    </span>
+    <table class="table table-striped table-condensed dTableR dataTable" style="width: 100%;">
+        <tr>
+            <td>
+                Project <span style="color: Red;">*</span>
+            </td>
+            <td>
+                <select id="ProjectId" name="ProjectId" class="clsPackage" style="width: 180px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Location <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("LocationId", (IEnumerable<SelectListItem>)ViewBag.LocationId, "-Select-", new { @style = "width:180px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Vehicle Type <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleTypeId", (IEnumerable<SelectListItem>)ViewBag.VehicleTypeId, "-Select-", new { @style = "width:180px" })
+                <input type="hidden" value="@ViewBag.ClientID" name="ClientId" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Vehicle Model <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleModelId", (IEnumerable<SelectListItem>)ViewBag.VehicleModelId, "-Select-", new { @style = "width:180px" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Package Rate <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("PackageAmt", "", new { @maxlength = 10, @style = "width:180px", @onkeypress = "return numberValidatedot(event);" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Time Unit <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("TimeUnit", (IEnumerable<SelectListItem>)ViewBag.TimeUnit, "-Select-", new { @style = "width:120px;" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Day(s)/ Month(s) <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("WorkingDays", "", new { @maxlength = 4, @style = "width:120px", @onkeypress = "return numberValidate(event);" }) <span class="label-important" id="spanTimeUnit" style="display:none;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Effected Date <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("EffectiveDt", "", new { @maxlength = 12, @style = "width:180px" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                LogIn Time <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("LogInTime", "", new { @maxlength = 10, @style = "width:180px" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                LogOut Time <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("LogOutTime", "", new { @maxlength = 10, @style = "width:180px" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Auto Renewal ?
+            </td>
+            <td>
+                @Html.CheckBox("AutoRenewal", true)
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" value="Submit" id="btnAddRate" />
+            </td>
+        </tr>
+    </table>
+}
+ 
+<script type="text/javascript">
+    GetProjectsByClient('@ClientId');
+
+    var myDate = new Date();
+    var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+    $("#EffectiveDt").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        minDate: prettyDate,
+        dateFormat: 'dd/mm/yy'
+    });
+
+    // Button Click Event
+    $("#btnAddRate").click(function () {
+        // Required Fields Validation
+        if (RequiredValidation()) {
+            // Ajax Post Method
+            $.post("/Client/AddClientPackageRateChart", $("#frmAddPackageRate").serialize(), function (result) {
+                if (result.success) {
+                    ClearAllFields();
+                    ClientPackageRateList(result.clientid);
+                }
+                $('#SpanErrorMsg').show();
+                $('#SpanErrorMsg').fadeIn('slow');
+                $('#SpanErrorMsg').html(result.msg);
+            });
+        }
+    });
+
+    $('#ProjectId').change(function () {
+        if ($(this).val() != '') {
+            $.get('/Projects/GetTimeUnitByProject?ProjectId=' + $(this).val(), function (data) {
+                $('#spanTimeUnit').html(data.TimeUnit);
+                $('#spanTimeUnit').show();
+            });
+        }
+    });
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function RequiredValidation() {
+        var ProjectId = $('#ProjectId').val();
+        var LocationId = $('#LocationId').val();
+        var VehType = $('#VehicleTypeId').val();
+        var VehModel = $('#VehicleModelId').val();
+        var PacAmt = $('#PackageAmt').val();
+        var WorkDay = $('#WorkingDays').val();
+        var EffectiveDt = $('#EffectiveDt').val();
+        var LogInTime = $('#LogInTime').val();
+        var LogOutTime = $('#LogOutTime').val();
+        var timeunit = $('#TimeUnit').val();
+
+        $('#SpanErrorMsg').show();
+        if (ProjectId == '') {
+            $('#SpanErrorMsg').html('Please select project');
+            $('#ProjectId').focus();
+            return false;
+        }
+        if (LocationId == '') {
+            $('#SpanErrorMsg').html('Please select location');
+            $('#LocationId').focus();
+            return false;
+        }
+        if (VehType == '') {
+            $('#SpanErrorMsg').html('Please select vehicle type');
+            $('#VehicleTypeId').focus();
+            return false;
+        }
+        if (VehModel == '') {
+            $('#SpanErrorMsg').html('Please select vehicle model');
+            $('#VehicleModelId').focus();
+            return false;
+        }
+        if (PacAmt == '') {
+            $('#SpanErrorMsg').html('Please enter package amount');
+            $('#PackageAmt').focus();
+            return false;
+        }
+        if (WorkDay == '') {
+            $('#SpanErrorMsg').html('Please enter working days'); $('#WorkingDays').focus();
+            return false;
+        }
+        if (EffectiveDt == '') {
+            $('#SpanErrorMsg').html('Please select effected date'); $('#EffectiveDt').focus();
+            return false;
+        }
+        if (timeunit == '') {
+            $('#SpanErrorMsg').html('Please select time unit');
+            $('#TimeUnit').focus();
+            return false;
+        }
+        if (LogInTime == '') {
+            $('#SpanErrorMsg').html('Please enter login time'); $('#LogInTime').focus();
+            return false;
+        }
+        if (LogOutTime == '') {
+            $('#SpanErrorMsg').html('Please enter logout time'); $('#LogOutTime').focus();
+            return false;
+        }
+        $('#SpanErrorMsg').fadeOut('slow');
+        return true;
+    }
+    function ClientPackageRateList(ClientID) {
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+    {
+        type: "GET",
+        url: "/Client/ClientPackageRateList",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddedClientRateList').html(result);
+            $("#div_loading").fadeOut('slow');
+        },
+        error: function (error) {
+
+        }
+    });
+    }
+    function ClearAllFields() {
+        $('#ProjectId').val('');
+        $('#LocationId').val('');
+        $('#VehicleTypeId').val('');
+        $('#VehicleModelId').val(''); 
+        $('#PackageAmt').val('');
+        $('#WorkingDays').val('');
+        $('#EffectiveDt').val('');
+        $('#LogInTime').val('');
+        $('#LogOutTime').val('');
+        $('#TimeUnit').val('');
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function numberValidatedot(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 46 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

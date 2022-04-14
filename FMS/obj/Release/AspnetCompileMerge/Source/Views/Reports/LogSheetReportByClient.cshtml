@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "LogSheet Report By Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Report", "Reports", "Home")</li>
+        </ul>
+    </div>
+</div>
+<h2>LogSheet Report By Client</h2>
+<form id="frmLogSheetReport" enctype="multipart/form-data" method="post">
+<div style="height: 40px; padding-bottom: 10px; padding-top: 10px; background-color: #F5F5F5;">
+    <table>
+        <tr>
+            <td>
+                Month
+            </td>
+            <td>
+                @Html.DropDownList("Month", null, "-Select-", new { @style = "width:150px" })
+            </td>
+            <td>
+                Year
+            </td>
+            <td>
+                @Html.DropDownList("YearId", null,"-Select-", new { @style = "width:150px;" })
+            </td>
+            <td>
+                @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.ClientId, "-Select-", new { @style = "width:220px;" })
+            </td>
+            <td>
+                <input type="button" value="Get Report" id="btnGetLogSheetReport" />
+            </td>
+        </tr>
+    </table>
+</div>
+</form>
+<div id="divLogSheetReportByClient">
+    
+</div>
+<script type="text/javascript">
+    // button click event to get report
+    $('#btnGetLogSheetReport').click(function () {
+        $('#loading').fadeIn('slow');
+        var Month = $('#Month').val();
+        var YearId = $('#YearId').val();
+        var ClientId = $('#ClientId').val();
+        if (Month == '') {
+            alert('Please select month');
+            $('#Month').focus();
+            return false;
+        }
+        if (YearId == '') {
+            alert('Please select year');
+            $('#YearId').focus();
+            return false;
+        }
+        if (ClientId == '') {
+            alert('Please select client.')
+            $('#ClientId').val();
+            return false;
+        }
+
+        $.post("/Reports/LogSheetReportByClient", $("#frmLogSheetReport").serialize(), function (result) {
+            $("#divLogSheetReportByClient").html(result);
+            $('#loading').fadeOut('slow');
+        });
+
+    });     
+</script>

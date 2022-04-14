@@ -1,0 +1,279 @@
+﻿@model FMS.Models.InventoryModel.PurchaseOrder
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    StoresController objStore = new StoresController();
+    int QtyTot = 0;
+    decimal Amt = 0;
+    int sno = 0;
+}
+<style type="text/css">
+  .footer-Printable { display: none; }
+ @@media print
+{
+    .footer-Printable { display: block; }
+    .dateAlign{text-align: right;}
+}
+</style>
+<div class="row">
+    <div class="col-md-12">
+     <div class="footer-Printable">
+           @* @{ Html.RenderAction("GetAddress", "AcademicReports", new { area = "Academic" }); }*@
+        </div>
+    <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <b style="font-size: 16px;"><i class="fa fa-info-circle"></i>&nbsp;Purchase Order Info.</b>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Ref.No#:
+                                </td>
+                                <td>
+                                  <span class="label-success"> @Html.DisplayFor(modelItem => Model._PurchaseOrder.RefNo) </span> 
+                                </td>
+                            </tr>
+                           
+                              <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Order Dt:
+                                </td>
+                                <td>
+                                        @String.Format("{0:dd/MM/yyyy}", Model._PurchaseOrder.OrderDt)
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Excepted Dt:
+                                </td>
+                                <td>
+                                       @String.Format("{0:dd/MM/yyyy}", Model._PurchaseOrder.ExpectedDt)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Supplier:
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._PurchaseOrder.tbl_SuppliersMaster.SupplierName)
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; UnTaxed Amount:
+                                </td>
+                                <td>
+                                    @String.Format("{0:N}", Model._PurchaseOrder.UnTaxed)
+                                </td>
+                            </tr>
+          
+                        </tbody>
+                    </table>
+    </div>
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    <b style="font-size: 16px;"><i class="fa fa-tasks"></i>&nbsp;Purchase Order Bid & Invoice
+                        Details</b>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width: 57%;">
+                    &nbsp;&nbsp;&nbsp;&nbsp; Order Item Status :
+                </td>
+                <td style="width: 43%;">
+                    @if (Model._PurchaseOrder.Status.ToUpper() == "RFQ")
+                    {
+                        <span class="label label-important">Req. for Quotation</span>
+                                    }
+                    else if (Model._PurchaseOrder.Status.ToUpper() == "BIDRECEIVED")
+                    {
+                        <span class="label label-warning">Bid Received</span>
+                                    }
+                    else if (Model._PurchaseOrder.Status.ToUpper() == "CONFIRMORDER")
+                    {
+                        <span class="label label-pending">Confirm Order</span>
+                                    }
+                    else if (Model._PurchaseOrder.Status.ToUpper() == "PODRAFT")
+                    {
+                        <span class="label label-warning">PO Draft</span>
+                                    }
+                    else if (Model._PurchaseOrder.Status.ToUpper() == "DONE")
+                    {
+                        <span class="label label-success">Done</span>
+                                    }
+                </td>
+            </tr>
+            @if (Model._PurchaseOrder.Status.ToUpper() == "BIDRECEIVED")
+            {
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Bid Received Date :
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._PurchaseOrder.BidReceivedDt)
+                    </td>
+                </tr>
+                            }
+            @if (!string.IsNullOrEmpty(Model._PurchaseOrder.BidTerms))
+            {
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Bid Terms:
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._PurchaseOrder.BidTerms)
+                    </td>
+                </tr>
+                               }
+            @if (Model._PurchaseOrder.BidValidity.ToString() != "" || Model._PurchaseOrder.BidValidity != null)
+            {
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Bid Validity:
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._PurchaseOrder.BidValidity)
+                    </td>
+                </tr>
+                               }
+            @if (!string.IsNullOrEmpty(Model._PurchaseOrder.InvoiceTerms))
+            {
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Invoice Terms:
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model._PurchaseOrder.InvoiceTerms)
+                    </td>
+                </tr>
+                               }
+            @if (Model._PurchaseOrder.DeliveryExpectedDt.ToString() != "" || Model._PurchaseOrder.DeliveryExpectedDt != null)
+            {
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Delivery Expected Dt:
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", Model._PurchaseOrder.DeliveryExpectedDt)
+                    </td>
+                </tr>
+                               }
+        </tbody>
+    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2><i class="clip-list-6"></i>&nbsp;Purchase Order item(s) details</h2></div>
+        <div class="panel-body">
+            @{
+                QtyTot = 0;
+                Amt = 0;
+                sno = 0;
+            }
+            @if (Model._PurchaseOrderDettails.ToList().Count > 0)
+            {
+           
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl.No.
+                            </th>
+                            <th>
+                                Item
+                            </th>
+                            <th>
+                                Schedule Dt
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Tax
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Unit Price
+                            </th>
+                            <th style="text-align: right;">
+                                Total Amt.
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model._PurchaseOrderDettails)
+                        {  
+                            <tr>
+                                @{
+                                            InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                                }
+                                <td>
+                                    @{sno = sno + 1;}
+                                    @Html.Encode(sno)
+                                </td>
+                                <td>
+                                    @Html.Encode(_itemMaster.ItemText)
+                                </td>
+                                <td>
+                                    @String.Format("{0:dd/MM/yyyy}", item.ScheduleDt)
+                                </td>
+                                <td>@Html.Encode(item.Description == null ? "" : item.Description)
+                                </td>
+                                <td>
+                                    @String.Format("{0:N}", item.Taxes)
+                                </td>
+                                <td>
+                                    @Html.Encode(item.Qty)
+                                    @{
+                                            QtyTot += (int)item.Qty;
+                                    }
+                                </td>
+                                <td>
+                                    @String.Format("{0:N}", _itemMaster.Amount)
+                                </td>
+                                <td style="text-align: right;">
+                                    @String.Format("{0:N}", item.SubTotal)
+                                    @{
+                                            Amt += (decimal)item.SubTotal;
+                                    }
+                                </td>
+                            </tr>
+                                        }
+                        <tr>
+                            <td colspan="5">
+                            </td>
+                            <td>@QtyTot
+                            </td>
+                            <td>
+                            </td>
+                            <td style="text-align: right;">@String.Format("{0:N}", Amt)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                            }
+            else
+            {
+                <h3>
+                    No Order item(s) details found to display.
+                </h3>
+                            }
+        </div>
+    </div>
+    <p style="float: right;margin:10px;">
+        Generated User: &nbsp;&nbsp; <span class="label-important">@User.Identity.Name </span> &nbsp;&nbsp; Date : &nbsp;&nbsp;
+        <span class="label-important">@string.Format("{0:dd/MM/yyyy}", DateTime.Now) </span>
+    </p>
+</div>

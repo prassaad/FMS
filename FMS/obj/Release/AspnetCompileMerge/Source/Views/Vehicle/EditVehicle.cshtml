@@ -1,0 +1,836 @@
+﻿@model FMS.Models.tbl_vehicles
+
+@{
+    ViewBag.Title = "Edit Vehicle";
+}
+<link href="../../Content/jquery.stepy.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery.stepy.min.js" type="text/javascript"></script>
+<h2>Edit Vehicle Reg. Number [@Model.VehicleRegNum]</h2>
+ <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 40%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <h4>
+            </h4>
+        <img "../../Content/images/loading-icon.gif"  alt="Loading..."/ >
+    </div>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if (Model.Isown == null ? false : (bool)Model.Isown)
+            { <li class="active">@Html.ActionLink("List of Vehicles", "OwnVehicles")</li>   }
+            else
+            {
+            <li class="active">@Html.ActionLink("List of Vehicles", "Index")</li>
+            }
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("EditVehicle", "Vehicle", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmVehicleEdit" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset title="Vehicle" class="step" id="callback-step-1" style="display: block;
+        width: 98%">
+       <legend>Vehicle Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleRegNum, new { @maxlength = "50", @class = "isVehRegNumber", @placeholder = "EX:TS 22 BB 9999" })
+                    @Html.ValidationMessageFor(model => model.VehicleRegNum)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    @if (Model.tbl_vendor_details.SubVendor == true)
+                    {
+                        
+                        @Html.RadioButton("Vendor", "True", false) <text> Vendor</text> @Html.RadioButton("Vendor", "False", true) 
+                        <text> Sub-Vendor</text>
+                    }
+                    else
+                    {
+                        @Html.RadioButton("Vendor", "True", true) <text> Vendor</text> @Html.RadioButton("Vendor", "False", false) 
+                        <text> Sub-Vendor</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor :
+                </td>
+                <td>
+                    <select id="VendorID" name="VendorID" class="txtInput" tabindex="3" style = "width: 310px;">
+                        <option value="0">--Select Vendor--</option>
+                    </select>
+                     <span style="margin-left:8px;" id="spnVendor">Current Vendor : <b style="color:Red;font-weight:bold;"> @Model.tbl_vendor_details.FirstName.ToUpper() @(Model.tbl_vendor_details.LastName == null ? "" : Model.tbl_vendor_details.LastName.ToUpper()) </b>  <a href="#" onclick="AddNewVendor();"> <img alt="Add New" src="../../Content/images/plus.png" style="margin-bottom: -8px;" /></a> </span> 
+                    @Html.ValidationMessageFor(model => model.VendorID)
+                    <input type="hidden" id="VID" value="@ViewBag.VendorID" name="VID" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Model :
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleModelID", null, "--Select Vehicle Model--", new { style = "width: 310px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleModelID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Manuf. Month,Year :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ManufactureYearMonth, new { @maxlength = 30 })
+                    @Html.ValidationMessageFor(model => model.ManufactureYearMonth)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Type :
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { style = "width: 310px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleTypeID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     Capacity :
+                </td>
+                <td>
+                    @Html.DropDownList("SeaterID", null, "--Select Seater", new { style = "width:310px;" })
+                    @Html.ValidationMessageFor(model => model.SeatingCapacity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax Validity :
+                </td>
+                <td>
+                    @Html.TextBox("TaxValidity", Model.TaxValidity == null ? "" : Model.TaxValidity.Value.ToShortDateString(), new { @class = "validDate", @maxlength = 15 })
+                    @Html.ValidationMessageFor(model => model.TaxValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Permit Validity :
+                </td>
+                <td>
+                    @Html.TextBox("PermitValidity", Model.PermitValidity == null ? "" : Model.PermitValidity.Value.ToShortDateString(), new { @class = "validDate", @maxlength = 15 })
+                    @Html.ValidationMessageFor(model => model.PermitValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    FitNess Validity :
+                </td>
+                <td>
+                    @Html.TextBox("FitnessValidity", Model.FitnessValidity == null ? "" : Model.FitnessValidity.Value.ToShortDateString(), new { @class = "validDate", @maxlength = 15 })
+                    @Html.ValidationMessageFor(model => model.FitnessValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Insurance Validity :
+                </td>
+                <td>
+                    @Html.TextBox("InsuranceValidity", Model.InsuranceValidity == null ? "" : Model.InsuranceValidity.Value.ToShortDateString(), new { @class = "validDate", @maxlength = 15 })
+                    @Html.ValidationMessageFor(model => model.InsuranceValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pollution Validity :
+                </td>
+                <td>
+                    @Html.TextBox("PollutionValidity", Model.PollutionValidity == null ? "" : Model.PollutionValidity.Value.ToShortDateString(), new { @class = "validDate", @maxlength = 15 })
+                    @Html.ValidationMessageFor(model => model.PollutionValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Owner/Driver :
+                </td>
+                <td>
+                    @Html.RadioButton("OwnerCumDriver", "True", (Model.OwnerCumDriver == true ? true : false)) &nbsp;&nbsp;YES &nbsp;&nbsp; @Html.RadioButton("OwnerCumDriver", "False", (Model.OwnerCumDriver == false ? true : false)) &nbsp;&nbsp;NO
+                    @Html.ValidationMessageFor(model => model.OwnerCumDriver)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Driver :
+                </td>
+                <td>
+                    @Html.RadioButton("SingleDoubleDriver", "Single", (Model.SingleDoubleDriver.ToUpper() == "SINGLE" ? true : false)) &nbsp;&nbsp;SINGLE &nbsp;&nbsp; @Html.RadioButton("SingleDoubleDriver", "Double", (Model.SingleDoubleDriver.ToUpper() == "DOUBLE" ? true : false)) &nbsp;&nbsp;DOUBLE 
+                    @Html.ValidationMessageFor(model => model.SingleDoubleDriver)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    SIM# :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SIMNumber, new { @maxlength = 30 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    KM Reading <small style="font-size:9px">(As Per Agreement)</small> :
+                </td>
+                <td>
+                   @Html.TextBox("LastOdoMeter", Model.LastODOMeter, new { @onkeypress = "return numberValidate(event);" , @maxlength = 18 }) 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Priority :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehiclePriority, new { @maxlength = 15 })
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Vendor Non-AC Rate :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VendorRate, new { @maxlength = 10 })
+                     @Html.ValidationMessageFor(model => model.VendorRate)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor AC Rate :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VendorAcRate, new { @maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.VendorAcRate)
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Diesel Card Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DieselCardNum, new { @maxlength = 50 })
+                    @Html.ValidationMessageFor(model => model.DieselCardNum)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Is Own :
+                </td>
+                <td>@Html.CheckBox("IsOwn")
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save Changes" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+     <fieldset title="Condition" class="step" id="callback-step-2" style="display: block;
+        width: 98%">
+        <legend>Condition History</legend>
+        <div id="ViewConditionHistorydiv"></div><br /><br />
+    </fieldset>
+    <fieldset title="Owner" class="step" id="callback-step-3" style="display: block;
+        width: 98%">
+        <legend>Owner Details</legend>
+        <div id="ViewOwnerDetailsdiv"></div><br /><br />
+    </fieldset>
+    <fieldset title="Driver" class="step" id="callback-step-4" style="display: block;
+        width: 98%">
+        <legend>Driver Details</legend>
+        <h2>List of the Drivers</h2>
+         @if ((bool)FMS.Models.core.GetUserAccess(6, User.Identity.Name).Add)
+         {  <p style="float:right;margin-top:-20px;"> <a style="color:Red;text-decoration:underline;cursor:pointer;" onclick="AddDriverForm(@Model.VendorID,@Model.ID);">Add Driver</a></p>}
+        <div id="ViewDriverDetailsdiv"></div><br /><br />
+    </fieldset>
+    <fieldset title="Clients" class="step" id="callback-step-5" style="display: block;
+        width: 98%">
+        <legend>Clients Details</legend>
+        <h2></h2>
+        <div id="ViewClientDetailsdiv"></div><br /><br />
+    </fieldset>
+    <fieldset title="Documents" class="step" id="callback-step-6" style="display: block;
+        width: 98%">
+        <legend>Document Details</legend>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 70%">
+                    <div id="AddDocumentsdiv">
+                    </div>
+                </td>
+                <td style="width: 30%">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+        <br />
+        <br />
+    </fieldset>
+         if (Model.Isown == true)
+         {
+    <fieldset title="Service Schedule" class="step" id="callback-step-7" style="display: block;
+        width: 98%">
+        <legend>Service Schedule Details</legend>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 70%">
+                    <div id="AssignServicediv">
+                    </div>
+                </td>
+                <td style="width: 30%">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+        <br />
+        <br />
+    </fieldset>
+    <fieldset title="Vehicle Finance" class="step" id="callback-step-8" style="display: block;
+        width: 98%">
+        <legend>Vehicle Finance Details</legend>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 70%">
+                    <div id="EditVehicleEMIdiv">
+                    </div>
+                </td>
+                <td style="width: 30%">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+        <br />
+        <br />
+    </fieldset>
+         }
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+
+                    <div id="divSimpleModalDet">
+                       
+                    </div>
+               
+    <a class="no"></a>
+
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#frmVehicleEdit').stepy({ titleClick: true, select: function (index) {
+        switch (index) {
+            case 1:
+                break;
+            case 2:
+                // Call Vehicle Condition History
+                VehicleConditionHistory('@Model.ID');
+                break;
+            case 3:
+                var vendorID = '@Model.VendorID';
+                EditOwnerDetails(vendorID);
+                break;
+            case 4:
+                DriversList('@Model.ID');
+                break;
+            case 5:
+                AssignVehicleClient('@Model.ID');
+                GetVehicleClient('@Model.ID');
+                break;
+            case 6:
+                AddDocumentstoVehicle('@Model.ID');
+                break;
+            case 7:
+                $('#AssignServicediv').empty(); $('#div_loading').fadeOut('slow');
+                VehServiceSchedule('@Model.ID');
+                break;
+            case 8:
+                EditVehicleEMI('@Model.ID');
+                break;
+        }
+    }
+    });
+$(document).ready(function () {
+    LoadVendors('@Model.tbl_vendor_details.SubVendor');
+    $("#div_loading").hide();
+       var dateToday = new Date();
+        $('#TaxValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PermitValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#FitnessValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#InsuranceValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PollutionValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            //minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#AcquisitionDt').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            maxDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    //replace selectMonth with your date pickers id here at all places 
+    $('#ManufactureYearMonth').datepicker({
+        changeMonth: true,      //provide option to select Month
+        changeYear: true,       //provide option to select year
+        showButtonPanel: true,  // button panel having today and done button
+        dateFormat: 'MM yy',    //set date format
+        yearRange: '1970:+0',
+        onClose: function (dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1)); //here set the date when closing.
+            $(this).blur(); //remove focus input box
+
+        }
+    });
+    // validate number 
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    //on foucus event on this code is to hide the calender part
+    $("#ManufactureYearMonth").focus(function () {
+        $(".ui-datepicker-calendar").hide();
+        $("#ui-datepicker-div").position({
+            my: "center top",
+            at: "center bottom",
+            of: $(this)
+        });
+    });
+    // Vendor Radio button Click Event
+    $("input:radio[name=Vendor]").click(function () {
+        var val = $(this).val();
+        if (val == 'True') {
+            LoadVendors(false);
+        }
+        else {
+            LoadVendors(true);
+        }
+    });
+    // Load Vendors in dropdown
+    function LoadVendors(IsSubVendor) {
+       
+        if (IsSubVendor == false || IsSubVendor == 'False') {
+            $('#VendorID').hide();
+            $('#spnVendor').show();
+        }
+        else {
+            $('#VendorID').show(); $('#spnVendor').hide();
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/vendor/LoadVendors?IsSubVendor=" + IsSubVendor,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#VendorID').html('<option value="">--Select Vendor--</option>');
+                        var options = ""; var sModel = "";
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + "  " + data[i].LastName + "</option>";
+                            sModel = '@Model.VendorID';
+                        }
+                        $("#VendorID").append(options);
+                        $('#VendorID option:contains("Loading...")').remove();
+                        $("#VendorID option[value=" + sModel + "]").attr("selected", "selected");
+                    }
+                    else {
+
+                        $('#VendorID').html('<option value="">--Select Vendor--</option>');
+                        var options = ""; var sModel = "";
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; ++i) {
+                                options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + "  " + data[i].LastName + "</option>";
+                                sModel = '@Model.VendorID';
+                            }
+                            $("#VendorID").append(options);
+                            $("#VendorID option[value=" + sModel + "]").attr("selected", "selected");
+                        }
+                    }
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+    }
+
+    function VehicleConditionHistory(VehicleId) {
+        $("#loading").fadeIn('slow');
+        $.ajax(
+    {
+        type: "GET",
+        url: "/Vehicle/VehicleConditionHistory",
+        data: "VehicleId=" + VehicleId,
+        dataType: "html",
+        success: function (result) {
+            $('#ViewConditionHistorydiv').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+
+        }
+    });
+    }
+function EditOwnerDetails(vendorID) {
+    $("#loading").fadeIn('slow');
+        $.ajax(
+    {
+        type: "GET",
+        url: "../../Vendor/EditVendorDetails",
+        data: "VendorID=" + vendorID,
+        dataType: "html",
+        success: function (result) {
+            $('#ViewOwnerDetailsdiv').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            
+        }
+    });
+}
+function AddDocumentstoVehicle(VehicleID) {
+    $("#loading").fadeIn('slow');
+    $.ajax({
+        type: "GET",
+        url: "/Vehicle/AddDocumentstoVehicle",
+        data: "VehicleID=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#AddDocumentsdiv').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            
+        }
+    });
+    $("#div_loading").fadeOut('slow');
+}
+function VehServiceSchedule(VehicleID) {
+    $("#loading").fadeIn('slow');
+    $.ajax({
+        type: "GET",
+        url: "../../Vehicle/VehServiceSchedule",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        data: "VehId=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#AssignServicediv').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+
+        }
+    });
+    $("#loading").fadeOut('slow');
+}
+//Edit Vehicle EMI View
+function EditVehicleEMI(VehicleID) {
+    $("#loading").fadeIn('slow');
+    $.ajax({
+        type: "GET",
+        url: "../../Vehicle/EditOwnVehicleFinanceView",
+        data: "VehicleID=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#EditVehicleEMIdiv').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+
+        }
+    });
+    $("#div_loading").fadeOut('slow');
+}
+
+// Add New Vendor
+function AddNewVendor() {
+    var selectedVendor = ($("input[type='radio'][name='Vendor']:checked").val() == 'False') ? true : false;
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 740,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Vendor/AddNewVendorDetails",
+        data: "IsSubVendor=" + selectedVendor,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+}
+    // Drivers Tab 
+    function DriversList(ID) {
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+    {
+        type: "POST",
+        url: "../../Driver/GetDriverListByVehicle",
+        data: "VehicleID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#ViewDriverDetailsdiv').html(result);
+            $("#div_loading").fadeOut('slow');
+        },
+        error: function (error) {
+//            alert(error);
+        }
+    });
+}
+    // View and edit
+function ViewDriverDetails(ID, VehicleID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 710,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Driver/ViewDriverDetails",
+        data: "Id=" + ID + "&VehicleID=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+//            alert(error);
+        }
+    });
+
+          }
+
+      });
+
+}
+    // Adding Driver
+    function AddDriverForm(VendorID,VehicleID) {
+        $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 710,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Driver/CreatePartial",
+        data: "VendorId=" + VendorID + "&VehicleID=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+//            alert(error);
+        }
+    });
+
+          }
+
+      });
+
+    }
+    // Assign vehicles to clients tab
+  function AssignVehicleClient(VehicleID){
+      $("#div_loading").fadeIn('slow');
+      $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/AssignedVehicleToClient",
+        data: "VehicleId=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#ViewClientDetailsdiv').html(result);
+        },
+        error: function (error) {
+//            alert(error);
+        }
+    });
+    $("#div_loading").fadeOut('slow');
+}
+// Get vehicle client list
+function GetVehicleClient(VehicleID) {
+      $("#div_loading").fadeIn('slow');
+      $.ajax(
+    {
+        type: "GET",
+        url: "../../Vehicle/GetVehicleClient",
+        data: "VehicleID=" + VehicleID,
+        dataType: "html",
+        success: function (result) {
+            $('#divVehicleClientList').html(result);
+        },
+        error: function (error) {
+//            alert(error);
+        }
+    });
+    $("#div_loading").fadeOut('slow');
+  }
+  $("#VendorRate").change(function () {
+      var result = isFloat(this.value);
+      $("#SpanValidateMsg").hide();
+      if (result == false) {
+          $("#SpanValidateMsg").show();
+          $("#SpanValidateMsg").html("Vendor rate has special characters or alphabets. These are not allowed.");
+          document.getElementById("" + this.id + "").value = '';
+          $('html,body').animate({ scrollTop: 0 }, 'slow');
+          $("#" + this.id).focus();
+      }
+  });
+
+  $("#VehicleRegNum").change(function () {
+      var result = isAlphaNumeric(this.value);
+      $("#SpanValidateMsg").hide();
+      if (result == false) {
+          $("#SpanValidateMsg").show();
+          $("#SpanValidateMsg").html("Vehicle registration number should be alphanumeric.");
+          document.getElementById("" + this.id + "").value = '';
+          $("#" + this.id).focus();
+      }
+  });
+  $(".validDate").change(function () {
+      $("#SpanValidateMsg").hide();
+      if (this.id == "TaxValidity") {
+          var dateval = $("#" + this.id).val();
+          var msg = validateDate(dateval);
+          if (msg != "") {
+              document.getElementById("" + this.id + "").value = '';
+              this.focus();
+              $("#SpanValidateMsg").show();
+              $("#SpanValidateMsg").html(msg);
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+              return false;
+          }
+      }
+      else if (this.id == "PermitValidity") {
+          var dateval = $("#" + this.id).val();
+          var msg = validateDate(dateval);
+          if (msg != "") {
+              document.getElementById("" + this.id + "").value = '';
+              this.focus();
+              $("#SpanValidateMsg").show();
+              $("#SpanValidateMsg").html(msg);
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+              return false;
+          }
+      }
+      else if (this.id == "FitnessValidity") {
+          var dateval = $("#" + this.id).val();
+          var msg = validateDate(dateval);
+          if (msg != "") {
+              document.getElementById("" + this.id + "").value = '';
+              this.focus();
+              $("#SpanValidateMsg").show();
+              $("#SpanValidateMsg").html(msg);
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+              return false;
+          }
+      }
+      else if (this.id == "InsuranceValidity") {
+          var dateval = $("#" + this.id).val();
+          var msg = validateDate(dateval);
+          if (msg != "") {
+              document.getElementById("" + this.id + "").value = '';
+              this.focus();
+              $("#SpanValidateMsg").show();
+              $("#SpanValidateMsg").html(msg);
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+              return false;
+          }
+      }
+      else if (this.id == "PollutionValidity") {
+          var dateval = $("#" + this.id).val();
+          var msg = validateDate(dateval);
+          if (msg != "") {
+              document.getElementById("" + this.id + "").value = '';
+              this.focus();
+              $("#SpanValidateMsg").show();
+              $("#SpanValidateMsg").html(msg);
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+              return false;
+          }
+      }
+  });
+
+  $("#VehicleRegNum").change(function () {
+      var result = isVehRegNumber(this.value)
+
+      $("#SpanValidateMsg").hide();
+      if (result == false) {
+          $("#SpanValidateMsg").show();
+          $("#SpanValidateMsg").html("Invalid Vehicle Number..");
+          document.getElementById("" + this.id + "").value = '';
+          $("#" + this.id).focus();
+      }
+  });
+</script>
+ 

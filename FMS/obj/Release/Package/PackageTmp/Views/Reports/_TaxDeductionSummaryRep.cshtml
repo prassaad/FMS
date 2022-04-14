@@ -1,0 +1,72 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    int sno = 1;
+    decimal totalAmt = 0;
+}
+<style type="text/css">
+    .alignRight 
+    {
+        text-align:right !important;
+    }    
+</style>
+<p>
+    No. of entries @(ViewBag.ListCount)
+    showing
+</p>
+<table class="table table-striped table-condensed dTableR dataTable">
+    <thead>
+        <tr>
+            <th>
+                SNo
+            </th>
+            <th>
+                Month
+            </th>
+            <th class="alignRight">
+                Deduction
+            </th>
+            <th class="alignRight">
+                Diesel Amt.
+            </th>
+            <th class="alignRight">
+                Maintenance Amt.
+            </th>
+            <th class="alignRight">
+                Total Deductions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ sno = 1; }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @sno
+                    @{ sno++; totalAmt = 0; }
+                </td>
+                <td>
+                    @item.Text1
+                </td>
+                <td class="alignRight">
+                    @String.Format("{0:N}", item.Amount)
+                    @{ totalAmt += item.Amount; }
+                </td>
+                <td class="alignRight">
+                    @String.Format("{0:N}", item.Amount1)
+                    @{ totalAmt += item.Amount1; }
+                </td>
+                <td class="alignRight">
+                    @String.Format("{0:N}", item.Amount2)
+                    @{ totalAmt += item.Amount2; }
+                </td>
+                <td class="alignRight">
+                    @String.Format("{0:N}", totalAmt)
+                </td>
+            </tr>
+}
+    </tbody>
+</table>
+<p style="float: right;">
+    Generated on @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>

@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "Advances Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Advances Report</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("Report", "Reports", "Home")</li>
+        </ul>
+    </div>
+</div>
+<div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 40%; top: 50%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/layout/loading.gif" alt="Loading..." />
+    </div>
+    <form id="frmAdvances" enctype="multipart/form-data" method="post">
+<div style="height: 20px; padding-bottom: 20px;background-color:#F5F5F5;">
+    <table>
+        <tr>
+            <td colspan="3"style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                From Date
+            </td>
+            <td>
+                @Html.TextBox("StartDate", "", new { @style = "width:200px;" })
+            </td>
+            <td>
+                To Date
+            </td>
+            <td>
+                @Html.TextBox("EndDate", "", new { @style = "width:200px;" })
+            </td>
+            
+            <td>
+                <input type="button" value="Get Report" id="btnGetAdvancesReport" />
+            </td>
+        </tr>
+    </table>
+</div>
+</form>
+<div id="AdvancesDivData">
+ 
+</div>
+<script type="text/javascript">
+    $('#div_loading').hide();
+    var myDate = new Date();
+    var dd = myDate.getDate();
+    var mm = myDate.getMonth() + 1; //January is 0! 
+    var yyyy = myDate.getFullYear();
+    if (dd < 10) { dd = '0' + dd }
+    if (mm < 10) { mm = '0' + mm }
+    var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+    $("#StartDate").val('01' + '/' + (mm) + '/' + yyyy); $("#EndDate").val(TodayDate);
+    $('#StartDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#EndDate").datepicker("option", "minDate", selected);
+        }
+    });
+    $('#EndDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function (selected) {
+            $("#StartDate").datepicker("option", "maxDate", selected);
+        }
+    });
+    $('#btnGetAdvancesReport').click(function () {
+        $('#div_loading').fadeIn('slow');
+        var StartDate = $('#StartDate').val();
+        var EndDate = $('#EndDate').val();
+        $('#div_loading').fadeOut('slow');
+        if (StartDate == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Please select start date");
+            $('#StartDate').focus();
+            $('#div_loading').fadeOut('slow');
+            return false;
+        }
+        if (EndDate == '') {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Please select end date");
+            $('#EndDate').focus();
+            $('#div_loading').fadeOut('slow');
+            return false;
+        }
+        $.post("/Reports/AdvancesReport", $("#frmAdvances").serialize(), function (result) {
+            $("#AdvancesDivData").html(result);
+            $('#div_loading').fadeOut('slow');
+        });
+    });
+</script>

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<FMS.Models.tbl_service_sch_master>
+@using FMS.Models; 
+@{
+    core objCr = new core(); 
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Model
+            </th>
+            <th>
+                Service No.
+            </th>
+            <th>
+                Min. KM
+            </th>
+            <th>
+                Max. KM
+            </th>
+            <th>
+                Day(s)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                   @objCr.GetVehicleModel((long)item.VehModelId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SSNO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinKM)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaxKM)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Days)
+                </td>
+               
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <input type="button" name="btnSave" id="btnSave" value="Save" />
+</p>
+<script type="text/javascript">
+    $('#btnSave').click(function () {
+        window.location.href = "/ServiceSchMaster/SaveService";
+    });
+</script>

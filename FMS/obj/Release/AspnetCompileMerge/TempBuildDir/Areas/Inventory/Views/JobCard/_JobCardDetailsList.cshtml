@@ -1,0 +1,210 @@
+﻿@model IEnumerable<FMS.Models.tbl_jobcard_details>
+@using FMS.Models
+@using FMS.Areas.Inventory.Controllers;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    JobCardController objStore = new JobCardController();
+    double QtyTot = 0, sno = 0;
+    decimal Amt = 0;
+    tbl_jobcard jobCard = ViewBag.JobCardDet == null ? new tbl_jobcard() : ViewBag.JobCardDet as tbl_jobcard;
+}
+@if (Model.ToList().Count > 0)
+{
+    <h2 class="clsmark">@ViewBag.ErrorMessage</h2>
+    <div class="col-md-12">
+        <table class="table table-striped table-condensed dataTable" style="width: 70%;">
+            <thead>
+                <tr>
+                    <th>
+                        SNo.
+                    </th>
+                    <th>
+                        Particular
+                    </th>
+                    <th>
+                        Qty
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                   QtyTot = 0; Amt = 0; sno = 0;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @{
+                    InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                    sno++;
+                        }
+                        <td>
+                            @sno
+                        </td>
+                        <td>
+                            @_itemMaster.ItemText
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Qty)
+                            @{
+                       QtyTot += (double)item.Qty;
+                       Amt += (decimal)item.Amount;
+                            }
+                        </td>
+                        <td>
+                            @String.Format("{0:N}", item.Amount)
+                        </td>
+                        <td>
+                            @if (ViewData["IsEdit"].ToString() == "1")
+                            {
+                                <input type="hidden" value="@item.JobcardId" name="hdnIndentId" id="hdnIndentId" />
+                                                       if (ViewData["Status"] != null)
+                                                       {
+                                <input type="button"  onclick="DeleteJobCardDetails(0,'@item.Id');" value="Delete " /> 
+                                                       }
+                                                       else
+                                                       {
+                                @* <input type="button" id="@item.Id" onclick="EditJobCardDetaislP('@item.Id')" value="Edit "   /> *@
+                                <input type="button"  onclick="DeleteJobCardDetails(1,'@item.Id');" value="Delete " /> 
+                                                       }
+                            }
+                            else
+                            {
+                                <input type="button"  onclick="DeleteJobCardDetails(0,'@item.Id');" value="Delete " /> 
+                            }
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="2">
+                    </td>
+                    <td>@QtyTot
+                    </td>
+                    <td>
+                        @String.Format("{0:N}", Amt)
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <h4>
+        No Job card Item has been added.
+        <br />
+    </h4>
+}
+<table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                    Service Charges
+                </td>
+                <td>@Html.TextBox("ServiceCharges", jobCard.ServiceCharges, new { @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 9, @class = "txtInput netTotal" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Total Amount
+                </td>
+                <td>@Html.TextBox("TotalAmount", Amt, new { @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 10, @class = "txtInput netTotal" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Discount Amount
+                </td>
+                <td>@Html.TextBox("DisCountAmt", jobCard.DisCountAmt, new { @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 11, @class = "txtInput netTotal" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    VAT Tax Amount
+                </td>
+                <td>@Html.TextBox("VatTax", jobCard.VatTax, new { @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 12, @class = "txtInput netTotal" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total
+                </td>
+                <td>@Html.TextBox("NetAmount", jobCard.NetAmount, new { @maxlength = 8, @onkeypress = "return numberValidatedot(event);", @tabindex = 13, @class = "txtInput netTotal", @style = "background-color:#ddd;cursor:no-drop;", @readonly = true })
+                </td>
+            </tr>
+        </table>
+<script type="text/javascript" language="javascript">
+    CalculateGrandTotal();
+    function EditJobCardDetaislP(id) {
+
+        $("#div_loading").fadeIn('slow');
+        $("#div_loading").show();
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 710,
+                 height: 550
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+
+                 });
+                 EditJobCardItemDetails(id);
+             }
+
+         });
+    }
+
+    function EditJobCardItemDetails(id) {
+        $.get('/Inventory/JobCard/EditJobCardDetails?Id=' + id, function (result) {
+            if (result != '') {
+                $('#AddJobCardItemDetails').html(result); $("#div_loading").fadeOut('slow');
+            }
+        });
+    }
+
+    function DeleteJobCardDetails(IsEdit, Id) {
+        if (confirm('Are you sure want to delete this Jobcard item?')) {
+            $('#loading').show();
+            var Actions = Id + "_" + IsEdit;
+            $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("DeleteStockDetails", "JobCard")?Id=' + Actions,
+                  dataType: "html",
+                  success: function (result) {
+                      if (IsEdit == 0) {
+                          $('#loading').hide();
+                          $('#JbcItmList').html(result);
+                          LoadJobCardItems(0);
+                      }
+                      else {
+                          window.location.href = '@Url.Action("Edit", "JobCard")?Id=' + $("#hdnIndentId").val();
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+        }
+    }
+    function CalculateGrandTotal() {
+        var serviceChrg = $('#ServiceCharges').val().length == 0 ? 0 : $('#ServiceCharges').val();
+        var TotalAmount = $('#TotalAmount').val().length == 0 ? 0 : $('#TotalAmount').val();
+        var DisCountAmt = $('#DisCountAmt').val().length == 0 ? 0 : $('#DisCountAmt').val();
+        var VatTax = $('#VatTax').val().length == 0 ? 0 : $('#VatTax').val();
+        var NetAmount = $('#NetAmount').val();
+        var TotalAmt = parseFloat(serviceChrg) + parseFloat(TotalAmount) + parseFloat(VatTax) - parseFloat(DisCountAmt);
+        $('#NetAmount').val(TotalAmt.toFixed(2));
+    }
+    $('.netTotal').bind('keyup keydown keypress change', function (evt) {
+        CalculateGrandTotal();
+    });
+</script>

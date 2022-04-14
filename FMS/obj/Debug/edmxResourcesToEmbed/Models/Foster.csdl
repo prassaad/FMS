@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FosterModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="FosterEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="aspnet_Roles" EntityType="FosterModel.aspnet_Roles" />
+    <EntitySet Name="aspnet_Users" EntityType="FosterModel.aspnet_Users" />
+    <EntitySet Name="bill_no_seq" EntityType="FosterModel.bill_no_seq" />
+    <EntitySet Name="customers" EntityType="FosterModel.customer" />
+    <EntitySet Name="locations" EntityType="FosterModel.location" />
+    <EntitySet Name="lots" EntityType="FosterModel.lot" />
+    <EntitySet Name="product_categories" EntityType="FosterModel.product_categories" />
+    <EntitySet Name="product_types" EntityType="FosterModel.product_types" />
+    <EntitySet Name="products" EntityType="FosterModel.product" />
+    <AssociationSet Name="FK_products_product_categories" Association="FosterModel.FK_products_product_categories">
+      <End Role="product_categories" EntitySet="product_categories" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_products_product_types" Association="FosterModel.FK_products_product_types">
+      <End Role="product_types" EntitySet="product_types" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <EntitySet Name="dc_no_seq" EntityType="FosterModel.dc_no_seq" />
+    <EntitySet Name="billing_types" EntityType="FosterModel.billing_types" />
+    <EntitySet Name="packing_types" EntityType="FosterModel.packing_types" />
+    <EntitySet Name="units" EntityType="FosterModel.unit" />
+    <EntitySet Name="stock_register" EntityType="FosterModel.stock_register" />
+    <AssociationSet Name="FK_stock_register_billing_types" Association="FosterModel.FK_stock_register_billing_types">
+      <End Role="billing_types" EntitySet="billing_types" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_customers" Association="FosterModel.FK_stock_register_customers">
+      <End Role="customer" EntitySet="customers" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_locations" Association="FosterModel.FK_stock_register_locations">
+      <End Role="location" EntitySet="locations" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <EntitySet Name="stock_register_det" EntityType="FosterModel.stock_register_det" />
+    <AssociationSet Name="FK_stock_register_det_packing_types" Association="FosterModel.FK_stock_register_det_packing_types">
+      <End Role="packing_types" EntitySet="packing_types" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_det_stock_register1" Association="FosterModel.FK_stock_register_det_stock_register1">
+      <End Role="stock_register" EntitySet="stock_register" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_det_units" Association="FosterModel.FK_stock_register_det_units">
+      <End Role="unit" EntitySet="units" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <EntitySet Name="user_cust" EntityType="FosterModel.user_cust" />
+    <AssociationSet Name="FK_user_cust_aspnet_Users" Association="FosterModel.FK_user_cust_aspnet_Users">
+      <End Role="aspnet_Users" EntitySet="aspnet_Users" />
+      <End Role="user_cust" EntitySet="user_cust" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_cust_customers" Association="FosterModel.FK_user_cust_customers">
+      <End Role="customer" EntitySet="customers" />
+      <End Role="user_cust" EntitySet="user_cust" />
+    </AssociationSet>
+    <EntitySet Name="grn_no_seq" EntityType="FosterModel.grn_no_seq" />
+    <EntitySet Name="dcs" EntityType="FosterModel.dc" />
+    <EntitySet Name="dc_det" EntityType="FosterModel.dc_det" />
+    <AssociationSet Name="FK_dc_det_customers" Association="FosterModel.FK_dc_det_customers">
+      <End Role="customer" EntitySet="customers" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dc_det_dcs" Association="FosterModel.FK_dc_det_dcs">
+      <End Role="dc" EntitySet="dcs" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dc_det_products" Association="FosterModel.FK_dc_det_products">
+      <End Role="product" EntitySet="products" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="aspnet_Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="ApplicationId" Type="Guid" Nullable="false" />
+    <Property Name="RoleId" Type="Guid" Nullable="false" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="LoweredRoleName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="Description" Type="String" MaxLength="256" Unicode="true" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="aspnet_Users">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="ApplicationId" Type="Guid" Nullable="false" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="LoweredUserName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="MobileAlias" Type="String" MaxLength="16" Unicode="true" FixedLength="false" />
+    <Property Name="IsAnonymous" Type="Boolean" Nullable="false" />
+    <Property Name="LastActivityDate" Type="DateTime" Nullable="false" />
+    <NavigationProperty Name="user_cust" Relationship="FosterModel.FK_user_cust_aspnet_Users" FromRole="aspnet_Users" ToRole="user_cust" />
+  </EntityType>
+  <EntityType Name="bill_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="prefix" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="bno" Type="Int32" />
+  </EntityType>
+  <EntityType Name="customer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="cust_text" Type="String" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="cust_desc" Type="String" MaxLength="512" Unicode="true" FixedLength="false" />
+    <Property Name="cust_add1" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="cust_add2" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="city" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="cust_phone" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+    <Property Name="cust_mobile" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+    <Property Name="active" Type="Boolean" />
+    <NavigationProperty Name="stock_register" Relationship="FosterModel.FK_stock_register_customers" FromRole="customer" ToRole="stock_register" />
+    <NavigationProperty Name="user_cust" Relationship="FosterModel.FK_user_cust_customers" FromRole="customer" ToRole="user_cust" />
+    <NavigationProperty Name="dc_det" Relationship="FosterModel.FK_dc_det_customers" FromRole="customer" ToRole="dc_det" />
+  </EntityType>
+  <EntityType Name="location">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="location_text" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="active" Type="Boolean" />
+    <NavigationProperty Name="stock_register" Relationship="FosterModel.FK_stock_register_locations" FromRole="location" ToRole="stock_register" />
+  </EntityType>
+  <EntityType Name="lot">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="lot_text" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="active" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="product_categories">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="prod_cat_text" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="bit" Type="Boolean" />
+    <NavigationProperty Name="products" Relationship="FosterModel.FK_products_product_categories" FromRole="product_categories" ToRole="products" />
+  </EntityType>
+  <EntityType Name="product_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="prod_ty_text" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="active" Type="Boolean" />
+    <NavigationProperty Name="products" Relationship="FosterModel.FK_products_product_types" FromRole="product_types" ToRole="products" />
+  </EntityType>
+  <EntityType Name="product">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="prod_text" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="prod_ty_id" Type="Int32" />
+    <Property Name="prod_cat_id" Type="Int32" />
+    <Property Name="acvtive" Type="Boolean" />
+    <NavigationProperty Name="product_categories" Relationship="FosterModel.FK_products_product_categories" FromRole="products" ToRole="product_categories" />
+    <NavigationProperty Name="product_types" Relationship="FosterModel.FK_products_product_types" FromRole="products" ToRole="product_types" />
+    <NavigationProperty Name="dc_det" Relationship="FosterModel.FK_dc_det_products" FromRole="product" ToRole="dc_det" />
+  </EntityType>
+  <Association Name="FK_products_product_categories">
+    <End Role="product_categories" Type="FosterModel.product_categories" Multiplicity="0..1" />
+    <End Role="products" Type="FosterModel.product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_categories">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="prod_cat_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_products_product_types">
+    <End Role="product_types" Type="FosterModel.product_types" Multiplicity="0..1" />
+    <End Role="products" Type="FosterModel.product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="prod_ty_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="dc_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="prefix" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Type="Int32" Name="dcno" />
+  </EntityType>
+  <EntityType Name="billing_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="billing_type" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="active" />
+    <NavigationProperty Name="stock_register" Relationship="FosterModel.FK_stock_register_billing_types" FromRole="billing_types" ToRole="stock_register" />
+  </EntityType>
+  <EntityType Name="packing_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="packing_type" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="packing_type_short_text" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="active" />
+    <NavigationProperty Name="stock_register_det" Relationship="FosterModel.FK_stock_register_det_packing_types" FromRole="packing_types" ToRole="stock_register_det" />
+  </EntityType>
+  <EntityType Name="unit">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="units_text" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="units_short_text" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="active" />
+    <NavigationProperty Name="stock_register_det" Relationship="FosterModel.FK_stock_register_det_units" FromRole="unit" ToRole="stock_register_det" />
+  </EntityType>
+  <EntityType Name="stock_register">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="billing_type_id" />
+    <Property Type="DateTime" Name="dt" />
+    <Property Type="DateTime" Name="dt_recived" />
+    <Property Type="String" Name="lot_no" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="marking" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="Double" Name="hamali_charges" />
+    <Property Type="Int32" Name="location_id" />
+    <Property Type="Int32" Name="cust_id" />
+    <Property Type="String" Name="vech_no" MaxLength="15" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="grn_no" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="incharge" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="incharge_contact" MaxLength="12" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="remarks" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="active" />
+    <NavigationProperty Name="billing_types" Relationship="FosterModel.FK_stock_register_billing_types" FromRole="stock_register" ToRole="billing_types" />
+    <NavigationProperty Name="customer" Relationship="FosterModel.FK_stock_register_customers" FromRole="stock_register" ToRole="customer" />
+    <NavigationProperty Name="location" Relationship="FosterModel.FK_stock_register_locations" FromRole="stock_register" ToRole="location" />
+    <NavigationProperty Name="stock_register_det" Relationship="FosterModel.FK_stock_register_det_stock_register1" FromRole="stock_register" ToRole="stock_register_det" />
+  </EntityType>
+  <Association Name="FK_stock_register_billing_types">
+    <End Type="FosterModel.billing_types" Role="billing_types" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register" Role="stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="billing_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="billing_type_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_customers">
+    <End Type="FosterModel.customer" Role="customer" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register" Role="stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="cust_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_locations">
+    <End Type="FosterModel.location" Role="location" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register" Role="stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="location">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="location_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="stock_register_det">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="lot_no" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Type="Int64" Name="stock_reg_id" />
+    <Property Type="Int32" Name="slno" />
+    <Property Type="Int32" Name="prod_id" />
+    <Property Type="String" Name="prod_title" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mfg_dt" />
+    <Property Type="DateTime" Name="exp_dt" />
+    <Property Type="Int32" Name="units_id" />
+    <Property Type="Int32" Name="packing_type_id" />
+    <Property Type="Double" Name="weight" />
+    <Property Type="Double" Name="rec_qty" />
+    <Property Type="Double" Name="rate" />
+    <Property Type="Double" Name="total_weight" />
+    <Property Type="Double" Name="issued_slod" />
+    <Property Type="Double" Name="qoh" />
+    <Property Type="String" Name="description" MaxLength="512" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="packing_types" Relationship="FosterModel.FK_stock_register_det_packing_types" FromRole="stock_register_det" ToRole="packing_types" />
+    <NavigationProperty Name="stock_register" Relationship="FosterModel.FK_stock_register_det_stock_register1" FromRole="stock_register_det" ToRole="stock_register" />
+    <NavigationProperty Name="unit" Relationship="FosterModel.FK_stock_register_det_units" FromRole="stock_register_det" ToRole="unit" />
+  </EntityType>
+  <Association Name="FK_stock_register_det_packing_types">
+    <End Type="FosterModel.packing_types" Role="packing_types" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register_det" Role="stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="packing_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="packing_type_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_det_stock_register1">
+    <End Type="FosterModel.stock_register" Role="stock_register" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register_det" Role="stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="stock_register">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="stock_reg_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_det_units">
+    <End Type="FosterModel.unit" Role="unit" Multiplicity="0..1" />
+    <End Type="FosterModel.stock_register_det" Role="stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="unit">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="units_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="user_cust">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="cid" />
+    <Property Type="Guid" Name="UserId" />
+    <NavigationProperty Name="aspnet_Users" Relationship="FosterModel.FK_user_cust_aspnet_Users" FromRole="user_cust" ToRole="aspnet_Users" />
+    <NavigationProperty Name="customer" Relationship="FosterModel.FK_user_cust_customers" FromRole="user_cust" ToRole="customer" />
+  </EntityType>
+  <Association Name="FK_user_cust_aspnet_Users">
+    <End Type="FosterModel.aspnet_Users" Role="aspnet_Users" Multiplicity="0..1" />
+    <End Type="FosterModel.user_cust" Role="user_cust" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="aspnet_Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="user_cust">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_cust_customers">
+    <End Type="FosterModel.customer" Role="customer" Multiplicity="0..1" />
+    <End Type="FosterModel.user_cust" Role="user_cust" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="user_cust">
+        <PropertyRef Name="cid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="grn_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="prefix" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="grnno" />
+  </EntityType>
+  <EntityType Name="dc">
+    <Key>
+      <PropertyRef Name="dc_no" />
+    </Key>
+    <Property Type="String" Name="dc_no" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="dc_dt" />
+    <Property Type="Double" Name="qty_issued" />
+    <Property Type="String" Name="vech_no" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="driver_name" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="other_details" MaxLength="512" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="active" />
+    <NavigationProperty Name="dc_det" Relationship="FosterModel.FK_dc_det_dcs" FromRole="dc" ToRole="dc_det" />
+  </EntityType>
+  <EntityType Name="dc_det">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="slno" />
+    <Property Type="String" Name="dc_no" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="cust_id" />
+    <Property Type="String" Name="lot_no" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="issued_to" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="prod_id" />
+    <Property Type="String" Name="prod_title" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="dt_received" />
+    <Property Type="Double" Name="qty" />
+    <Property Type="Double" Name="total" />
+    <NavigationProperty Name="customer" Relationship="FosterModel.FK_dc_det_customers" FromRole="dc_det" ToRole="customer" />
+    <NavigationProperty Name="dc" Relationship="FosterModel.FK_dc_det_dcs" FromRole="dc_det" ToRole="dc" />
+    <NavigationProperty Name="product" Relationship="FosterModel.FK_dc_det_products" FromRole="dc_det" ToRole="product" />
+  </EntityType>
+  <Association Name="FK_dc_det_customers">
+    <End Type="FosterModel.customer" Role="customer" Multiplicity="0..1" />
+    <End Type="FosterModel.dc_det" Role="dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="cust_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dc_det_dcs">
+    <End Type="FosterModel.dc" Role="dc" Multiplicity="0..1" />
+    <End Type="FosterModel.dc_det" Role="dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="dc">
+        <PropertyRef Name="dc_no" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="dc_no" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dc_det_products">
+    <End Type="FosterModel.product" Role="product" Multiplicity="0..1" />
+    <End Type="FosterModel.dc_det" Role="dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="prod_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

@@ -1,0 +1,313 @@
+﻿@model FMS.Models.tbl_bookings
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    long CabDetId = Convert.ToInt64(ViewBag.CabDetId);
+    long logId = Convert.ToInt64(ViewBag.logId);
+}
+
+<h2>Edit Booking for [ @Model.tbl_clients.CompanyName ] with reference number @Model.BookRefNo  , Edit is upto current status <span class="label-success"> @(Model.Status) </span> </h2>
+
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+<style type="text/css">
+    .txtAutoComplete
+    {
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+   .clsemail
+   {
+       text-transform: none !important;
+   }
+   .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+   }
+ .btnnewlog:focus {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+    }
+</style>
+<div class="bread_title" style="width:100%">
+    <div class="bread_navigation" style="width:25%;">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Bookings", "Index")</li>
+        </ul>
+    </div>
+    
+    <div style="float:right;width:55%;margin-top:-5px;">
+    <ul id="tabs" class="wizard-steps">
+            <li id="tab-hd-1" class="step current-tab active-step">@* if completed "completed-step"*@
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>1</span>Draft </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-2" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>2</span>Acknowlegement</a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-3" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>3</span>Confirm Booking </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-4" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>4</span>LogSheet </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-5" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>5</span>Audit LogSheet </a>
+                <div class="a-after">
+                </div>
+            </li>
+        </ul>
+    </div>
+    <input type="hidden" id="hdnStatus" value="@Model.Status" />
+    <div id="divBookingForm" style="width: 100%;float:left;">
+    </div>
+</div>
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        SetStatus($("#hdnStatus").val());
+        // Tab Click event 
+        $('#tabs li').click(function () {
+            var val = parseInt($(this).find('a').find('span').text());
+            var ProcStat;
+
+            // Verifying current status
+            if (VerifyStatusForTabNavigation(GetStatusNumberByStatus($("#hdnStatus").val()), val)) {
+
+                if (!$(this).hasClass("active-step")) {
+                    var tabNum = $(this).index();
+                    var nthChild = tabNum + 1;
+                    tabMoves(nthChild);
+                }
+                // Clear Div tag data
+                $('#divBookingForm').empty();
+            }
+            else
+                return false;
+
+            // Switch Case
+            switch (val) {
+                case 1:
+                    ProcStat = 'Edit';
+                    GetEditBookingForm('@Model.Id');
+                    break;
+                case 2:
+                    ProcStat = 'Acknowledgement';
+                    GetEditBookingForm('@Model.Id');
+                    break;
+                case 3:
+                    ProcStat = 'ConfirmBooking';
+                    GetEditCabDetailsForm('@Model.Id', '@CabDetId');
+                    break;
+                case 4:
+                    ProcStat = 'LogSheet';
+                    GetEditLogDetailsForm('@Model.Id', '@logId');
+                    break;
+                case 5:
+                    ProcStat = 'BookingDone';
+                    GetEditAuditLogDetailsForm('@Model.Id', '@logId');
+                    break;
+            }
+        });
+
+        function tabMoves(nthChild) {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-" + nthChild).addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + nthChild + ")").addClass("current-tab");
+        }
+
+
+        function VerifyStatusForTabNavigation(ProcStat, CurrentStat) {
+            if (CurrentStat > ProcStat) {
+                return false;
+            }
+            return true;
+        }
+
+        function GetStatusNumberByStatus(ProcStat) {
+            if (ProcStat == 'Edit') {
+                return 1;
+            }
+            else if (ProcStat == 'Acknowledgement') {
+                return 2;
+            }
+            else if (ProcStat == 'ConfirmBooking') {
+                return 3;
+            }
+            else if (ProcStat == 'LogSheet') {
+                return 4;
+            }
+            else if (ProcStat == 'BookingDone') {
+                return 5;
+            }
+            else {
+                return 1;
+            }
+        }
+
+        function SetStatus(Status) {
+            //var Status = $("#hdnStatus").val();
+            if (Status.toLowerCase() == "edit" || Status.toLowerCase() == "waitingforacknowledgement") {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-1").addClass("active-step");
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+                GetEditBookingForm('@Model.Id');
+            }
+            else if (Status.toLowerCase() == "acknowledgement") {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-2").addClass("active-step");
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+                GetEditBookingForm('@Model.Id');
+            }
+            else if (Status.toLowerCase() == "confirmbooking") {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-3").addClass("active-step");
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+                GetEditCabDetailsForm('@Model.Id', '@CabDetId');
+            }
+            else if (Status.toLowerCase() == "logsheet") {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-4").addClass("active-step");
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+                GetEditLogDetailsForm('@Model.Id', '@logId');
+            }
+            else if (Status.toLowerCase() == "bookingdone") {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-5").addClass("active-step");
+                $("#tab-hd-5").find('a').html('<span>5</span> Booking Done');
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab"); 
+                GetEditAuditLogDetailsForm('@Model.Id', '@logId');
+            }
+            else {
+                $("ul#tabs li.active-step").removeClass("active-step");
+                $("#tab-hd-1").addClass("active-step");
+                $("ul#tab li.current-tab").removeClass("current-tab");
+                $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+                GetEditBookingForm('@Model.Id');
+            }
+        }
+    });  
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+
+    function GetEditBookingForm(Id) {
+        $.ajax(
+                {
+                    type: "GET",
+                    url: "/Bookings/EditPartial",
+                    beforeSend: function () {
+                        $('#loading').fadeIn('slow');
+                    },
+                    data: "Id=" + Id,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#loading').fadeOut('slow');
+                        $('#divBookingForm').html(result);
+                    },
+                    error: function (error) {
+                        //alert(error);
+                    }
+                }); 
+    }
+    function GetEditCabDetailsForm(BookingId, Id) {
+        $.ajax(
+                {
+                    type: "GET",
+                    url: "/Bookings/EditCabDetails",
+                    beforeSend: function () {
+                        $('#loading').fadeIn('slow');
+                    },
+                    data: "BookingId=" + BookingId + "&Id=" + Id,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#loading').fadeOut('slow');
+                        $('#divBookingForm').html(result);
+                    },
+                    error: function (error) {
+                        //alert(error);
+                    }
+                });
+            }
+    function GetEditLogDetailsForm(BookingId, Id) {
+        $.ajax(
+                {
+                    type: "GET",
+                    url: "/Bookings/EditLogSheetDetails",
+                    beforeSend: function () {
+                        $('#loading').fadeIn('slow');
+                    },
+                    data: "BookingId=" + BookingId + "&Id=" + Id,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#loading').fadeOut('slow');
+                        $('#divBookingForm').html(result);
+                    },
+                    error: function (error) {
+                        //alert(error);
+                    }
+                });
+            }
+    function GetEditAuditLogDetailsForm(BookingId, Id) {
+        $.ajax(
+                {
+                    type: "GET",
+                    url: "/Bookings/EditAuditLogSheet",
+                    beforeSend: function () {
+                        $('#loading').fadeIn('slow');
+                    },
+                    data: "BookingId=" + BookingId + "&Id=" + Id,
+                    dataType: "html",
+                    success: function (result) {
+                        $('#loading').fadeOut('slow');
+                        $('#divBookingForm').html(result);
+                    },
+                    error: function (error) {
+                        //alert(error);
+                    }
+                });
+    }
+</script>

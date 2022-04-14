@@ -1,0 +1,109 @@
+﻿
+@{
+    Session["KMClientList"] = null; Session["PrevKMClientList"] = null;
+}
+<style type="text/css">
+    .btnbulkupload
+    {
+    	background-color: #555;
+        border: 1px solid #FFF;
+        color: #FFF;
+        padding: 2px 7px;
+        margin-left:50%;
+    }
+   .ClsempSelection{display :none;}
+</style>
+@using (Html.BeginForm("AddClientKMRateChart", "Client", FormMethod.Post, new { id = "frmAddClientRate", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <a class="btnbulkupload" href="#" id="btnbulkupload" name="btnbulkupload" onclick="ClientRateBulkupload('@ViewBag.ClientID')">Bulk Upload</a><br />
+    <h2>KILO METER Chart Rate  <input type="button" class="cls_btnsave" id="btnSave" value="Save All" /> </h2>
+     
+    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;"></span>
+           
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Location
+        </th>
+       
+        <th>
+            Approved KM 
+        </th>
+        <th>
+            Client Rate
+        </th>
+      
+        <th></th>
+    </tr>
+    <tr>
+        <td>
+       
+             @Html.TextBox("Location", "", new { style = "width:130px;", @tabindex = 1 })
+            <input type="hidden" id="BillTypeID" name="BillTypeID" value="@ViewBag.BillTypeID" />
+            <input type="hidden" id="ClientID" name="ClientID" value="@ViewBag.ClientID" /> 
+        </td>
+        
+        <td>
+            @Html.TextBox("ApprovedKM", "", new { style = "width:40px;", @tabindex = 4 })
+        </td>
+        <td>
+            @Html.TextBox("ClientRate", "", new { style = "width:40px;", @tabindex = 5 })
+        </td>
+    
+        <td>
+            <img class="statusicon" src="../../Content/images/plus.png" id="btnAddRate" style="cursor: pointer;">
+        </td>
+        
+    </tr>
+</table>
+}
+<script type="text/javascript">
+    $("#btnSave").hide();
+    $("#btnAddRate").click(function () {
+        if (ValidateForm()) {
+            $('#loading').fadeIn('slow');
+            $.post("/Client/AddClientKMRateChart", $("#frmAddClientRate").serialize(), function (result) {
+                $("#divAddedClientRateList").html(result);
+                $("#Location").val('');
+                $("#ApprovedKM").val('');
+                $("#ClientRate").val('');
+                $("#btnSave").show();
+                $('#loading').fadeOut('slow');
+            });
+        }
+    });
+    function ValidateForm() {
+        if ($("#Location").val() == "") {
+            alert("Location is missing! Please select location.");
+            $("#Location").focus();
+            return false;
+        }
+        
+        if ($("#ApprovedKM").val() == "") {
+            alert("Approved KM is missing! Please enter Approved KM");
+            $("#ApprovedKM").focus();
+            return false;
+        }
+
+        if (isNumeric(parseInt($("#ApprovedKM").val())) == false) {
+            alert("Please enter valid digit for approved Kilo meter");
+            $("#ApprovedKM").val('');
+            $("#ApprovedKM").focus();
+            return false;
+        }
+         
+        return true;
+    }
+    $("#btnSave").click(function () {
+        $('#loading').fadeIn('slow');
+        $.post("/Client/SaveClientKMRateChart", $("#frmAddClientRate").serialize(), function (data) {
+            $("#divAddedClientRateList").html(data);
+            $("#btnSave").hide();
+            $('#loading').fadeOut('slow');
+        });
+    });
+    function ClientRateBulkupload(ClientID) {
+        window.location = "/Upload/KMUpload?ClientID=" + ClientID;
+    }
+</script>

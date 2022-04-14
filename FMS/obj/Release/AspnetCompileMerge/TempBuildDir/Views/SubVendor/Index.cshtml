@@ -1,0 +1,56 @@
+﻿@model IEnumerable<FMS.Models.tbl_vendor_details>
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Sub Vendors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>List of Sub Vendors</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                           @if ((bool)core.GetUserAccess(5, User.Identity.Name).Add)
+                           {  <li class="active">@Html.ActionLink("Create New", "Create")</li> }
+                        </ul>
+                    </div>
+            </div>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_subvendorDet">
+ 
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_subvendorDet').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/SubVendor/GetSubVendors",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                $('td:eq(10)', nRow).html('@if ((bool)core.GetUserAccess(5, User.Identity.Name).Edit){ <a style="cursor:pointer;"  href="/SubVendor/Edit/' + aData[0] + '" >Edit</a>  }' +
+                    '@if ((bool)core.GetUserAccess(5, User.Identity.Name).View){ <text>|</text> <a href="/SubVendor/Details/' + aData[0] + '">View</a>  }' +
+                    '@if ((bool)core.GetUserAccess(5, User.Identity.Name).Delete){<text>|</text> <a href="/SubVendor/Delete/' + aData[0] + '">Delete</a> }');
+                $('td:eq(10)', nRow).attr('style', 'width:120px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Name" },
+            { "sTitle": "Phone#" },
+            { "sTitle": "PAN Card#" },
+            { "sTitle": "Account Holder Name" },
+            { "sTitle": "A/c NO." },
+            { "sTitle": "Account Type" },
+            { "sTitle": "Bank Name" },
+            { "sTitle": "Branch" },
+            { "sTitle": "IFSCCode" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+   
+</script>

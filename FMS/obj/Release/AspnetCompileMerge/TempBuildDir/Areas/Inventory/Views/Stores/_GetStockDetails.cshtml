@@ -1,0 +1,53 @@
+﻿@model FMS.Models.InventoryModel.StockManagement
+@{
+   double _receQtyTotal = 0; double _QtyTotalonHand = 0;
+}
+<div class="clsmodalheader">View Stock Details</div>
+<p style="margin-top:20px;"><b>Product Details of Receipt No. </b><span style="color:Red;font-weight:bold;"> @(ViewBag.ReceiptNo) </span></p>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>
+                    Product
+                </th>
+                <th>
+                    Received
+                </th>
+                <th>
+                    Qty on Hand
+                </th>
+            </tr>
+            @{
+                _receQtyTotal = 0; _QtyTotalonHand = 0;
+            }
+            @foreach (var item in Model._Regdetiail)
+            {  
+                <tr>
+                    <td>
+                        @Html.Encode(item.ItemText)
+                    </td>
+                    <td style="text-align: right;">
+                        @Html.Encode(String.Format("{0:F}", item.ReceQty))
+                        @{  _receQtyTotal += (double)item.ReceQty;  }
+                    </td>
+                    <td style="text-align: right;">
+                        @Html.Encode(String.Format("{0:F}", item.ReceQty - (item.IssuedSlod == null ? 0 : item.IssuedSlod)))
+                        @{ _QtyTotalonHand += (double)(item.ReceQty - (item.IssuedSlod == null ? 0 : item.IssuedSlod));        }
+                    </td>
+                </tr>
+        }
+            <tr style="border-top: 1px solid #B8B8B8">
+                <td>
+                    Total(s)
+                </td>
+                <td style="text-align: right;">
+                    @String.Format("{0:F}", _receQtyTotal)
+                </td>
+                <td style="text-align: right;">
+                    @String.Format("{0:F}", _QtyTotalonHand)
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

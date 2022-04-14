@@ -1,0 +1,216 @@
+﻿@model FMS.Models.tbl_vendor_details
+@{
+    bool IsSubVendor = (bool)ViewBag.IsSubVendor;
+}
+@using (Html.BeginForm("AddNewVendorDetails", "Vendor", FormMethod.Post, new { id = "frmVendorDetails", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+   <div class="clsmodalheader">Add New Vendor</div>
+    <div style="overflow: auto;z-index:9999;height:500px;">
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="phoneNoValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                First Name :<span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.FirstName, new { @style = "width:220px;", @class = "isName" , @maxlength = 30 })
+                @Html.ValidationMessageFor(model => model.FirstName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Last Name : 
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.LastName, new { @style = "width:220px;", @class = "isName" , @maxlength = 30 })
+                @Html.ValidationMessageFor(model => model.LastName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Address :
+            </td>
+            <td>
+                @Html.TextAreaFor(a => a.Address, new { @cols = 23, @maxlegth = 250, @style = "resize:none;width:220px;" })
+                @Html.ValidationMessageFor(model => model.Address)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact Number : <span style="color:Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.ContactNumber , new { @style = "width:220px;" , @maxlength = 10 })
+                @Html.ValidationMessageFor(model => model.ContactNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PAN Card Number : 
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.PanCardNumber, new { @style = "width:220px;" , @maxlength = 15 })
+                @Html.ValidationMessageFor(model => model.PanCardNumber)
+            </td>
+        </tr>
+         <tr>
+                <td>
+                    Fixed Deposit : 
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.FixedDeposit, new { @maxlength = 10 , @style = "width:220px;" , @onkeypress = "return numberValidate(event);"  })
+                    @Html.ValidationMessageFor(model => model.FixedDeposit)
+                </td>
+            </tr>
+        <tr>
+            <td>
+                Photo :
+            </td>
+            <td>
+                  <input type="file" name="PhotoPath" id="PhotoPath"/> 
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+              <h2>Bank Details:</h2>  
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Holder Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountHolderName , new { @style = "width:220px;" , @maxlength = 50 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Bank Name :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.BankName , new { @style = "width:220px;" , @maxlength = 50 }) 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Branch :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.Branch , new { @style = "width:220px;" , @maxlength = 50 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Number :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountNumber , new { @style = "width:220px;" , @maxlength = 25 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Account Type :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.AccountType , new { @style = "width:220px;" , @maxlength = 20 }) 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                IFSC Code :
+            </td>
+            <td>
+                @Html.TextBoxFor(a => a.IFSCCode , new { @style = "width:220px;", @maxlength = 25 }) 
+                @Html.Hidden("SubVendor", IsSubVendor)
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" value="Add" id="btnAddVendor" />
+                &nbsp;&nbsp;
+                <input type="button" value="Cancel" id="btnCancelVendor" />
+            </td>
+        </tr>
+    </table>
+ </div>
+}
+
+<script type="text/javascript">
+    // Add New Vendor button click event
+
+    $("#btnAddVendor").click(function (evt) {
+        var file_data = $("#PhotoPath").prop("files")[0];
+        var form_data = new FormData(document.getElementById("frmVendorDetails"));
+        form_data.append("file", file_data);
+        $.ajax({
+            url: "/vendor/AddNewVendorDetails",
+            dataType: 'html',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data,
+            type: 'post',
+            success: function (result) {
+                $('#divSimpleModalDet').html(result);
+            }
+        });
+    });
+    // Cancel button click event and close modal(popup window)
+    $("#btnCancelVendor").click(function () {
+        $.modal.close();
+    });
+    $("#ContactNumber").change(function () {
+        var result = isValidMobileNumber(this.value)
+        $("#phoneNoValidateMsg").hide();
+        if (result == false) {
+            $("#phoneNoValidateMsg").show();
+            $("#phoneNoValidateMsg").html("Invalid Mobile Number..");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $("#PanCardNumber").change(function () {
+        var result = isAlphaNumeric(this.value)
+        $("#phoneNoValidateMsg").hide();
+        if (result == false) {
+            $("#phoneNoValidateMsg").show();
+            $("#phoneNoValidateMsg").html("Pan card number should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $(".isName").change(function () {
+        var result = IsPureCharsAndSpace(this.value)
+        $("#phoneNoValidateMsg").hide();
+        if (this.id == "FirstName") {
+            if (result == false) {
+                $("#phoneNoValidateMsg").show();
+                $("#phoneNoValidateMsg").html("First Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+        else {
+            if (result == false) {
+                $("#phoneNoValidateMsg").show();
+                $("#phoneNoValidateMsg").html("Last Name should be alphabets.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+        }
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8)
+        { return true; } else { return false; }
+    }
+</script>
+ 

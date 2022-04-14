@@ -1,0 +1,82 @@
+﻿@model FMS.Models.tbl_client_log_sheet_cols
+<form id="frmColsMapDet" enctype="multipart/form-data">
+<fieldset>
+<legend>To be Mapped Columns </legend>
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <div id="AddedFieldTextList" style="width: 49%;">
+                    <h3>
+                        Client Columns</h3>
+                    @Html.ListBox("FieldTextList", (List<SelectListItem>)ViewBag.FieldTextList, new { @style = "width:200px;height:300px;" })
+                </div>
+            </td>
+            <td>
+                <input type="button" class="cls_btnsave" value="Map" id="btnColsMap" />
+            </td>
+            <td>
+                <div id="AvailableColumnsDBList" style="width: 49%;">
+                    <h3>
+                        Available Columns</h3>
+                    @Html.ListBox("AvailColsList", (List<SelectListItem>)ViewBag.AvailColsList, new { @style = "width:200px;height:300px;" })
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="margin-top: 10px;">
+                <div id="divMappedColsStructure">
+                </div>
+                <input type="button" class="cls_btnsave" id="btnSaveAll" value="Save All" /> 
+                <input type="hidden" id="ClientID" name="ClientID" value="@ViewBag.ClientID" />
+            </td>
+        </tr>
+    </table>
+</fieldset>
+</form>
+<script type="text/javascript">
+    var availableColsList = $("#AvailColsList");
+    var clientCols = $("#FieldTextList");
+    $("#btnSaveAll").hide();
+    $("#btnColsMap").click(function () {
+        if (clientCols.val() == null) {
+            alert("Please add/Select the client column item.");
+            return;
+        }
+        if (availableColsList.val() == null) {
+            alert("Please select available columns in list to map");
+            return;
+        }
+        var sno = clientCols.find('option:selected').val();
+        var fieldText = clientCols.find('option:selected').text();
+        var fieldID = availableColsList.find('option:selected').val();
+        //var DBfieldVal = availableColsList.find('option:selected').text();
+        var clientID = $("#ClientID").val();
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+        {
+            type: "GET",
+            url: "../../Client/AddColsMappingStructure",
+            data: "slNo=" + sno + "&fieldText=" + fieldText + "&fieldID=" + fieldID + "&ClientID=" + clientID,
+            dataType: "html",
+            success: function (result) {
+                $('#divMappedColsStructure').html(result);
+                $('#FieldText').val('');
+                $('#FieldText').focus();
+                ReloadListBoxItems(clientID);
+                $("#btnSaveAll").show();
+                $("#div_loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+
+    });
+
+    $("#btnSaveAll").click(function () {
+        $.post("/client/SaveColsMapStructure", $("#frmColsMapDet").serialize(), function () {
+            $("#btnSaveAll").hide();
+            window.location.href = '/Client/Index';
+        });
+    });
+</script>

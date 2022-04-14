@@ -1,0 +1,3 @@
+[2014-12-18 14:47:50.8461] [127.0.0.1] [ERROR] [The object cannot be deleted because it was not found in the ObjectStateManager.] [superadmin] [   at System.Data.Objects.ObjectContext.DeleteObject(Object entity, EntitySet expectedEntitySet)
+   at System.Data.Objects.ObjectContext.DeleteObject(Object entity)
+   at FMS.Controllers.BookingsController.Delete(Int64 Id) in D:\ProjectRelatedfiles\JMJ\FMS\Controllers\BookingsController.cs:line 112]

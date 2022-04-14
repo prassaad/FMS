@@ -1,0 +1,391 @@
+﻿@model FMS.Models.InventoryModel.IndentManagement
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    StoresController objStore = new StoresController();
+    decimal TotAmount = 0;
+    int QtyTot = 0;
+    decimal Amt = 0;
+}
+<div class="row">
+    <table style="width:100%;">
+        <tr style="width:100%">
+            <td style="width:48%;float:left;">
+                <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <b style="font-size: 16px;"><i class="fa fa-info-circle"></i>&nbsp;Indent Info.</b>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Indent Ref.No# :
+                                </td>
+                                <td>
+                                   <span class="label-important"> @Html.DisplayFor(modelItem => Model._IndentReg.IndRefNo) </span> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Vehicle :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.tbl_vehicles.VehicleRegNum)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Department :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.tbl_departments.DisplayName)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; User name :
+                                </td>
+                                <td>
+                                    @{
+                                        string UserName1 = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IndentReg.IndUserId).UserName;
+                                    }
+                                    @UserName1
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Indent Date :
+                                </td>
+                                <td>
+                                    @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.DtOfInd)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Req. Date:
+                                </td>
+                                <td>
+                                    @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.RequiredDt)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Indent Type :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.IndentType)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </td>
+             <td style="width:48%;float:left;margin-left:10px;">
+                <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <b style="font-size: 16px;"><i class="fa fa-tags"></i>&nbsp;Indent For</b>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 57%;">
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Purchase For :
+                                </td>
+                                <td style="width: 43%;">
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.PurchasesFor)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Priority :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.Priority)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Delivery Method :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.Delivery)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Additional Info. :
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model._IndentReg.AddInfo)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </td>
+        </tr>
+    </table>
+    <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <b style="font-size: 16px;"><i class="fa fa-tasks"></i>&nbsp;Indent Status Details</b>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 57%;">
+                        &nbsp;&nbsp;&nbsp;&nbsp; Indent Status :
+                    </td>
+                    <td style="width: 43%;">
+                        @if (Model._IndentReg.Status.ToUpper() == "APPROVED")
+                        {
+                            <span class="label-success">Approved</span>
+                                    }
+                        else if (Model._IndentReg.Status.ToUpper() == "REJECTED")
+                        {
+                            <span class="label-important">Rejected</span>
+                                    }
+                        else if (Model._IndentReg.Status.ToUpper() == "EDIT")
+                        {
+                            <span class="label-pending">Edit</span>
+                                    }
+                        else if (Model._IndentReg.Status.ToUpper() == "CONFIRM")
+                        {
+                            <span class="label-warning">Confirm</span>
+                                    }
+                        else if (Model._IndentReg.Status.ToUpper() == "INPROGRESS")
+                        {
+                            <span class="label-warning">In Progress</span>
+                                    }
+                        else if (Model._IndentReg.Status.ToUpper() == "RECEIVED")
+                        {
+                            <span class="label-success">Received</span>
+                                   }
+                        else if (Model._IndentReg.Status.ToUpper() == "WAITINGFORAPPROVAL")
+                        {
+                            <span class="label-warning">Waiting for Approval</span>
+                                   }
+                    </td>
+                </tr>
+                @if (Model._IndentReg.Status.ToUpper().Trim() == "APPROVED")
+                {
+                    <tr id="tr_approved">
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Approved Date :
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.IndAppDt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Approved By :
+                        </td>
+                        <td>
+                            @{
+                       string ApprovUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IndentReg.IndAppUserId).UserName;
+                            }
+                            @ApprovUserName
+                        </td>
+                    </tr>
+                            }
+                @if (Model._IndentReg.Status.ToUpper().Trim() == "CANCELED")
+                {
+                    <tr id="tr_cancel">
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Cancelled Date :
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.CancelDt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Cancelled By :
+                        </td>
+                        <td>
+                            @{
+                       string CancelUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IndentReg.CancelUserId).UserName;
+                            }
+                            @CancelUserName
+                        </td>
+                    </tr>
+                            }
+                @if (Model._IndentReg.Status.ToUpper().Trim() == "REJECTED")
+                {
+                    <tr id="tr_rejected">
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Rejected Date :
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.IndRejDt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Rejected By :
+                        </td>
+                        <td>
+                            @{
+                       string RejectedUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IndentReg.IndRejUserId).UserName;
+                            }
+                            @RejectedUserName
+                        </td>
+                    </tr>
+                            }
+                @if (Model._IndentReg.Status.ToUpper().Trim() == "INPROGRESS")
+                {
+                    if (Model._IndentReg.IndAppUserId != null)
+                    {
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Approved Date :
+                        </td>
+                        <td>
+                            @String.Format("{0:dd/MM/yyyy}", Model._IndentReg.IndAppDt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Approved By :
+                        </td>
+                        <td>
+                            @{
+                       string ApprovUserName = db.aspnet_Users.SingleOrDefault(a => a.UserId == Model._IndentReg.IndAppUserId).UserName;
+                            }
+                            @ApprovUserName
+                        </td>
+                    </tr> 
+                                }
+                            }
+            </tbody>
+        </table>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                <b><i class="clip-list-6"></i>&nbsp;Indent item(s) details</b></div>
+            <div class="panel-body">
+                @{
+                    TotAmount = 0;
+                    QtyTot = 0;
+                    Amt = 0;
+                                
+                }
+                @if (Model._IndentDetList.ToList().Count > 0)
+                {
+           
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Item Name
+                            </th>
+                            <th>
+                                Reorder Level
+                            </th>
+                            <th>
+                                Lead Time
+                            </th>
+                            <th>
+                                Procure
+                            </th>
+                            <th>
+                                Purpose For
+                            </th>
+                            <th>
+                                Specification
+                            </th>
+                            <th>
+                                Qty Req.
+                            </th>
+                            <th>
+                                Avail Qty
+                            </th>
+                            <th>
+                                Amount
+                            </th>
+                            <th>
+                                Total
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model._IndentDetList)
+                        {
+                            <tr>
+                                @{
+                                        InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                                        tbl_inv_indents IndentReg = db.tbl_inv_indents.Where(a => a.Id == item.IndentId).FirstOrDefault();
+                                        long VehicleId = Convert.ToInt64(IndentReg.VehicleId);
+                                        decimal AvailQty = (decimal)objStore.GetAvailQty("",(int)item.ItemId, VehicleId);
+                                }
+                                <td>
+                                    @_itemMaster.ItemText
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ReorderLevel)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LeadTime)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Procure)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PurposeFor)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Specification)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.QtyReq)
+                                    @{
+                                        QtyTot += (int)item.QtyReq;
+                                    }
+                                </td>
+                                <td>@Html.Encode(AvailQty)
+                                </td>
+                                <td>
+                                    @String.Format("{0:N}", _itemMaster.Amount)
+                                </td>
+                                <td>
+                                    @{
+                                        decimal TotAmt = ((int)item.QtyReq * (decimal)_itemMaster.Amount);
+                                    }
+                                    @String.Format("{0:N}", TotAmt)
+                                    @{
+                                        Amt += TotAmt;
+                                    }
+                                </td>
+                            </tr>
+                                    }
+                        <tr>
+                            <td colspan="6">
+                            </td>
+                            <td>@QtyTot
+                            </td>
+                            <td colspan="2">
+                            </td>
+                            <td>@String.Format("{0:N}", Amt)
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                            }
+                else
+                {
+                    <h3>
+                        No Indent item(s) found to display.
+                    </h3>
+                            }
+            </div>
+        </div>
+</div>

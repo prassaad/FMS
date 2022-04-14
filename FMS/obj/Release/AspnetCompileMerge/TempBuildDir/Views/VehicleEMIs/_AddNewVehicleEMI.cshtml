@@ -1,0 +1,448 @@
+﻿@{
+    ViewBag.Title = "_AddNewVehicleEMI";
+    //Session["VehicleEMIList"] = null;
+}
+<style type="text/css">
+    .txtAutoComplete
+    {
+
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+ 
+    #btnAddReadingentry:focus
+     {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+    }
+</style>
+<div class="clsmodalheader">
+    Add New Vehicle EMI</div>
+@using (Html.BeginForm("SaveVehicleEMIEntry", "VehicleEMIs", FormMethod.Post, new { id = "frmVehicleEMIs", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div style="overflow: auto; z-index: 9999; height: 700px;" id="divNewEMI">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <span id="SpanValidateMsg" style="color: Red; font-size: 12px; font-weight: bold;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("VehicleId", "", new { @class = "txtAutoComplete", @tabindex = 1 ,@style = "width:150px;"})
+                    @Html.Hidden("vid", "")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Month Year : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="MonthYear" name="MonthYear" class="txtInput" tabindex="3" style="width: 150px;">
+                        <option style="color: Blue; font-size: 12px;" value="">-Search Vehicle Reg No.-</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td width="19%">
+                    EMI No : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("EMINo", "", new { @class = "txtInput", @tabindex = 2, @style = "width:80px;cursor:no-drop;background-color:#ddd;", @readonly = "readonly" })
+              </td>
+
+            </tr>
+            <tr>
+                <td>
+                    Amount <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Amount", "", new { @class = "txtInput", @tabindex = 4, @style = "width:150px;cursor:no-drop;background-color:#ddd;", @onkeypress = "return numberValidate(event);", @readonly = "readonly" })
+          <span id="divEMIAmt" style="display:none">Amount to be Paid <span id="spanRemainingAmt" style="color:Red"></span> From <span id="spanTotAmt" style="color:Red"></span></span>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fine Amount :
+                </td>
+                <td>
+                    @Html.TextBox("FineAmt", "", new { @class = "txtInput", @tabindex = 4, @style = "width:150px", @onkeypress = "return numberValidate(event);" })
+                </td>
+            </tr>
+            <tr>
+                <th >
+                    Pay Mode:<span style="color: Red;">*</span>
+                </th>
+                <td >
+                    @Html.RadioButton("Paymode", "Cash", true) &nbsp;&nbsp;Cash &nbsp;&nbsp;
+                    @Html.RadioButton("Paymode", "Cheque") &nbsp;&nbsp;Cheque
+                    @Html.RadioButton("Paymode", "ECS") &nbsp;&nbsp;ECS
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="divChequeDetails" style="display: none;">
+                        <table class="table-striped table-condensed dTableR dataTable">
+                            <tr>
+                                <th width="19%">
+                                    DD Cheque No.:<span style="color: Red;">*</span>
+                                </th>
+                                <td>
+                                    @Html.TextBox("DDChequeNo", "", new { @class = "txtInput", @tabindex = 5, @style = "width:150px", @onkeypress = "return numberValidate(event);" , @maxlength = 50 })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Cheque date:<span style="color: Red;">*</span>
+                                </th>
+                                <td>
+                                    @Html.TextBox("ChequeDt", "", new { @class = "txtInput", @tabindex = 6, @style = "width:150px", @maxlength = 15 })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Bank Name:<span style="color: Red;">*</span>
+                                </th>
+                                <td>
+                                    @Html.TextBox("Bankname", "", new { @class = "txtInput", @tabindex = 7, @style = "width:150px", @maxlength = 50 })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="divTransfer" style="display:none;">
+                        <table class="table-striped table-condensed dTableR dataTable">
+                            <tr>
+                                <td>    
+                                    Reference#:<span style="color: Red;">*</span>
+                                </td>
+                                <td>
+                                    @Html.TextBox("RefNumber", "", new { @class = "txtInput", @tabindex = 5, @style = "width:150px", @maxlength = 50 })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    
+                     <input type="button" style="margin-top: 5px;" id="btnAddVehicleEMIentry" class="btnnewlog"
+                         value="Add EMI" tabindex="8" onfocus="focus();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#div_loading').hide();
+    $(document).ready(function () {
+        $("#VehicleId").autocomplete("/VehicleEMIs/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+        function OnselectItem(li) {
+            $("#vid").val(0);
+            if (li == null) $('#vid').val(0);
+            if (!!li.extra) {
+                var sValue = li.extra[0];
+                $('input[tabindex="2"]').focus();
+
+            }
+            else var sValue = li.selectValue;
+            $('#vid').val(sValue);
+            GetVehicleEMIDetails(sValue);
+            $('input[tabindex="2"]').focus();
+            $("#SpanValidateMsg").html('');
+
+        }
+        $('#ChequeDt').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+            }
+        });
+        //replace selectMonth with your date pickers id here at all places 
+        $('#MonthYear').datepicker({
+            changeMonth: true,      //provide option to select Month
+            changeYear: true,       //provide option to select year
+            showButtonPanel: true,  // button panel having today and done button
+            dateFormat: 'MM yy',    //set date format
+            yearRange: '1970:+0',
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, month, 1)); //here set the date when closing.
+                $(this).blur(); //remove focus input box
+
+            }
+        });
+        //on foucus event on this code is to hide the calender part
+        $("#MonthYear").focus(function () {
+            $(".ui-datepicker-calendar").hide();
+            $("#ui-datepicker-div").position({
+                my: "center top",
+                at: "center bottom",
+                of: $(this)
+            });
+        });
+
+        //If Cheque radio button checked show Cheque fields
+        var Paymode = $('input:radio[name=Paymode]:checked').val();
+        if (Paymode == "Cheque") {
+            $("#divChequeDetails").show(); $("#divTransfer").hide();
+        }
+        else if (Paymode == "ECS") {
+            $("#divTransfer").show(); $("#divChequeDetails").hide();
+        }
+        else {
+            $("#divChequeDetails").hide(); $("#divTransfer").hide();
+        }
+        // Paymode Radio button Click Event
+        $("input:radio[name=Paymode]").click(function () {
+            var val = $(this).val();
+            if (val == "Cheque") {
+                $("#divChequeDetails").show(); $("#divTransfer").hide(); $('#RefNumber').val('');
+            }
+            else if (val == "ECS") {
+                $("#divTransfer").show(); $("#divChequeDetails").hide(); ClearChequefields();
+            }
+            else {
+                $("#divChequeDetails").hide(); $("#divTransfer").hide(); ClearChequefields(); $('#RefNumber').val('');
+            }
+        });
+        //Cheque  fields clear function
+        function ClearChequefields() {
+            $("#DDChequeNo").empty();
+            $("#ChequeDt").empty();
+            $("#BankName").empty();
+
+        }
+    });
+    
+    function GetVehicleEMIDetails(vehicleid) {
+        if (vehicleid == null || vehicleid == "")
+            vehicleid = 0;
+        $.ajax({
+            type: "GET",
+            url: "/VehicleEMIs/GetVehicleEMIDetails",
+            dataType: "json",
+            data: "VehicleId=" + vehicleid,
+            success: function (data) {
+                if (data.success == true) {
+                    $("#MonthYear").empty();
+                    $("#EMINo").val(data.emiNo);
+                    $("#Amount").val(data.MonthlyEMIAmt);
+                    $("#divEMINos").show();
+                    $("#spanCurntEMI").html(data.emiNo);
+                    $("#spanTotEMI").html(data.TotEMIs);
+                    $("#divEMIAmt").show();
+                    $("#spanRemainingAmt").html(ConvertToIndianCurrencyFormat(parseFloat(data.RemainEMIAmt) - parseFloat(data.MonthlyEMIAmt)));
+                    $("#spanTotAmt").html(ConvertToIndianCurrencyFormat(data.TotEMIAmt));
+                    var options = "";
+                    //New Date
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+                    var yyyy = today.getFullYear();
+                    //End Date
+
+                    for (var i = 0; i < data.EMIMonthList.length; i++) {
+                        if (data.EMIMonthList[i].Selected == true)
+                            options += "<option disabled='disabled' style='font-size:15px;'  class='system positive' value='" + data.EMIMonthList[i].Value + "'>" + data.EMIMonthList[i].Text + "(Paid)" + "</option>";
+                        else {
+                            var EMY = data.EMIMonthList[i].Value.split("-");
+                            var EM = EMY[1];
+                            var EY = EMY[2];
+                            if (parseInt(EY) >= parseInt(yyyy)) {
+                                if (parseInt(EM) > parseInt(mm) || parseInt(EY) > parseInt(yyyy)) {
+                                    options += "<option disabled='disabled' style='color:#0A99D1; font-size:18px;' value='" + data.EMIMonthList[i].Value + "'>" + data.EMIMonthList[i].Text + "</option>";
+                                }
+                                else {
+                                    options += "<option class='system negative' style='font-size:15px;' value='" + data.EMIMonthList[i].Value + "'>" + data.EMIMonthList[i].Text + "(Not paid)" + "</option>"; 
+                                }
+                            }
+                            else {
+                                options += "<option class='system negative' style='font-size:15px;' value='" + data.EMIMonthList[i].Value + "'>" + data.EMIMonthList[i].Text + "(Not paid)" + "</option>";
+                            }
+                        }
+                    }
+                    $("#MonthYear").append(options);
+                }
+                else {
+                    $("#divEMINos").hide();
+                    $("#divEMIAmt").hide();
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    var i = 0;
+    $("#btnAddVehicleEMIentry").click(function () {
+        if (!ValidateMsg()) {
+            $('#divNewEMI').animate({ scrollTop: 0 }, 'slow');
+            return;
+        }
+        var VehicleID = $("#vId").val();
+        $("#SpanValidateMsg").hide();
+        var frmColl = $("#frmVehicleEMIs").serialize();
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "POST",
+                  url: "../VehicleEMIs/AddVehicleEMIEntry",
+                  dataType: "html",
+                  data: "frm=" + frmColl + "&VID=" + VehicleID,
+                  success: function (result, textStatus, jqXHR) {
+                      $('#divVehicleEMI').html('');
+                      $('#divVehicleEMI').html(result);
+                     // $("#btnSaveAllLogentries").show();
+                      var status = $("#Status").val();
+                      if (i < 9) {
+                          var msg = 'Are you want to Add one more Vehicle EMI entry in the List?';
+                          if (confirm(msg)) {
+                              i = i + 1;
+                              ClearAll();
+                              $("#divlog_loading").hide();
+                              $("#divlog_loading").fadeOut('slow');
+ 
+                          }
+                          else {
+                              document.getElementById("frmVehicleEMIs").submit();
+                              i = 0;
+                              ClearAll();
+                              $("#divlog_loading").hide();
+                              $("#divlog_loading").fadeOut('slow');
+                          }
+                      }
+                      else {
+                          alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                          document.getElementById("frmVehicleEMIs").submit();
+                          i = 0;
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    });
+
+          // Refresh Fields
+          function ClearAll() {
+              $("#VehicleId").val('');
+              $("#EMINo").val('');
+              $("#Amount").val('');
+              $("#FineAmt").val('');
+              $("#DDChequeNo").html('');
+              $("#ChequeDt").html('');
+              $("#BankName").html('');
+              $("#divEMINos").show();
+              $("#divEMIAmt").show();
+
+          }
+  
+    // Validate Fields
+    function ValidateMsg() {
+        var MonthYear = $("#MonthYear").val();
+        var vehicleID = $("#VehicleId").val();
+        var readingValue = $("#ReadingValue").val();
+        if (vehicleID == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle register number');
+           // $("#LogDate").focus();
+            return false;
+        }
+        if (MonthYear == "" || MonthYear == null) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select Month Year.');
+            //$("#ReadingValue").focus();
+            return false;
+        }
+        if (EMINo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter EMI No.');
+            //$("#ReadingValue").focus();
+            return false;
+        }
+        var payMode = $('input[name=Paymode]:radio:checked').val();
+        if (payMode == 'Cheque') {
+            var chequeNo = $('#DDChequeNo').val();
+            var chequeDate = $("#ChequeDt").val();
+            var bankName = $("#Bankname").val();
+            if (chequeNo == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter cheque/DD number.');
+                $("#DDChequeNo").focus();
+                return false;
+            }
+            if (chequeDate == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please pick date from calendar or enter date');
+                $("#ChequeDt").focus();
+                return false;
+            }
+            if (bankName == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter bank name.');
+                $("#Bankname").focus();
+                return false;
+            }
+        }
+        if (payMode == 'ECS') {
+            var refNumber = $('#RefNumber').val();
+            if (refNumber == "") {
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html('Please enter reference number.');
+                $("#RefNumber").focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    function ConvertToIndianCurrencyFormat(x) {
+        x = x.toString();
+        var lastThree = x.substring(x.length - 3);
+        var otherNumbers = x.substring(0, x.length - 3);
+        if (otherNumbers != '')
+            lastThree = ',' + lastThree;
+        var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+        return res;
+    }
+</script>
+

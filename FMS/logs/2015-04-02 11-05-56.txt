@@ -1,0 +1,14 @@
+[2015-04-02 11:05:56.4828] [127.0.0.1] [ERROR] [Syntax error: Missing operand after 'AP24TV1173' operator.] [superadmin] [   at System.Data.ExpressionParser.Parse()
+   at System.Data.DataExpression..ctor(DataTable table, String expression, Type type)
+   at System.Data.Select..ctor(DataTable table, String filterExpression, String sort, DataViewRowState recordStates)
+   at System.Data.DataTable.Select(String filterExpression)
+   at FMS.Controllers.VendorInvoiceController.VerifyDocumentAlerts(String VehicleReg) in D:\ProjectRelatedfiles\JMJ\FMS\Controllers\VendorInvoiceController.cs:line 1026
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

@@ -1,0 +1,259 @@
+﻿@model FMS.Models.tbl_SuppliersMaster
+@{
+    ViewBag.Title = "Add Suppliers";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+   
+}
+<h2>Edit Suppliers</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Suppliers")">
+                Cancel</a></li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-8">
+@using (Html.BeginForm("Edit", "Suppliers", FormMethod.Post, new { @id = "supplierseditform" }))
+{
+        @Html.ValidationSummary(true)
+            <fieldset>
+        <legend>Supplier Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    <span id="errormsg" style="color: Red; font-style: italic; font-size: medium;"></span>
+                    <input type="hidden" value='@Model.SupplierId' name="SupplierId" id="SupplierId"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Supplier Name:
+                </td>
+                <td>@Html.TextBox("SupplierName", Model.SupplierName, new { @maxlength = 50, @class = "validate" })
+                    @Html.ValidationMessageFor(model => model.SupplierName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Is Company:
+                </td>
+                <td>@Html.RadioButton("IsCompany", "Yes")&nbsp;&nbsp;Yes @Html.RadioButton("IsCompany", "No")&nbsp;&nbsp;No
+                    @Html.ValidationMessageFor(model => model.IsCompany)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Address:
+                </td>
+                <td>@Html.TextArea("Address", Model.Address, new { @style = "resize:none;", @rows = "3", @cols = "30", @maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    City:
+                </td>
+                <td>@Html.TextBox("City", Model.City, new { @maxlength = 30, @class = "validate" })
+                    @Html.ValidationMessageFor(model => model.City)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    State:
+                </td>
+                <td>@Html.TextBox("State", Model.State, new { @maxlength = 30, @class = "validate" })
+                    @Html.ValidationMessageFor(model => model.State)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    PinCode:
+                </td>
+                <td>@Html.TextBox("PinCode", Model.PinCode, new { @maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.PinCode)<span id="errPinCode" style="color: Red"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    WebSite:
+                </td>
+                <td>@Html.TextBox("Website", Model.Website, new { @maxlength = 50 })
+                    @Html.ValidationMessageFor(model => model.PinCode)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone:
+                </td>
+                <td>@Html.TextBox("Phone", Model.Phone, new { @maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.Phone)<span id="errPhone" style="color: Red"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Mobile:
+                </td>
+                <td>@Html.TextBox("Mobile", Model.Mobile, new { @maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.Mobile)<span id="errMobile" style="color: Red"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email:
+                </td>
+                <td>@Html.TextBox("Email", Model.Email, new { @maxlength = 30 })<span id="errEmail"
+                    style="color: Red"></span>
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Title:
+                </td>
+                <td>@Html.TextBox("Title1", Model.Title1, new { @maxlength = 50 })&nbsp;<select id="ddltitle"
+                    name="ddltitle" style="width: 100px; height: 27px;"></select>
+                    @Html.ValidationMessageFor(model => model.Title1)
+                </td>
+            </tr>
+            <tr id="tr_Jobpos" style="display: none">
+                <td>
+                    Job Position:
+                </td>
+                <td>@Html.TextBox("JobPosition", Model.JobPosition, new { @maxlength = 50 })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Other Notes:
+                </td>
+                <td>@Html.TextArea("OtherNotes", Model.OtherNotes, new { @style = "resize:none;", @rows = "3", @cols = "30", @maxlength = 500 })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn btn-primary" value="Save" id="btnsave" />
+                    <input type="button" id="btnreset" class="btn btn-primary" value="Reset" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+</div>
+<script type="text/javascript">
+    var Iscompany = '@Model.IsCompany';
+    var title1 = '@Model.Title1';var result = "";
+    $('input[type=radio][value='+Iscompany+']').attr('checked', true);
+    LoadDropDownTitleType('@Model.IsCompany');
+    //Validations
+    $("input:radio[name=IsCompany]").click(function () {
+        var value = $(this).val();
+        LoadDropDownTitleType(value)
+    });
+
+    //Load DropDown  TitleEnd
+    function LoadDropDownTitleType(value) {
+       
+        $("#ddltitle").show();
+        $("#ddltitle").empty();
+        $('#ddltitle').html('<option value="0">--Select--</option>');
+        var options = "";
+        if (value == "Yes") {
+            $("#tr_Jobpos").hide();
+            options += "<option value='Ltd'>Ltd</option>";
+            options += "<option value='Pvt.Ltd'>Pvt.Ltd</option>";
+            options += "<option value='Corporation'>Corporation</option>";
+        }
+       else {
+          
+            $("#tr_Jobpos").show();
+            options += "<option value='Mr.'>Mr</option>";
+            options += "<option value='Mrs.'>Mrs</option>";
+            options += "<option value='Sir'>Sir</option>";
+        }
+        $("#ddltitle").append(options);
+
+    }
+    if (Iscompany == "Yes") {
+        result = title1.substring(title1.lastIndexOf(" "), title1.length);
+        $("#Title1").val(title1.substring(0, title1.lastIndexOf(" ")).trim());
+    }
+
+    else {
+        result = title1.substring(0, title1.indexOf(" "));
+        $("#Title1").val(title1.substring(title1.indexOf(" "), title1.length).trim());
+
+    }
+    $('#ddltitle option[value="' + result.trim() + '"]').prop('selected', true);
+    $("#PinCode").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errPinCode").html("Numerics Only").show().fadeOut("slow");
+            return false;
+        }
+    });
+    $("#Phone").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errPhone").html("Numerics Only").show().fadeOut("slow");
+            return false;
+        }
+    });
+    $("#Mobile").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errMobile").html("Numerics Only").show().fadeOut("slow");
+            return false;
+        }
+    });
+    $(".validate").change(function () {
+        var title = isName(this.value);
+        if (title == false) {
+            $("#errormsg").show();
+            $("#errormsg").text("Your string has special characters. \nThese are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+        else {
+            $("#errormsg").hide();
+        }
+    });
+    $("#Email").change(function () {
+        var Email = $("#Email").val();
+        if (!ValidateEmail(Email)) {
+            $("#errEmail").html('Invalid email address').show();
+            $("#Email").empty();
+        }
+        else {
+                   $("#errEmail").hide();
+        }
+    });
+
+    function ValidateEmail(email) {
+        var expr = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        return expr.test(email);
+    }
+    $("#btnreset").click(function () {
+        ClearAll();
+    });
+    function ClearAll() {
+        $("#SupplierName").val("");
+        $("#Address").val("");
+        $("#Email").val("");
+        $("#Phone").val("");
+        $("#Mobile").val("");
+        $("#Title1").val("");
+        $("#JobPosition").val("");
+        $("#Website").val("");
+        $("#OtherNotes").val("");
+        $("#PinCode").val("");
+        $("#State").val("");
+        $("#City").val("");
+        $('input[type=radio][name=IsCompany]').attr('checked', false);
+        $("#ddltitle").hide();
+    }
+</script>

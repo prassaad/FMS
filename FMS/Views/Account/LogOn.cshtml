@@ -1,0 +1,88 @@
+﻿@model FMS.Models.LogOnModel
+
+@{
+    ViewBag.Title = "Log On";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<style type="text/css">
+    ul
+    {
+    	padding-top:15px;
+    	padding-bottom:10px;
+    	 
+    }
+    ul li
+    {
+    	color:Red;
+    }
+    table tr td
+    {
+    	width:33.3%;
+    }
+    legend
+    {
+    	background :url('../../Content/images/key-icon.png') 7% center no-repeat;
+    	background-color: #0A99D1;
+        color: #FFF;
+        font-weight: bold;
+        padding: 15px 18px;
+        padding-right:12px;
+    }
+</style>
+<h2></h2>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<center>
+    @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
+    @using (Html.BeginForm()) {
+        <div style="padding-bottom:10px;">
+            <fieldset style="width: 45%;">
+                <legend>&nbsp; Log In </legend>
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td>
+                            User Name <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.UserName, new { @style="width:220px;" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @style="width:150px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Password <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.PasswordFor(m => m.Password, new { @style ="width:220px;" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @style = "width:150px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </td><td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="submit" value="Log In" />
+                        </td><td></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+}
+</center>
+ <script type="text/javascript">
+     $('#divBack').hide();
+     $('#UserName').focus();
+ </script>    

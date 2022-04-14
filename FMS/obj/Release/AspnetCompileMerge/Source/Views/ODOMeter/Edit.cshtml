@@ -1,0 +1,77 @@
+﻿@model JMJ.Models.tbl_odometer_readings
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    @ViewBag.Errormessage
+    <fieldset>
+        <legend>tbl_odometer_readings</legend>
+        <table>
+        <tr>
+        <td>VehicleId</td>
+        <td> @Html.EditorFor(model => model.VehicleId)
+            @Html.ValidationMessageFor(model => model.VehicleId)
+        </td>
+        </tr>
+        <tr>
+        <td>ModeofEntry
+        </td>
+        <td> @Html.EditorFor(model => model.ModeOfEntry)
+            @Html.ValidationMessageFor(model => model.ModeOfEntry)
+        </td>
+        </tr>
+        <tr>
+        <td>ODMDate
+        </td>
+        <td>@Html.EditorFor(model => model.ODMDate)
+            @Html.ValidationMessageFor(model => model.ODMDate)
+        </td>
+        </tr>
+        <tr>
+        <td>CreatedDt
+        </td>
+        <td> @Html.EditorFor(model => model.CreatedDt)
+            @Html.ValidationMessageFor(model => model.CreatedDt)
+        </td>
+        </tr>
+        <tr>
+        <td>CreatedBy
+        </td>
+        <td>@Html.EditorFor(model => model.CreatedBy)
+            @Html.ValidationMessageFor(model => model.CreatedBy)
+        </td>
+        </tr>
+        <tr>
+        <td>Status
+        </td>
+        <td>   @Html.EditorFor(model => model.Status)
+            @Html.ValidationMessageFor(model => model.Status)
+        </td>
+        </tr>
+        <tr>
+        <td>ReadingValue
+        </td>
+        <td>  @Html.EditorFor(model => model.ReadingValue)
+            @Html.ValidationMessageFor(model => model.ReadingValue)
+        </td>
+        </tr>
+        @Html.HiddenFor(model => model.Id)
+
+        </table>
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

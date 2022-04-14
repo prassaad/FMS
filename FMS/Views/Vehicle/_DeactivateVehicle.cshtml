@@ -1,0 +1,97 @@
+﻿@model FMS.Models.tbl_vehicles
+@using FMS.Models;
+@{
+    core objCore = new core(); 
+}           
+
+<div class="clsmodalheader">Deactivate Vehicle</div>
+ <div style="overflow: auto;z-index:9999;height:500px;">
+     <table class="table table-striped table-condensed dTableR dataTable">
+         <tr>
+             <td>
+                 Reg. No
+             </td>
+             <td>
+                 <span class="label-success">@(Model.VehicleRegNum)
+                 </span>
+             </td>
+             <td>
+                 Vendor
+             </td>
+             <td>
+                 @Model.tbl_vendor_details.FirstName @Model.tbl_vendor_details.LastName
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Driver
+             </td>
+             <td>
+                 @(objCore.GetDriverByVehicle(Model.ID))
+             </td>
+             <td>
+                 Manufacture Year
+             </td>
+             <td>
+                @Model.ManufactureYearMonth
+             </td>
+         </tr>
+         <tr>
+            <td>
+                Vehicle Model
+            </td>
+            <td>
+                @Model.tbl_vehicle_models.VehicleModelName
+            </td>
+            <td>
+                Vehicle Type
+            </td>
+            <td>
+                @Model.tbl_vehicle_types.VehicleType
+            </td>
+         </tr>
+     </table>
+       
+@using (Html.BeginForm("DeactivateVehicle", "Vehicle", FormMethod.Post, new { id = "frmDeactiveVehicle", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true) 
+    <span id="spanMsg" style="color:Red;line-height:30px;"> 
+        
+    </span>
+    <table>
+        <tr>
+            <td>
+               Reason For Deactivate <span style="color:Red;">*</span>
+            </td>
+            <td>
+               @Html.TextArea("ReasonForDeactive", "", new { @maxlength = 250 , col = 60 , rows = 7 , @style = "resize:none;" }) 
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" value="Deactivate" id="btnSubmit" />
+            </td>
+        </tr>    
+    </table>
+}
+</div>  
+<script type="text/javascript">
+    $('#btnSubmit').click(function () {
+        var ReasonForDeAct = $('#ReasonForDeactive').val();
+        if (ReasonForDeAct == '') {
+            $('#ReasonForDeactive').focus();
+            $('#spanMsg').html('Please enter reason for deactivate.');
+            return false;
+        }
+        $('#spanMsg').empty();
+        $.post('/Vehicle/DeactivateVehicle?Id=' + '@Model.ID', $('#frmDeactiveVehicle').serialize(), function (data) {
+            alert(data.msg);
+            if (data.success) {
+                $.modal.close();
+                window.location.href = '/Vehicle/Index';
+            }
+        });
+    });
+</script>

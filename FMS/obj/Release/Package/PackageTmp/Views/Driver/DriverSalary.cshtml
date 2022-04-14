@@ -1,0 +1,79 @@
+﻿@model IEnumerable<FMS.Models.tbl_driver_salaries>
+@using FMS.Models;
+@{
+    ViewBag.Title = "Driver Salary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal GrossSal = 0;
+}
+<h2>
+    Driver Salaries</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+             @if ((bool)core.GetUserAccess(62, User.Identity.Name).Add)
+             {  <li class="lastactive">@Html.ActionLink("Add Driver Salary", "AddDriverSalary")</li>}
+        </ul>
+    </div>
+</div>
+
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_dataTable">
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_dataTable').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/Driver/GetDriversSalaryList",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                if (aData[13] == "True") {
+                    $('td:eq(13)', nRow).html('<span class="system positive">Yes</span>')
+                }
+                else {
+                    $('td:eq(13)', nRow).html('<span class="system negative">No</span>')
+                }
+                $('td:eq(14)', nRow).html('@if ((bool)core.GetUserAccess(62, User.Identity.Name).Edit){   <a href="/Driver/EditDriverSalary/' + aData[0] + '">Edit</a>}' +
+                    '@if ((bool)core.GetUserAccess(62, User.Identity.Name).Edit){ <text>|</text>  <a href="#" onclick="ApproveDriverSalary(' + aData[0] + ')">Approve</a>}' +
+                    '@if ((bool)core.GetUserAccess(62, User.Identity.Name).Delete){ <text>|</text>  <a href="#" onclick="DeleteDriverSalary('+ aData[0] +')">Delete</a>}');
+                $('td:eq(14)', nRow).attr('style','width:160px;')
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Month Year" },
+            { "sTitle": "Vehicle Reg#" },
+            { "sTitle": "Driver" },
+            { "sTitle": "Salary Amt." },
+            { "sTitle": "Working Day(s)" },
+            { "sTitle": "Present Day(s)" },
+            { "sTitle": "Net Salary" },
+            { "sTitle": "Incentive" },
+            { "sTitle": "Advance Amt." },
+            { "sTitle": "Deductions" },
+            { "sTitle": "Net Payable" },
+            { "sTitle": "Gross Salary" },
+            { "sTitle": "Approve" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+
+    function ApproveDriverSalary(Id) {
+        if (confirm('Are you sure want to approve ? ')) {
+            window.location.href = '@Url.Action("ApproveDriverSalary", "Driver")?Id=' + Id;
+        }
+    }
+    function DeleteDriverSalary(Id) {
+        if (confirm('Are you sure want to delete ? ')) {
+            window.location.href = '@Url.Action("EditDriverSalary", "Driver")?Id=' + Id;
+        }
+    }
+</script>

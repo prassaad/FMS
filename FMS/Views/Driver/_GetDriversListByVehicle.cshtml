@@ -1,0 +1,359 @@
+﻿@model IEnumerable<FMS.Models.tbl_drivers>
+@using FMS.Models;
+@{
+    long DriverId = -1;
+    int i = 0;
+}
+<style type="text/css">
+    .leftDivItem, .rightDivItem
+    {
+        border: none;
+        float: left;
+        width: 48%; /* Maybe the width should less than 50% to fit more browser */
+        overflow: hidden;
+    }
+</style>
+@if (Model.Count() > 2)
+{
+    <table class="table table-striped table-condensed dTableR dataTable" id="tbl_driverList">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Current Vehicle
+            </th>
+            <th>
+                Contact#
+            </th>
+            <th>
+                Licence#
+            </th>
+            <th>
+                Licence Validity
+            </th>
+            <th>
+                Badge#
+            </th>
+            <th>
+                Badge Validity
+            </th>
+            <th>
+                Blood Group
+            </th>
+            <th>
+                Profile Complete
+            </th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.FirstName.ToString().ToUpper() @item.LastName.ToString().ToUpper()
+                    @if (DriverId == -1)
+                    {
+                        DriverId = item.ID;
+                    }
+                    @Html.Hidden("DriverId", DriverId)
+                </td>
+                <td>
+                    @(item.CurrentVehicleID == null ? "PROXY" : item.tbl_vehicles.VehicleRegNum.ToString().ToUpper())
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LicenceNumber).ToString().ToUpper()
+                </td>
+                <td>
+                    @Html.Encode(item.LicenceValidity == null ? "" : item.LicenceValidity.Value.ToString("dd/MM/yyyy"))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BadgeNumber).ToString().ToUpper()
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.BadgeValidity))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BloodGroup).ToString().ToUpper()
+                </td>
+                <td>
+                    @if ((bool)item.ProfileComplete)
+                    {
+                        <span class="system positive">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="system negative">No</span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    foreach (var item in Model)
+    {
+        if (Model.Count() == 1)
+        {
+    <table class="table table-striped table-condensed dTableR dataTable" style="float: left;">
+        <tr>
+            <td>
+                Name
+            </td>
+            <td>
+                @item.FirstName @item.LastName
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Mobile
+            </td>
+            <td>
+                @item.ContactNumber
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Photo
+            </td>
+            <td>
+                @if (item.PhotoUrl != null)
+                {
+                    <img src="../../Content/uploadimages/@item.PhotoUrl" width="80" height="80" alt="Photo" />
+                }
+                else
+                {
+                    <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Licence#
+            </td>
+            <td>
+                @item.LicenceNumber
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Licence Validty
+            </td>
+            <td>
+                @(item.LicenceValidity == null ? "" : item.LicenceValidity.Value.ToString("dd/MM/yyyy"))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Badge#
+            </td>
+            <td>
+                @item.BadgeNumber
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Badge Validity
+            </td>
+            <td>
+                @(item.BadgeValidity == null ? "" : item.BadgeValidity.Value.ToString("dd/MM/yyyy"))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Aadhar Num
+            </td>
+            <td>
+                @item.AadharNum
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Blood Group
+            </td>
+            <td>
+                @item.BloodGroup
+            </td>
+        </tr>
+    </table>  
+        }
+        if (Model.Count() == 2)
+        {
+            if (i % 2 == 0)
+            {
+    <div class="leftDivItem" style="margin-right: 10px;">
+        <table class="table table-striped table-condensed dTableR dataTable" style="float: left;">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Mobile
+                </td>
+                <td>
+                    @item.ContactNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Photo
+                </td>
+                <td>
+                    @if (item.PhotoUrl != null)
+                    {
+                        <img src="../../Content/uploadimages/@item.PhotoUrl" width="80" height="80" alt="Photo" />
+                    }
+                    else
+                    {
+                        <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence#
+                </td>
+                <td>
+                    @item.LicenceNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence Validty
+                </td>
+                <td>
+                    @(item.LicenceValidity == null ? "" : item.LicenceValidity.Value.ToString("dd/MM/yyyy"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge#
+                </td>
+                <td>
+                    @item.BadgeNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge Validity
+                </td>
+                <td>
+                    @(item.BadgeValidity == null ? "" : item.BadgeValidity.Value.ToString("dd/MM/yyyy"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Aadhar Num
+                </td>
+                <td>
+                    @item.AadharNum
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Blood Group
+                </td>
+                <td>
+                    @item.BloodGroup
+                </td>
+            </tr>
+        </table>
+    </div>
+            }
+            else
+            {
+    <div class="rightDivItem">
+        <table class="table table-striped table-condensed dTableR dataTable" style="float: left;">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Mobile
+                </td>
+                <td>
+                    @item.ContactNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Photo
+                </td>
+                <td>
+                    @if (item.PhotoUrl != null)
+                    {
+                        <img src="../../Content/uploadimages/@item.PhotoUrl" width="80" height="80" alt="Photo" />
+                    }
+                    else
+                    {
+                        <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence#
+                </td>
+                <td>
+                    @item.LicenceNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Licence Validty
+                </td>
+                <td>
+                    @(item.LicenceValidity == null ? "" : item.LicenceValidity.Value.ToString("dd/MM/yyyy"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge#
+                </td>
+                <td>
+                    @item.BadgeNumber
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Badge Validity
+                </td>
+                <td>
+                    @(item.BadgeValidity == null ? "" : item.BadgeValidity.Value.ToString("dd/MM/yyyy"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Aadhar Num
+                </td>
+                <td>
+                    @item.AadharNum
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Blood Group
+                </td>
+                <td>
+                    @item.BloodGroup
+                </td>
+            </tr>
+        </table>
+    </div>
+            }
+            i++;
+        }
+    }
+}

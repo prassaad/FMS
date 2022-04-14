@@ -1,0 +1,174 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@{
+    decimal TotalAmt = 0;
+}
+<form id="frmDieselList" enctype="multipart/form-data" method="post">
+<input type="hidden" id="hdnfromdate" name="hdnfromdate" value="@ViewBag.StartDate" />
+<input type="hidden" id="hdntodate" name="hdntodate" value="@ViewBag.EndDate" />
+<input type="hidden" id="hdnVehicleID" name="hdnVehicleID" value="@ViewBag.VehId" />
+<fieldset>
+    <legend>Diesel track Details</legend>
+    @if (Model.Count() == 0 || Model == null)
+    {
+        <h2 style="text-align: center;">
+            No Diesel track details are available
+        </h2>   
+    }
+    else
+    {
+        <p style="font-weight: bold; font-size: 12px; color: Red;" class="nonPrintable">
+            Please select the Diesel track details to comes under invoice amount and click on
+            generate invoice.</p>
+        <table class="table table-striped table-condensed dTableR dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.CheckBox("chkdieselAll") &nbsp; All
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Client
+                    </th>
+                    <th>
+                        Diesel Token No.
+                    </th>
+                    <th>
+                        Vehicle RegNo#
+                    </th>
+                    <th>
+                        Rate
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ TotalAmt = 0; }
+                @foreach (var item in Model)
+                {
+                    <tr class="nonPrintable">
+                        <td>
+                            @Html.CheckBox("chkDieselId_" + item.ID, new { @class = "chkPrint chkdieselSheet" })
+                        </td>
+                        <td>
+                            @item.Date1.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @item.Text1.ToUpper()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Text2)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Text3)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Value2)
+                            @{ TotalAmt += item.Value2;  }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="nonPrintable">
+                <tr>
+                    <td colspan="5" style="text-align: right;">
+                        Total
+                    </td>
+                    <td>
+                        @Html.Encode(String.Format("{0:N}", TotalAmt))
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <input type="button" value="Generate Invoice " id="btnAddDieselAmountInv" class="nonPrintable" />
+    }
+</fieldset>
+</form>
+<div id="AdvanceDetails">
+</div>
+<script type="text/javascript" language="javascript">
+    $('#btnGenInv').hide();
+    $('#btnAddDieselAmountInv').click(function () {
+        if (confirm('Are you sure want to Generate Invoice ?')) {
+            GetDieselTrackPost();
+        }
+    });
+
+    $('#chkdieselAll').change(function () {
+        if ($(this).is(':checked')) {
+            $('.chkdieselSheet').each(function () {
+                $(this).attr('checked', true);
+            });
+        }
+        else {
+            $('.chkdieselSheet').each(function () {
+                $(this).attr('checked', false);
+            });
+        }
+    });
+
+    $('.chkdieselSheet').change(function () {
+        var StatusVal = 0;
+        $('.chkdieselSheet').each(function () {
+            var IsChecked = $(this).is(':checked');
+            if (IsChecked) {
+                StatusVal = 1;  // If Status is one then uncheck  
+            }
+            else {
+                if (StatusVal == 1) { // If Status is one then uncheck 
+                    StatusVal = 1; // If Status is one then uncheck 
+                }
+                else {
+                    StatusVal = 0 // If Status is zero then check 
+                }
+            }
+        });
+        if (StatusVal == 1) {
+            $('#chkdieselAll').attr('checked', false);
+        }
+    });
+
+    function GetDieselTrackPost() {
+
+        $.post('/VendorInvoice/GetDieselDetailsByVehicle', $('#frmDieselList').serialize(), function (data) {
+            if (data.success) {
+                if (data.msg == "") {
+
+                    if (data.advDet > 0) { // If Advance Amount is exists 
+                        if (confirm('Are you sure want to Generate Invoice with advance amount (' + data.advDet + ') ?')) {
+                            // Call Advance List Method ===> Send hasDiesel as True 
+                            GetAdvanceDetailsByVehicle(true);
+                        }
+                        else {
+                            $('#div_loading').fadeOut('slow');
+                            DownloadExcel();
+                            GenerateInvoice(true, false, null, null);
+                        }
+                    }
+                }
+                else {
+                    //ClickHereToPrint('InvoiceView');
+                    DownloadExcel();
+                    $('#div_loading').fadeIn('slow');
+                    GenerateInvoice(true, false, null, null);
+                }
+            }
+            else {
+                alert(data.msg);
+            }
+        });
+        $('#div_loading').fadeOut('slow');
+    }
+    $('.chkPrint').change(function () {
+        var id = $(this).attr('id');
+        var Ischecked = $(this).is(':checked');
+        if (Ischecked) {
+            $('#' + id).parent().parent().removeClass('nonPrintable');
+        } // checked 
+        else {
+            $('#' + id).parent().parent().addClass('nonPrintable');
+        }
+    });
+
+    
+</script>

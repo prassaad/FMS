@@ -1,0 +1,169 @@
+﻿@model FMS.Models.tbl_card_assignments
+@{
+    ViewBag.Title = "Add CardNo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Add Card</h2>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Cards", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Add Card</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                    Client : <span style="color: Red;">*</span>
+                      </td>
+                      <td>      
+                   
+                  @Html.DropDownList("ClientId", null, "---Select Client---", new { style = "width:310px;" })
+                    @Html.ValidationMessageFor(model=>model.ClientId)
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleId", null, "---Select Vehicle---", new { style = "width:310px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleId)
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Project : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("ProjectId", null, "--SelectProject--", new { @style = "width:310px" , @class="clsPackage" })
+                    @Html.ValidationMessageFor(model => model.ProjectId)
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Package : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                         <select id="PackageId" name="PackageId" style="width: 310px;" >
+                        <option value="0">-Select-</option>   </select> 
+                         @Html.ValidationMessageFor(model => model.PackageId)
+                    
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    CardNo : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CardNo)
+                    @Html.ValidationMessageFor(model => model.CardNo)
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    CreatedBy : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CreatedBy)
+                    @Html.ValidationMessageFor(model => model.CreatedBy)
+                    
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Create"  />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+
+<script type="text/javascript">
+    $('.clsPackage').change(function () {
+
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+
+        if (clientId != 0 && projectId != 0) {
+            GetPackages(clientId, projectId);
+        }
+    });
+    $('#ClientId').change(function () {
+        var clientId = $(this).val();
+        GetProjectsByClient(clientId);
+    });
+
+    $('#PackageId').change(function () {
+        $.get('/CardAssignment/GetEffectedDate?PackageId=' + $(this).val(), function (data) {
+            $('#MonthDate').val(data.PackDate);
+        });
+    });
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                    $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+                //                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetPackages(ClientId, ProjectId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/CardAssignment/GetPackages?ClientId=" + ClientId + "&ProjectId=" + ProjectId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#PackageId').html('<option value="">-Select Package-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].Package + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#PackageId").append(options);
+                }
+                else
+                    $('#PackageId').html('<option value="">-No Package Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+</script>

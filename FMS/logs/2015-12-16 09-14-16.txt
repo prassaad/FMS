@@ -1,0 +1,4 @@
+[2015-12-16 09:14:16.5655] [127.0.0.1] [ERROR] [Input string was not in a correct format.] [superadmin] [   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Convert.ToInt32(String value)
+   at FMS.Controllers.ProjectsController.SaveBulkApprovedPackages(Int64 ClientId, Int64 ProjectId, FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\ProjectsController.cs:line 196]

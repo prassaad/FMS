@@ -1,0 +1,389 @@
+﻿@model FMS.Models.GenerateInvoice
+@{
+    ViewBag.Title = "Do Invoice Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+ .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+     .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+     .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+        #printable { display: none; }
+ @@media print
+        {
+            #printable { display: block; }
+        }
+       h1
+        {
+        	line-height:0;
+        }
+        .PrintCopy
+        {
+            top:5.8in;
+            position:absolute;
+        }
+</style>
+<link href="../../Content/invoice.print.css" rel="stylesheet" type="text/css" media="print" />
+ <h2>
+    Vendor Invoice 
+ </h2>
+<div class="bread_title nonPrintable">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of Invoices", "Index", "VendorInvoice")</li>
+            
+        </ul>
+    </div>
+</div>
+<div id="InvoiceView">
+    <fieldset>
+        <legend>Invoice</legend>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmInvoicePayment", enctype = "multipart/form-data" }))
+        {
+            <center style="font-size: 18px;">
+                <u> @FMS.ApplicationSettings.OrgName , @FMS.ApplicationSettings.Address2 </u></center>   
+            <table class="table table-striped table-bordered dTableR dataTable">
+                <tr>
+                    <td>
+                        <b>Vehicle Number</b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.VehicleRegNum
+                        @Html.Hidden("VehicleID", Model._VehicleDet.ID)
+                    </td>
+                    <td>
+                        <b>Type</b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.tbl_vehicle_models.VehicleModelName - @Model._VehicleDet.tbl_vehicle_types.VehicleType
+                    </td>
+                    <td>
+                        <b>Invoice# </b>
+                    </td>
+                    <td>
+                        @Model._venInvDet.InvoiceNum
+                    </td>
+                    @*   <td>
+                       <b> Invoice Date</b>
+                    </td>
+                    <td>
+                        @Model._venInvDet.InvoiceDate.Value.ToShortDateString()
+                    </td>*@
+                </tr>
+            </table>
+            <table class="table table-striped table-bordered">
+                <!--  Vendor Invoice Header  -->
+                <tr>
+                    <td>
+                        Particulars
+                    </td>
+                    <td>
+                        Qty
+                    </td>
+                    <td>
+                        Rate
+                    </td>
+                    <td>
+                        Tot. Amt.
+                    </td>
+                    <td>
+                        Net Amt.
+                    </td>
+                </tr>
+                <tbody>
+                    <!--  Vendor Invoice List by Client Wise  -->
+                    @foreach (var item in Model._venInvDetList)
+                    {
+                        <tr>
+                            <td>
+                                @item.Particulars
+                            </td>
+                            <td>
+                                @item.Qty
+                            </td>
+                            <td>
+                                @item.Rate
+                            </td>
+                            <td style="text-align: right;">
+                                @item.TotalAmt
+                            </td>
+                            <td style="text-align: right;">
+                                @item.NetTotalAmt
+                            </td>
+                        </tr>
+                                }
+                </tbody>
+            </table>
+            <!-- Footer In Vendor Invoice --> 
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                        A/c Name
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.AccountHolderName == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountHolderName)
+                    </td>
+                    <td>
+                        Bank A/c Number
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.AccountNumber == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountNumber)
+                    </td>
+                    <td>
+                        Bank Name
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.BankName == null ? "" : Model._VehicleDet.tbl_vendor_details.BankName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Branch
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.Branch == null ? "" : Model._VehicleDet.tbl_vendor_details.Branch)
+                    </td>
+                    <td>
+                        IFSC Code
+                    </td>
+                    <td>
+                        @(Model._VehicleDet.tbl_vendor_details.IFSCCode == null ? "" : Model._VehicleDet.tbl_vendor_details.IFSCCode)
+                    </td>
+                    <td>
+                        Receiver's Name
+                    </td>
+                    <td>
+                        <input type="text" id="txtRecSignature" name="RecSignature" value="@Model._venInvDet.ReceiverName" style="width:180px;" />
+                    </td>
+                </tr>
+                <tr>
+              <td>
+                 Remark 
+              </td>
+              <td colspan="5">
+                    @(Model._venInvDet.Remark)
+              </td>  
+          </tr>
+            </table> 
+            <table style="width: 100%;" class="nonPrintable">
+                <tr style="width: 100%">
+                    <td style="width: 30%" valign="top">
+                        <div id="IsPayment" class="nonPrintable">
+                            <h2 style="text-decoration: underline;">
+                                Mode of Payment</h2>
+                            <table>
+                                <tr>
+                                    <td>
+                                        Pay Mode
+                                    </td>
+                                    <td>
+                                        <input type="radio" name="PayMode" id="Cash" value="Cash" />
+                                        Cash
+                                        <input type="radio" name="PayMode" id="ChequeDD" value="Cheque" />
+                                        Cheque/DD
+                                        <input type="radio" name="PayMode" id="Transfer" value="Transfer" />
+                                        Transfer
+                                    </td>
+                                </tr>
+                                <tr id="tr_paymode">
+                                    <td colspan="2" id="td_paymode">
+                                        <table class="table-striped table-condensed dTableR dataTable" id="tbl_cheque">
+                                            <tr>
+                                                <td>
+                                                    Cheque/DD No. <span style="color: Red">*</span>
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox("ChequeDDNo", null, new { @class = "txtInput" })
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Cheque/DD Date <span style="color: Red">*</span>
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox("ChequeDate", null, new { @class = "txtInput" })
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Bank Name <span style="color: Red">*</span>
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox("BankName", null, new { @class = "txtInput" })
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Branch <span style="color: Red">*</span>
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox("Branch", null, new { @class = "txtInput" })
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="table-striped table-condensed dTableR dataTable" id="tbl_transfer">
+                                            <tr>
+                                                <td>
+                                                    Transaction No. <span style="color: Red">*</span>
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox("TransactionNum", null, new { @class = "txtInput" })
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="width: 70%;" valign="top">
+                        <p style="margin-top: 20px;" class="nonPrintable">
+                            <input type="button" id="btnMakePayment" value="Make Payment" /></p>
+                        
+                        @* <p style="margin-top: 10px;">
+                            Authorized Signature
+                            <input type="text" id="AuthorizedSign" name="AuthorizedSign" value="@Model._venInvDet.AuthorizedSign" style="width:180px;" />
+                            Remark &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input type="text" id="txtRemark" name="Remark" value="@Model._venInvDet.Remark" style="width:180px;" />
+                        </p>*@
+                    </td>
+                </tr>
+            </table>
+            <p id="printable" class="topAlign">
+                *Computer generated document signature not required. For Invoice billing & payment
+                queries call to 040-64614141 timing:10:00AM-08:00PM
+            </p> 
+        }
+    </fieldset>
+</div>
+<div id="printable" class="PrintCopy">
+</div>
+<script type="text/javascript" language="javascript">
+    // first hide these tr and td 
+    $('#tr_paymode').hide();
+    $('#td_paymode').hide();
+    // Set radio Default to Cash for Pay mode
+    $('input:radio[name=PayMode]').filter('[value="Cash"]').attr('checked', true);
+    // Payment Mode Radio Button click event 
+    $("input:radio[name=PayMode]").click(function () {
+        var selectedVal = $(this).val();
+        if (selectedVal == 'Cheque') {
+            $('#tr_paymode').show(); $('#td_paymode').show(); $('#tbl_transfer').hide(); $('#tbl_cheque').show();
+        }
+        else if (selectedVal == 'Transfer') {
+            $('#tr_paymode').show(); $('#td_paymode').show(); $('#tbl_cheque').hide(); $('#tbl_transfer').show();
+        }
+        else {
+            $('#tr_paymode').hide(); $('#td_paymode').hide(); $('#tbl_cheque').hide(); $('#tbl_transfer').hide();
+        }
+    });
+     
+    
+    // Load DatePicker for DueDate Field
+    
+    $('#ChequeDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+    
+
+    // Button click event for Make Invoice Payment
+    $('#btnMakePayment').click(function () {
+         
+                if (ValidationForm()) {
+                    var msg = ' Are you sure want to make a payment ?';
+                    if (confirm(msg)) {
+                        $.post('/VendorInvoice/DoInvoicePayment?Id=' + '@Model._venInvDet.ID', $('#frmInvoicePayment').serialize(), function (data) {
+                            if (data.success) {
+                                if (confirm(data.msg + ' Do you want to take print ?')) {
+                                    $('#loading').show();
+                                    setTimeout(function () {
+                                        $('#loading').hide();
+                                        ClickHereToPrint('InvoiceView');
+                                        window.location.href = '/VendorInvoice/Index';
+                                    }, 3000);
+                                }
+                                else { window.location.href = '/VendorInvoice/Index'; }
+                            }
+                            else { alert(data.msg); }
+                        });
+                    }
+                }
+    });
+
+    // Validation for Invoice Payment
+    function ValidationForm() {
+        var payMode = $('input[name=PayMode]:radio:checked').val();
+            if (payMode == 'Cheque') {
+                var chequeNo = $('#ChequeDDNo').val();
+                var chequeDate = $("#ChequeDate").val();
+                var bankName = $("#BankName").val();
+                var branch = $("#Branch").val();
+
+                if (chequeNo == "") {
+                    alert('Please enter cheque/DD number.');
+                    $("#ChequeDDNo").focus();
+                    return false;
+                }
+                if (chequeDate == "") {
+                    alert('Please pick date from calendar or enter date');
+                    $("#ChequeDate").focus();
+                    return false;
+                }
+                if (bankName == "") {
+                    alert('Please enter bank name.');
+                    $("#BankName").focus();
+                    return false;
+                }
+                if (branch == "") {
+                    alert('Please enter branch.');
+                    $("#Branch").focus();
+                    return false;
+                }
+            }
+            if (payMode == "Transfer") {
+                var transactionNum = $("#TransactionNum").val();
+                if (transactionNum == "") {
+                    alert('Please enter transation number.');
+                    $("#TransactionNum").focus();
+                    return false;
+                }
+            }
+        return true;
+    }
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            $('.PrintCopy').html($('#InvoiceView').html());
+            self.print();
+        }
+    }
+</script>

@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "Inward Create";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    Session["List"] = null;
+}
+<h2><i class="fa fa-pencil-square teal"></i> Inward Entry</h2>
+<form id="InwardEntryForm" action="@Url.Action("InwardCreate", "Stores", new { area = "Inventory" })" method="post" enctype="multipart/form-data">
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li> <a id="FiscialYears" class="button_bg" href="@Url.Action("Inward", "Stores")">Cancel</a> </li>
+           <li> <input type="button" id="btnStockEntry" class="btn btn-xs btn-primary" value="Save Stock Entry" style="margin-top:-10px;" /> </li>
+        </ul>
+    </div>
+</div> 
+<p class="clsmark" style="width: 220px;margin:20px;">
+    * marked fields are mandatory
+    <br />
+</p>
+ <fieldset>
+ <legend>Inward Details</legend>
+        <table cellpadding="5" class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td>
+                    Receipt No.<span class="clsmark">*</span>
+                </td>
+                <td>
+                    <input type="text" id="txtreceiptno" name="txtreceiptno" value="@ViewData["ReceiptNo"]"
+                        readonly="readonly"  class="BoxBackground" />
+                    <input type="hidden" id="hdnIsFromPOrder" name="hdnIsFromPOrder" value="0" />
+                </td>
+                <td>
+                    Date:<span class="clsmark">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("entry_dt", DateTime.Now.ToShortDateString(), new { @style = "width:150px;", @class = "BoxBackground datetimepicker form-control", @onkeypress = "return numberValidate(event);" })
+                </td>
+                <td>
+                   Remarks:
+                </td>
+                <td>
+                    <textarea id="txtremark" name="txtremark" style="resize: none; height: 69px; width: 391px;"></textarea>
+                </td>
+            </tr>
+        </table>
+         <h3>
+             Add Item(s) here
+         </h3>
+         <div class="col-md-8" style="width: 100%;">
+         <table class="table table-striped table-condensed dTableR dataTable">
+             <thead>
+                 <tr>
+                     <th>
+                         &nbsp;&nbsp; Select Item to Add
+                     </th>
+                     <th>
+                        Size
+                     </th>
+                     <th>
+                         Qty.
+                     </th>
+                     <th>
+                        Amount
+                     </th>
+                     <th>
+                         UOM
+                     </th>
+                     <th>
+                     </th>
+                 </tr>
+             </thead>
+             <tbody>
+                 <tr>
+                     <td>
+                         @Html.DropDownList("ddlItem", (IEnumerable<SelectListItem>)ViewData["ItemsList"], "--Select Item--", new { @style = "width:220px;", @class = "form-control" })
+                         <input type="hidden" id="hdnItem" name="hdnItem" />
+                     </td>
+                     <td>
+                        <input type="text" id="txtSize" name="txtSize" style="width: 50px;background-color:#ddd;cursor:no-drop;" maxlength="8" class="BoxBackground" readonly="readonly"
+                             onkeypress="return numberValidate(event);" />&nbsp;&nbsp;
+                     </td>
+                     <td>
+                         <input type="text" id="txtQty" name="txtQty" style="width: 50px;" maxlength="8" class="BoxBackground" 
+                             onkeypress="return numberValidate(event);" />&nbsp;&nbsp;&nbsp;
+                     </td>
+                     <td>
+                         <input type="text" id="txtRate" name="txtRate" style="width: 50px;background-color:#ddd;cursor:no-drop;" maxlength="8" class="BoxBackground" readonly="readonly"
+                             onkeypress="return numberValidate(event);" value="0" />&nbsp;&nbsp;&nbsp;
+                     </td>
+                     <td>
+                         <select id="UnitId" name="UnitId" style="width: 120px;" class="form-control">
+                             <option value="0">- Select -</option>
+                         </select>
+                     </td>
+                     <td>
+                         <button class="btn btn-xs btn-primary" id="btnAdd" type="button">
+                             <i class="fa fa-plus"></i>Add Item</button>
+                     </td>
+                 </tr>
+             </tbody>
+         </table>
+     </div>
+         @{ ViewData["IsEdit"] = "0"; }
+ </fieldset>   
+</form>
+<div class="span5" style="width:100%;">
+    <div id="StockRegDetList">
+    </div>
+</div>
+<script type="text/javascript">
+    $('#loading').hide();
+    LoadUOMByItem($('#ddlItem').val());
+    $(function () {
+        $(".datetimepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    $('#txtreceiptno').attr('style', 'background-color:#ddd;cursor:no-drop;width: 150px');
+
+    // Item Change Event
+    $('#ddlItem').change(function () {
+        LoadUOMByItem($(this).val());
+        GetItemDetailsByItem($(this).val(), 0);
+    });
+
+    $('#txtQty').keypress(function () {
+        GetItemDetailsByItem($('#ddlItem').val(), $(this).val());
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function GetItemDetailsByItem(ItemId, Qty) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetItemDetailsByItem", "Stores", new { area = "Inventory" })',
+            data: "ItemId=" + ItemId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#txtSize').val(data[0].Size);
+                    $('#txtRate').val(parseFloat(data[0].Amount) * parseInt(Qty));
+                }
+                else {
+                    $('#txtSize').val(data[0].Size);
+                    $('#txtRate').val(parseFloat(data[0].Amount) * parseInt(Qty));
+                }
+            }
+        });
+    }
+    function LoadUOMByItem(ItemId) {
+        if ($("#ddlItem option:selected").text() == "--Select Item--") {
+            $('#UnitId').html('<option value="">- Select -</option>');
+        }
+        else {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("LoadUOMByItem", "Stores", new { area = "Inventory" })',
+                data: "ItemId=" + ItemId,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        var options = "";
+                        if (data.length == 1) {
+                            $('#UnitId').html('<option value=' + data[0].Id + '>' + data[0].UnitsText + '</option>');
+                        }
+                        else {
+                            $('#UnitId').html('<option value="0">- Select -</option>');
+                            for (var i = 0; i < data.length; ++i) {
+                                options += "<option value='" + data[i].Id + "'>" + data[i].UnitsText + "</option>";
+                                sModel = data[i].Id;
+                            }
+                            $("#UnitId").append(options);
+                        }
+                    }
+                    else {
+                        $('#UnitId').html('<option value="0">- Select -</option>');
+                    }
+                }
+            });
+        }
+    }
+
+    // Stock register master Validations and save stock 
+    $('#btnStockEntry').click(function () {
+        // validate here 
+        if ($.trim($('#entry_dt').val()) == "") {
+            alert("Please enter entry date.");
+            $('#entry_dt').focus();
+            return;
+        }
+        if ($.trim($('#StockRegDetList').html()) == "") {
+            alert("Please add items below to continue the process");
+            $('#txtItem').focus();
+            return;
+        }
+        $('#loading').fadeIn('slow');
+        // save stock here 
+        $.post('@Url.Action("InwardCreate", "Stores", new { area = "Inventory" })', $('#InwardEntryForm').serialize(), function (data) {
+            if (data.success) {
+                $('#loading').fadeOut('slow');
+                alert(data.msg);
+                window.location.href = '@Url.Action("Inward", "Stores", new { area = "Inventory" })';
+            }
+            else {
+                $('#loading').fadeOut('slow');
+                alert(data.msg);
+            }
+        });
+    });
+
+
+    // Add Item List here
+    $('#btnAdd').click(function () {
+        if ($.trim($('#ddlItem').val()) == "") {
+            alert("Please select the item to be added");
+            $('#ddlItem').focus();
+            return;
+        }
+        if ($.trim($('#txtQty').val()) == "") {
+            alert("Please enter quantity");
+            $('#txtQty').focus();
+            return;
+        }
+        if ($.trim($('#UnitId').val()) == "") {
+            alert("Please select unit(s)");
+            $('#UnitId').focus();
+            return;
+        }
+
+        var ItemId = $('#ddlItem').val();
+        var Qty = $('#txtQty').val();
+        var Size = $('#txtSize').val();
+        var Amount = $('#txtRate').val();
+        var unitId = $('#UnitId').val();
+        $('#loading').show();
+        $.post('@Url.Action("ItemListAdd", "Stores", new { area = "Inventory" })?ItemName=' + $("#ddlItem option:selected").text() + '&ItemId=' + ItemId + '&Qty=' + Qty + '&Size=' + Size + '&Amount=' + Amount + '&UnitsId=' + unitId, function (data) {
+            $('#loading').hide();
+            $('#StockRegDetList').html('');
+            $('#StockRegDetList').html(data);
+            $('#ddlItem').val("");
+            $('#txtSize').val("");
+            $('#txtRate').val("");
+            $('#hdnItem').val("");
+            $('#txtQty').val("");
+            $('#UnitId').val("");
+            $('#ddlItem').focus();
+        });
+    });
+
+</script>

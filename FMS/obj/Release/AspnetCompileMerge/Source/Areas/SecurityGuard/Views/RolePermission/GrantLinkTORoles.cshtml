@@ -1,0 +1,150 @@
+﻿@model SecurityGuard.ViewModels.GrantLinkstoRoles
+
+@{
+    ViewBag.Title = "Grant MenuAccess Link To Roles";
+    Layout = "~/Areas/SecurityGuard/Views/Shared/_SecurityGuardLayoutPage.cshtml";
+}
+
+<h2>Grant MenuAccess Link To Roles</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<h2>
+    Grant Menulinks To Roles</h2>
+<p>
+    Clicking the &quot;Grant&quot; or &quot;Revoke&quot; buttons will execute that command.</p>
+<p>
+    Grant any of the following link to: <span id="username-to-grant-roles">@Model.roleName</span></p>
+
+<ul class="system_messages" style="display: none;">
+    <li><span class="ico"></span><strong class="system_title"></strong></li>
+</ul>
+
+<fieldset style="float: left; height: 300px;">
+    <div id="available-roles">
+        <h3>
+            Available Menu Links</h3>
+        @Html.ListBox("AvailableRoles", Model.AvailableRoles)
+    </div>
+    <div id="grant-controls">
+        <button id="grant-button">
+            Grant --&gt;</button><br />
+        <button id="revoke-button">
+            &lt;-- Revoke</button>
+    </div>
+    <div id="granted-roles">
+        <h3>
+            Granted Menu Link</h3>
+        @Html.ListBox("GrantedRoles", Model.GrantedRoles)
+    </div>
+</fieldset>
+<div style="clear:both;"></div>
+
+<script type="text/javascript">
+    $(function () {
+
+        var message = $(".system_messages");
+
+        /******************************************************
+        * Begin Grant/Revoke commands
+        ******************************************************/
+        var availableList = $("#AvailableRoles");
+        var grantedList = $("#GrantedRoles");
+
+        $("#grant-button").click(function () {
+            // First check if any items in the available list
+            // are selected.
+            if (availableList.val() == null) {
+                alert("You must select a link to grant.");
+                return;
+            }
+
+            // Then move the selected list items to the 
+            // granted roles list.
+            move_list_items("AvailableRoles", "GrantedRoles");
+
+            // Now take all the roles from the granted list
+            // and create a single comma-delimited list.
+            var grantedRoles = "";
+            $.each(grantedList.val(), function (index, data) {
+                grantedRoles += data + ",";
+            });
+            // Now execute the command using jQuery ajax.
+            $.ajax({
+                url: '@Url.Action("GrantRolesToUser", "RolePermission")',
+                dataType: 'json',
+                type: 'POST',
+                data: { rolename: '@Model.roleName', roles: grantedRoles },
+                success: OnGrantedSuccess,
+                error: OnGrantedError
+            });
+        });
+
+        function OnGrantedSuccess(data) {
+            message.show().delay(5000).fadeOut();    // Show the message
+            $("li", message).addClass("green");      // Apply the Green style
+            $("strong", message).text(data.Message); // Insert the message
+            grantedRoles = "";
+       
+        }
+
+        function OnGrantedError(xhr, status, error) {
+            alert(error);
+        }
+
+        $("#revoke-button").click(function () {
+            // First make sure at least one role in the 
+            // granted list is selected to revoke.
+            if (grantedList.val() == null) {
+                alert("You must select a link to revoke.");
+                return;
+            }
+
+            // Now move the item back to the Available list.
+            move_list_items("GrantedRoles", "AvailableRoles");
+
+            // Now make a comma-delimited string of revoked items.
+            var revokedRoles = "";
+            $.each(availableList.val(), function (index, data) {
+                revokedRoles += data + ",";
+            });
+
+            // Now execute the command using jQuery ajax.
+            $.ajax({
+                url: '@Url.Action("RevokeRolesForUser", "RolePermission")',
+                dataType: 'json',
+                type: 'POST',
+                data: { rolename: '@Model.roleName', roles: revokedRoles },
+                success: OnRevokedSuccess,
+                error: OnRevokedError
+            });
+        });
+
+        function OnRevokedSuccess(data) {
+            message.show().delay(5000).fadeOut();
+            $("li", message).addClass("green");
+            $("strong", message).text(data.Message);
+            revokedRoles = "";
+        }
+
+        function OnRevokedError(xhr, status, error) {
+            alert(error);
+        }
+
+        // This function moves items from one list to the other.
+        function move_list_items(sourceid, destinationid) {
+            $("#" + sourceid + "  option:selected").appendTo("#" + destinationid);
+        }
+        /******************************************************
+        * End Grant/Revoke commands
+        ******************************************************/
+
+
+
+    });
+</script>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

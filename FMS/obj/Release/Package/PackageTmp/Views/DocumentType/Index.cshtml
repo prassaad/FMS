@@ -1,0 +1,79 @@
+﻿@model IEnumerable<FMS.Models.tbl_documents>
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Document types";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    int sno = 0;
+}
+<h2>
+    List of Document types</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(33, User.Identity.Name).Add)
+            { <li class="active">@Html.ActionLink("Create New", "Create")</li> }
+            
+        </ul>
+    </div>
+</div>
+@if (Model != null)
+{
+<table  class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+<thead>
+    <tr>
+      <th style="display:none;">SNo.</th>
+        <th>
+            Document Type
+        </th>
+        <th>
+           Document Code
+        </th>
+        <th>
+           Consider <small>(in invoice)</small> 
+        </th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var item in Model)
+{
+    <tr>
+          <td style="display:none;">
+                    @{ sno = sno + 1;}
+                    @sno
+         </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocumentType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocCode)
+        </td>
+       
+        <td>
+            @if ((bool)item.IsConsider)
+            {
+                <span class="system positive">Yes</span>
+            }
+            else
+            {
+                <span class="system negative">No</span>
+            }
+        </td>
+         <td>
+          @if ((bool)core.GetUserAccess(33, User.Identity.Name).Edit)
+            {  @Html.ActionLink("Edit", "Edit", new { id = item.ID }) } 
+          @if ((bool)core.GetUserAccess(33, User.Identity.Name).Delete)
+          {   <text> |  </text> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) }
+        </td>
+    </tr>
+}
+</tbody>
+</table>
+}
+else
+{
+    <text> No Document types are added here</text>
+}

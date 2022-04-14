@@ -1,0 +1,30 @@
+﻿@model FMS.Models.gen_Access_Permissions_Roles
+
+@{
+    ViewBag.Title = "Delete";
+
+    Layout = "~/Areas/SecurityGuard/Views/Shared/_SecurityGuardLayoutPage.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>gen_Access_Permissions_Roles</legend>
+
+    <div class="display-label">aspnet_Roles</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.aspnet_Roles.RoleName)
+    </div>
+
+    <div class="display-label">gen_Menu_Access_Links</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.gen_Menu_Access_Links.Text)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

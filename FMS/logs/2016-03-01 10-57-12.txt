@@ -1,0 +1,1 @@
+[2016-03-01 10:57:12.6717] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Controllers.CardAssignmentController.BulkCardEntry(FormCollection frm, tbl_log_sheets logsheets) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 892]

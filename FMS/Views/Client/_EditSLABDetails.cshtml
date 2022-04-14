@@ -1,0 +1,218 @@
+﻿@model FMS.Models.tbl_slab_client_rate
+@using (Html.BeginForm("EditSLABDetails", "Client", FormMethod.Post, new { id = "frmEditSLABRate", enctype = "multipart/form-data" }))
+{
+    <div class="clsmodalheader">
+        Edit SLAB Rate Details</div>
+        <div style="overflow: auto; z-index: 9999; height: 500px;" id="EditSLABDetDiv">
+        <table class="table-striped table-condensed dTableR dataTable">
+            
+            <tr>
+                <td>
+                    Emp No#:  
+                </td>
+                <td>
+                    @Html.Hidden("hdnSeaterID", Model.SeaterID)
+                    @Html.Hidden("hdnVehicleTypeID", Model.VehicleTypeID)
+                    @Html.Hidden("hdnSLABID", Model.SLABID)
+                    @Html.Hidden("hdnClientID", Model.ClientID)
+                    @Html.TextBox("EditEmpId", Model.EmpId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Emp Name
+                </td>
+                <td>
+                    @Html.TextBox("EditEmpName", Model.EmpName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Emp Gender
+                </td>
+                <td>
+                    @Html.TextBox("EditEmpGender", Model.EmpGender)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Location: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditLocation", Model.Location)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Seater: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditSeaterID", Model.SeaterID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Veh. Type: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditVehicleTypeID", Model.VehicleTypeID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Client SLAB :<span style="color: Red;"> * </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditClientSlab", Model.ClientSlab)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Client Rate: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditClientRate", Model.ClientRate)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor SLAB: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditVendorSlab", Model.VendorSlab)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor Rate: <span style="color: Red;">* </span>
+                </td>
+                <td>
+                    @Html.TextBox("EditVendorRate", Model.VendorRate)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="button" id="btnEditSLAB" value="Update" />
+                    <input type="button" id="btnCancelSLAB" value="Cancel" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        var ID = $("#hdnSLABID").val();
+        var VehicleTypeID = $("#hdnVehicleTypeID").val();
+        var SeaterID = $("#hdnSeaterID").val();
+        GetCurrentVehicleType(VehicleTypeID, ID);
+        GetCurrentSeater(SeaterID, ID);
+    });
+    $("#btnEditSLAB").click(function () {
+        if (ValidateForm()) {
+            $("#div_loading").fadeIn('slow');
+            $.post("/Client/EditSLABDetails?ID=" + $("#hdnSLABID").val() + "", $("#frmEditSLABRate").serialize(), function (result) {
+                $("#divSimpleModalDet").html(result);
+                $("#div_loading").fadeOut('slow');
+            });
+        }
+    });
+    $("#btnCancelSLAB").click(function () {
+        $.modal.close();
+    });
+    function ValidateForm() {
+  
+        if ($("#EditLocation").val() == "") {
+            alert("Location is missing! Please enter location.");
+            $("#EditLocation").focus();
+            return false;
+        }
+        if ($("#EditSeaterID").val() == "") {
+            alert("Seater is missing! Please enter seater.");
+            $("#EditSeater").focus();
+            return false;
+        }
+        if ($("#EditVehicleTypeID").val() == "") {
+            alert("VehicleType is missing! Please enter VehicleType.");
+            $("#EditVehicleTypeID").focus();
+            return false;
+        }
+        if ($("#EditClientSlab").val() == "") {
+            alert("ClientSlab is missing! Please enter slab");
+            $("#EditClientSlab").focus();
+            return false;
+        }
+        if (isAlphaFewChars($("#EditClientSlab").val()) == false) {
+            alert("Please enter valid character for Slab");
+            $("#EditClientSlab").val('');
+            $("#EditClientSlab").focus();
+            return false;
+        }
+        if ($("#EditClientRate").val() == "") {
+            alert("Client rate is missing! Please enter client rate.");
+            $("#EditClientRate").focus();
+            return false;
+        }
+        if (isFloat(parseInt($("#EditClientRate").val())) == false) {
+            alert('Please enter valid digit for client rate');
+            $("#EditClientRate").val('');
+            $("#EditClientRate").focus();
+            return false;
+        }
+        if ($("#EditVendorSlab").val() == "") {
+            alert("Vendor Slab is missing! Please enter slab");
+            $("#EditVendorSlab").focus();
+            return false;
+        }
+        if ($("#EditVendorRate").val() == "") {
+            alert("Vendor rate is missing! Please enter vendor rate");
+            $("#EditVendorRate").focus();
+            return false;
+        }
+        if (isFloat(parseInt($("#EditVendorRate").val())) == false) {
+            alert('Please enter valid digit for vendor rate');
+            $("#EditVendorRate").val('');
+            $("#EditVendorRate").focus();
+            return false;
+        }
+        if (parseInt($("#EditClientRate").val()) < parseInt($("#EditVendorRate").val())) {
+            alert("Vendor rate should be less than client rate");
+            $("#EditClientRate").val('');
+            $("#EditVendorRate").val('');
+            $("#EditClientRate").focus();
+            return false;
+        }
+
+        return true;
+    }
+    function GetCurrentVehicleType(VehicleTypeID, ID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Client/GetCurrentVehicleType?VehicleTypeID=" + VehicleTypeID + "&ID=" + ID,
+            dataType: "json",
+            success: function (data) {
+                $("#EditVehicleTypeID").val(data.VehicleType); 
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetCurrentSeater(SeaterID, ID) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Client/GetCurrentSeater?SeaterID=" + SeaterID + "&ID=" + ID,
+            dataType: "json",
+            success: function (data) {
+                $("#EditSeaterID").val(data.Seater);
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+</script>

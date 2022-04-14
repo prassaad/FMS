@@ -1,0 +1,4 @@
+[2016-01-11 09:58:35.5445] [127.0.0.1] [ERROR] [Value cannot be null.
+Parameter name: source] [superadmin] [   at System.Linq.Enumerable.Contains[TSource](IEnumerable`1 source, TSource value, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.Contains[TSource](IEnumerable`1 source, TSource value)
+   at FMS.Controllers.CardAssignmentController.BulkCardEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Controllers\CardAssignmentController.cs:line 773]

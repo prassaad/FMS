@@ -1,0 +1,118 @@
+﻿@model IEnumerable<FMS.Models.tbl_advances>
+@using FMS.Models
+@{
+    core objCore = new core(); 
+} 
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Date
+        </th>
+        <th>
+            Owner
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Driver
+        </th>
+        <th>
+            Towards
+        </th>
+        <th>
+            Narration
+        </th>
+        <th>
+            Pay Mode
+        </th>
+        <th>
+            DD/Cheque No
+        </th>
+        <th>
+            Cheque Date
+        </th>
+        <th>
+            Bank Name
+        </th>
+        <th>
+            Branch
+        </th>
+        <th>
+            Amount
+        </th>
+        <th>
+            Transaction#
+        </th>
+      @*  <th>
+        </th>*@
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @objCore.GetOwner((long)item.VendorID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleRegNum)
+            </td>
+            <td>
+                @objCore.GetDriver((long)item.DriverID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Towards)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Narration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayMode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChequeDDNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChequeDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BankName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionNum)
+            </td>
+          @*  <td>
+                <a href="#" onclick="RemoveItem('@Html.Encode(item.ID)');">
+                    <img alt="Delete" src="../../Content/images/minus.png" /></a>
+            </td>*@
+        </tr>
+    }
+</table>
+<script type="text/javascript">
+
+    function RemoveItem(ID) {
+        $.ajax(
+    {
+        type: "GET",
+        url: "../../Advance/RemoveItem",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAdvancesList').html(result);
+
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+</script>

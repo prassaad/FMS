@@ -1,0 +1,201 @@
+﻿@model FMS.Models.CustomModel
+@{
+    FMS.Models.FMSDBEntities db = new FMS.Models.FMSDBEntities();
+    FMS.Controllers.HomeController objHome = new FMS.Controllers.HomeController();
+}
+<style type="text/css">
+    .clienttripsub-menu li
+      {
+          background-color: #78AED6 !important;
+          color: #fff !important;
+      }
+</style>
+<link href="../../Content/Accordion.css" rel="stylesheet" type="text/css" />
+<div style="height: 20px; padding-bottom: 20px;">
+    <table  style="width: 100%;">
+        <tr style="width: 100%;">
+            <td style="width: 50%;">
+                <h3 style="margin-bottom: 4px ! important;">
+                    From Date:</h3>
+                <label id="lbl_fromDate" style="margin-top: -32px; margin-left: 120px; font-weight: bold;float:left;
+                    font-size: 14px;">
+                </label>
+                <input id="logfrom_datepicker" style="display: none;" /><label id="lbl_fromDatePicIcon"
+                    title="Select Date" style="margin-top: -34px; float: right; padding-right: 15%;"><img
+                        src="../../Content/images/small_date-picker-icon.png" style="cursor: pointer;" /></label>
+            </td>
+            <td style="width: 50%;">
+                <h3  style="margin-bottom: 4px ! important;">
+                    To Date:</h3>
+                <label id="lbl_toDate" style="margin-top: -32px; margin-left: 120px; font-weight: bold;float:left;
+                    font-size: 14px;">
+                </label>
+                <input id="logto_datepicker" style="display: none;" /><label id="lbl_toDatePicIcon"
+                    title="Select Date" style="margin-top: -34px; float: right; padding-right: 15%;"><img
+                        src="../../Content/images/small_date-picker-icon.png" style="cursor: pointer;" /></label>
+            </td>
+        </tr>
+    </table>
+      <input type="hidden" id="from_ispostback" value="@ViewBag.fromlogDateStatus" />
+  <input type="hidden" id="to_ispostback" value="@ViewBag.tologDateStatus" />
+</div>
+<div>
+   @{
+       var fromdate = ViewBag.fromDate;
+       var todate = ViewBag.toDate;
+       IDictionary<string, long> Clients = objHome.LoadClients(); 
+     }
+    <div class="page-content">
+        <ul id="ClientWiseTrip" class="accordion">
+            @foreach (var Item in Clients.Keys)
+            {
+                var id= @Clients[Item]+"_"+@fromdate +"_"+@todate;
+                var submenuId = "clienttripsubmenu_"+ @Clients[Item];
+                int value = 0;
+                List<FMS.Models.GeneralClassFields> lstlogsDet = null;
+                lstlogsDet= objHome.GetTripsByClient(Convert.ToInt64(Clients[Item]),fromdate.ToString(), todate.ToString());
+                value = lstlogsDet.Sum(a => a.Value1);
+                <li><a href="#" id="@id"><span style="float: left; width: 50%">@Item.ToUpper()</span>
+                <span style="width: 50%; text-align: center;">@value</span></a>
+                <ul class="clienttripsub-menu" id="@submenuId">
+                </ul>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    var lblfromdate; var lbltodate;
+    $(document).ready(function () {
+
+        $('#ClientWiseTrip ul').hide();
+        $('#ClientWiseTrip li a').click(function () {
+          
+            var openMe = $(this).next();
+            var thisvalue = $(this).attr('id')
+            var IdArray = thisvalue.split('_');
+            var ClientId = IdArray[0];
+            var fromdate = IdArray[1];
+            var todate = IdArray[2];
+            var mySiblings = $(this).parent().siblings().find('ul');
+           
+            if (openMe.is(':visible')) {
+                openMe.slideUp('normal');
+            } else {
+                mySiblings.slideUp('normal');
+                openMe.slideDown('normal');
+                CW_TripsByClient(ClientId, fromdate, todate);
+            }
+        });
+
+      var To_IsPostBack = $('#to_ispostback').val();
+        if (To_IsPostBack == '1') {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0! 
+            var yyyy = today.getFullYear();
+            if (dd < 10) { dd = '0' + dd }
+            if (mm < 10) { mm = '0' + mm }
+            document.getElementById('lbl_toDatePicIcon').value = dd + '/' + mm + '/' + yyyy;
+            lbltodate = $("#lbl_toDatePicIcon").val();
+            $("#lbl_toDate").html(dd + '/' + mm + '/' + yyyy);
+        }
+        var From_IsPostBack = $('#from_ispostback').val();
+        if (From_IsPostBack == '1') {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0! 
+            var yyyy = today.getFullYear();
+            if (dd < 10) { dd = '0' + dd }
+            if (mm < 10) { mm = '0' + mm }
+            document.getElementById('lbl_fromDatePicIcon').value = '01' + '/' + mm + '/' + yyyy;
+            lblfromdate = $("#lbl_fromDatePicIcon").val();
+            $("#lbl_fromDate").html('01' + '/' + mm + '/' + yyyy);
+        }
+
+    });
+    $(function () {
+        $("#logfrom_datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+        $("#lbl_fromDatePicIcon").click(function () {
+            $("#logfrom_datepicker").focus();
+        });
+        //Change event of fromodate 
+        $("#logfrom_datepicker").change(function () {
+            var from_date = $("#logfrom_datepicker").val();
+           
+            lblfromdate = from_date;
+          
+            $.ajax(
+	            {
+	                type: "GET",
+	                url: "/Home/ClientWiseTripView",
+	                dataType: "html",
+	                data: "fromDate=" + from_date + "&toDate= " + lbltodate,
+	                success: function (data) {
+	                    $('#ClientWiseTripView').html(data);
+
+	                },
+	                error: function (req, status, error) {
+	                    alert("ERROR:" + error.toString() + " " + status + " " + req.responseText);
+	                }
+	            });
+            $("#lbl_fromDate").html(lblfromdate);
+        });
+        $("#lbl_fromDate").html(lblfromdate);
+    });
+    $(function () {
+        $("#logto_datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+
+        $("#lbl_toDatePicIcon").click(function () {
+            $("#logto_datepicker").focus();
+        });
+        //Change event of Todate 
+        $("#logto_datepicker").change(function () {
+            var to_date = $("#logto_datepicker").val();
+            lbltodate = to_date;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: "/Home/ClientWiseTripView",
+                        dataType: "html",
+                        data: "fromDate=" + lblfromdate + "&toDate= " + to_date,
+                        success: function (data) {
+                            $('#ClientWiseTripView').html(data);
+                        },
+                        error: function (req, status, error) {
+                            alert("ERROR:" + error.toString() + " " + status + " " + req.responseText);
+                        }
+                    });
+            $("#lbl_toDate").html(lbltodate);
+        });
+        $("#lbl_toDate").html(lbltodate);
+    });
+
+    //function to load data  by selection on Client
+    function CW_TripsByClient(ClientId, fromdate, todate) {
+        if ($('#clienttripsubmenu_' + ClientId + ' li').length == 0) {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Home/CW_TripsByClient",
+                data: "ClientId=" + ClientId + "&fromDate=" + fromdate + "&toDate=" + todate,
+                dataType: "html",
+                success: function (data) {
+                     $('#clienttripsubmenu_' + ClientId + '').html(data);  
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,307 @@
+﻿@model FMS.Models.InventoryIssuedDetail
+<div class="clsmodalheader">
+    Add Issue Item</div>
+@using (Html.BeginForm("AddIndentItem", "Indent", new { area = "Inventory" }, FormMethod.Post, new { id = "frmAddIndentItem", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <p style="margin-top: 20px;">
+        Vehicle Reg# : <span style="color: Green; font-weight: bold;">@ViewBag.Vehicle</span>
+    </p>
+    <h2 class="clsmark">@ViewBag.ErrorMessage</h2>
+    <div id="Issue_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 30%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loader.gif")" alt="Loading..." />
+    </div>
+    <table class="table table-striped table-condensed table-bordered">
+        <tr>
+            <td colspan="2">
+                <span id="NewIssueerrormsg" class="clsmark"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Select Item to Issue<span class="clsmark">*</span>
+            </th>
+            <td>
+                @Html.DropDownList("ddlItem", (IEnumerable<SelectListItem>)ViewBag.ItemId, "--Select Item--")
+                <input type="hidden" id="hdnItem" name="hdnItem" />
+                <input type="hidden" id="hdnItemId" name="hdnItemId" />
+                <input type="hidden" id="customerid" name="customerid" />
+                <input type="hidden" id="VehicleId" name="VehicleId" />
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Qty. <span class="clsmark">*</span>
+            </th>
+            <td>
+                @Html.TextBox("txtQty", null, new { @style = "width:40px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Reorder Level
+            </th>
+            <td>
+                <span id="ReorderLevel"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Specification
+            </th>
+            <td>
+                <span id="Specification"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="clsspan" id="SpanLabel">Avail Qty </span>
+            </td>
+            <td>
+                <span id="SpanAvailQty" class="clsmark"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="clsspan">Amount</span>
+            </td>
+            <td>
+                <span class="clsmark" id="ItemAmount"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="clsspan">Total Amt</span>
+            </td>
+            <td>
+                <span class="clsmark" id="TotalAmount"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" id="btnSaveAndNextItem" value="Save & Next" class="btn btn-primary" />
+                &nbsp;&nbsp;
+                <input type="button" class="btn btn-primary" value="Save & Close" id="btnAddAndCloseItem" />
+                &nbsp;&nbsp;
+                <input type="button" class="btn btn-light-grey" data-dismiss="modal" value="Close"
+                    id="btnClose" />
+            </td>
+        </tr>
+    </table>
+}
+<script type="text/javascript">
+    $('#Issue_loading').fadeOut('slow');
+    $("#txtQty").change(function () {
+        var Qty = $(this).val();
+        var AvailQty = $('#SpanAvailQty').html();
+        var ItemAmt = $('#ItemAmount').html();
+        $('#TotalAmount').html(Qty * ItemAmt);
+        var a = parseInt(Qty)
+        var b = parseInt(AvailQty)
+        if (Qty.charAt(0) == 0) { // or use Qty.slice(0, 1)
+            $(this).val("")
+            return;
+        }
+        if ($.trim($('#ddlItem').val()) == "") {
+            alert("Please select the item to be added");
+            $(this).val("");
+            $('#TotalAmount').html('0');
+            $('#ddlItem').focus();
+            $("#NewIssueerrormsg").hide();
+            return;
+        }
+    });
+    // Add Item List here
+    $('#btnSaveAndNextItem').click(function () {
+        AddIssuedItem($(this).attr('id'));
+    });
+    $('#btnClose').click(function () {
+        $.modal.close();
+    });
+    function AddIssuedItem(ClickId) {
+
+        if ($.trim($('#ddlItem').val()) == "") {
+            $("#NewIssueerrormsg").show();
+            $("#NewIssueerrormsg").text("Please select the item to be added");
+            $('#ddlItem').focus();
+            return;
+        }
+        if ($.trim($('#txtQty').val()) == "") {
+            $("#NewIssueerrormsg").show();
+            $("#NewIssueerrormsg").text("Please enter quantity");
+            $('#txtQty').focus();
+            return;
+        }
+        var ItemId = $('#ddlItem').val();
+        var VehicleId = $('#VehicleId').val();
+        var Qty = $('#txtQty').val();
+        $('#Issue_loading').show();
+        var IssueId = $("#hdnIssuedId").val();
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $.post('@Url.Action("OutwardItemListAdd", "Stores", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty + '&Emp_Id=' + null + '&VehicleId=' + VehicleId + '', function (data) {
+                if (data.success) {
+                    LoadIssueItems(data.IssueId)
+                    ClearAll();
+                    $('#Issue_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        SaveIssuedItems();
+                    }
+                }
+            });
+        }
+        else {
+            $.post('@Url.Action("OutwardItemListAdd", "Stores", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty + '&Emp_Id=' + null + '&Issued_Id=' + IssueId + '&VehicleId=' + VehicleId + '', function (data) {
+                if (data.success) {
+                    LoadIssueItems(data.IssueId)
+                    ClearAll();
+                    $('#Issue_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        SaveIssuedItems();
+                    }
+                }
+            });
+        }
+    }
+
+    $("#btnAddAndCloseItem").click(function () {
+        $('#Issue_loading').show();
+        AddIssuedItem($(this).attr('id'));
+        $.modal.close();
+    });
+
+    function LoadIssueItems(IssueId) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("LoadIssueItems", "Stores", new { area = "Inventory" })?IssueId=' + IssueId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#IssuedDetList').html('');
+                      $('#IssuedDetList').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+
+    function SaveIssuedItems() {
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $('#Issue_loading').show();
+            $.post('@Url.Action("OutwardCreate", "Stores", new { area = "Inventory" })?VehicleId=' + $('#VehicleId').val(), $('#OutwardIssueForm').serialize(), function (data) {
+                if (data.success) {
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    window.location.href = '@Url.Action("Outward", "Stores", new { area = "Inventory" })';
+                }
+                else {
+                    $('#Issue_loading').hide();
+                    alert(data.msg);
+                }
+            });
+        } else {
+            $('#Issue_loading').show();
+            $.post('@Url.Action("OutwardEdit", "Stores", new { area = "Inventory" })?VehicleId=' + $('#VehicleId').val(), $('#OutWardEntryForm').serialize(), function (data) {
+                if (data.success) {
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    $('#Issue_loading').hide();
+                    window.location.href = '@Url.Action("Outward", "Stores", new { area = "Inventory" })';
+                }
+                else {
+                    $('#Issue_loading').hide();
+                    alert(data.msg);
+                }
+            });
+        }
+    }
+
+    function GetAvailQuantity(ItemId, VehicleId) {
+        $.post('@Url.Action("GetAvailQty", "Stores", new { area = "Inventory" })?ItemId=' + ItemId + "&VehicleId=" + VehicleId, function (data) {
+            $('#SpanLabel').show();
+            $('#SpanAvailQty').html(data);
+        });
+    }
+    $('#ddlItem').change(function () {
+        var ItemId = $(this).val();
+        if (ItemId == "") {
+            $('#SpanAvailQty').html('0')
+            $('#ItemAmount').html(0);
+            $('#TotalAmount').html('0');
+            //document.getElementById('txtQty').disabled = false;
+            $("#NewIssueerrormsg").hide();
+            return;
+        }
+        var VehicleId = $("#VehicleId").val();
+        if (VehicleId != "") {
+            // GetAvailQuantity(Selectedval, CampusId);
+            $.get('@Url.Action("GetItemDetails", "Stores", new { area = "Inventory" })?ItemId=' + ItemId + "&VehicleId=" + VehicleId, function (data) {
+                if (data.success) {
+                    $('#ReorderLevel').html(data.ReorderLevel);
+                    $('#Specification').html(data.Specification);
+                    $('#ItemAmount').html(data.Amount);
+                    $('#SpanAvailQty').html(data.AvailQty);
+                    var b = parseInt(data.AvailQty)
+                    $('#Indent_loading').hide();
+                }
+            });
+        }
+        else {
+            alert("Please select a vehicle to get available quantity.");
+            $('#ddlItem option[value=""]').attr("selected", "selected");
+        }
+    });
+    function ClearAll() {
+        $('#ddlItem').val("");
+        $('#ddlItem').focus();
+        $('#hdnItem').val("");
+        $('#txtQty').val("");
+        $('#SpanAvailQty').html('0');
+        $('#ItemAmount').html(0);
+        $('#TotalAmount').html('0');
+    }
+    $(".validate").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#NewIssueerrormsg").show();
+                $("#NewIssueerrormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#NewIssueerrormsg").show();
+                    $("#NewIssueerrormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#NewIssueerrormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#NewIssueerrormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

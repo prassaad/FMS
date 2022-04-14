@@ -1,0 +1,230 @@
+﻿@model FMS.Models.InventoryModel.StockManagement
+
+@{
+    ViewBag.Title = "Inward Create";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    List<FMS.Models.InventoryStockRegDetail> StockRegDetList;
+} 
+<form id="InwardEntryForm" action="@Url.Action("InwardCreate", "Stores", new { area = "Inventory" })" method="post" enctype="multipart/form-data">
+<h2><i class="fa fa-pencil-square teal"></i> Inward Create with Source <b> <a href="#" id="btnPORef" onclick="GetPurchaseOrderDetails('@Model._StockReg.SourceDoc')" style="text-decoration:underline;color:Red;">@Model._StockReg.SourceDoc </a></b></h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li> <a id="FiscialYears" class="button_bg" href="@Url.Action("Inward", "Stores")">Cancel</a> </li>
+           <li> <input type="button" id="btnStockEntry" class="btn btn-xs btn-primary" value="Save Stock Entry" style="margin-top:-10px;" /> </li>
+        </ul>
+    </div>
+</div> 
+ <div class="row">
+ <div class="col-md-10">
+     <p class="clsmark" style="width:320px;margin:10px;"> 
+            &nbsp;* marked fields are mandatory. </p>
+   
+    <table cellpadding="5"  class="table-striped table-condensed dTableR dataTable table-bordered">
+        <tr>
+             <td>
+                Receipt No.<span class="clsmark">*</span>
+            </td>
+            <td>
+                @Html.TextBox("txtreceiptno", Model._StockReg.ReceiptNO, new  { @readonly = true, @style = "width: 150px;Background-color:#ddd;", @class = "BoxBackground" })
+                 <input type="hidden" id="hdnIsFromPOrder" name="hdnIsFromPOrder" value="1" />
+                 <input type="hidden" id="hdnSource" name="hdnSource" value="@Model._StockReg.SourceDoc " />
+            </td>
+            <td>
+                Date:<span class="clsmark">*</span>
+            </td>
+            <td>
+                @Html.TextBox("entry_dt", Model._StockReg.EntryDt.Value.ToShortDateString(), new { @style = "width:150px;", @class = "BoxBackground datetimepicker", @onkeypress = "return numberValidate(event);" })
+            </td>
+        </tr>
+       <tr>
+        <td>
+            Remark
+        </td>
+        <td colspan="3">
+            @Html.TextArea("txtremark", Model._StockReg.Remarks, new { @style = "resize:none;height:69px;width:391px;"  })
+        </td>
+       </tr>
+       <tr>
+       <td colspan="4">
+           <div class="col-md-8" id="divItemEntry" style="margin-left:-5px;">
+        <h3>
+              <i class="fa fa-pencil-square teal"></i> Item(s) to be Add
+        </h3>
+        <div class="datagrid">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Select Item to Add
+                    </th>
+                    <th>
+                        Qty.
+                    </th>
+                    <th>
+                        UOM
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DropDownList("ddlItem", (IEnumerable<SelectListItem>)ViewData["ItemsList"], "--Select Item--", new { @style = "width:220px;" })
+                        <input type="hidden" id="hdnItem" name="hdnItem" />
+                        <input type="hidden" id="hdn_stock_reg_id" name="hdn_stock_reg_id" value="@Model._StockReg.ID" />
+                    </td>
+                    <td>
+                        <input type="text" id="txtQty" name="txtQty" maxlength="8" style="width: 50px;" class="BoxBackground"  onkeypress ="return numberValidate(event);"/>
+                    </td>
+                    <td>
+                        <select id="UnitId" name="UnitId" style="width: 120px;">
+                                            <option value="0">- Select -</option>
+                                        </select> &nbsp;
+                        <button class="btn btn-xs btn-primary" id="btnAdd" type="button"><i class="fa fa-plus"></i> 
+						 	Add Item</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>   
+           @{ ViewData["IsEdit"] = "0"; }  
+       </td> 
+       </tr>
+    </table>
+   
+</div> 
+</div> </form>
+<div class="col-md-8">
+    @{ StockRegDetList = Model._Regdetiail; }
+    @if (StockRegDetList != null)
+    {
+        <div id="StockRegDetList">
+            @{ Html.RenderPartial("_ItemListAdd", StockRegDetList.OrderBy(a => a.Slno)); }
+        </div>
+    }
+</div>
+ 
+ <script type="text/javascript">
+     $('#loading').hide();
+     LoadUOMByItem($('#ddlItem').val());
+     $(function () {
+         $(".datetimepicker").datepicker({
+             changeMonth: true,
+             changeYear: true,
+             dateFormat: 'dd/mm/yy'
+         });
+     });
+     $("#hrfAdd").click(function () {
+         $('#divItemEntry').show();
+     });
+     // Item Change Event
+     $('#ddlItem').change(function () {
+         LoadUOMByItem($(this).val());
+     });
+     function numberValidate(evt) {
+         var charCode = (evt.which) ? evt.which : evt.keyCode
+         if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+         { return true; } else { return false; }
+     }
+     function LoadUOMByItem(ItemId) {
+         if ($("#ddlItem option:selected").text() == "--Select Item--") {
+             $('#UnitId').html('<option value="">- Select -</option>');
+         }
+         else {
+             $.ajax({
+                 type: "GET",
+                 contentType: "application/json; charset=utf-8",
+                 url: '@Url.Action("LoadUOMByItem", "Stores", new { area = "Inventory" })',
+                 data: "ItemId=" + ItemId,
+                 dataType: "json",
+                 success: function (data) {
+                     if (data.length > 0) {
+                         var options = "";
+                         if (data.length == 1) {
+                             $('#UnitId').html('<option value=' + data[0].Id + '>' + data[0].UnitsText + '</option>');
+                             //LoadCoursesByCampus(data[0].campusId);
+                         }
+                         else {
+                             $('#UnitId').html('<option value="0">- Select -</option>');
+                             for (var i = 0; i < data.length; ++i) {
+                                 options += "<option value='" + data[i].Id + "'>" + data[i].UnitsText + "</option>";
+                                 sModel = data[i].Id;
+                             }
+                             $("#UnitId").append(options);
+                         }
+                     }
+                     else {
+                         $('#UnitId').html('<option value="0">- Select -</option>');
+                     }
+                 }
+             });
+         }
+     }
+
+     // Stock register master Validations and save stock 
+     $('#btnStockEntry').click(function () {
+         // validate here 
+         if ($.trim($('#entry_dt').val()) == "") {
+             alert("Please enter entry date.");
+             $('#entry_dt').focus();
+             return;
+         }
+         if ($.trim($('#StockRegDetList').html()) == "") {
+             alert("Please add items below to continue the process");
+             $('#txtItem').focus();
+             return;
+         }
+         $('#loading').fadeIn('slow');
+         // save stock here 
+         $.post('@Url.Action("InwardCreate", "Stores", new { area = "Inventory" })', $('#InwardEntryForm').serialize(), function (data) {
+             if (data.success) {
+                 $('#loading').fadeOut('slow');
+                 alert(data.msg);
+                 window.location.href = '@Url.Action("Inward", "Stores", new { area = "Inventory" })';
+             }
+             else {
+                 $('#loading').fadeOut('slow');
+                 alert(data.msg);
+             }
+         });
+     });
+
+
+     // Add Item List here
+     $('#btnAdd').click(function () {
+         if ($.trim($('#ddlItem').val()) == "") {
+             alert("Please select the item to be added");
+             $('#ddlItem').focus();
+             return;
+         }
+         if ($.trim($('#txtQty').val()) == "") {
+             alert("Please enter quantity");
+             $('#txtQty').focus();
+             return;
+         }
+         if ($.trim($('#UnitId').val()) == "") {
+             alert("Please select unit(s)");
+             $('#UnitId').focus();
+             return;
+         }
+
+         var ItemId = $('#ddlItem').val();
+         var Qty = $('#txtQty').val();
+         var unitId = $('#UnitId').val();
+         $('#loading').show();
+         $.post('@Url.Action("ItemListAdd","Stores",new{area="Inventory"})?ItemName=' + $("#ddlItem option:selected").text() + '&ItemId=' + ItemId + '&Qty=' + Qty + '&UnitsId=' + unitId, function (data) {
+             $('#loading').hide();
+             $('#StockRegDetList').html('');
+             $('#StockRegDetList').html(data);
+             $('#ddlItem').val("");
+             $('#hdnItem').val("");
+             $('#txtQty').val("");
+             $('#UnitId').val("");
+             $('#ddlItem').focus();
+         });
+     });
+     function GetPurchaseOrderDetails(PORefNo) {
+         window.location.href = '@Url.Action("GetPurchaseOrderDetailsByRefNo","Stores",new{area="Inventory"})?RefNo=' + PORefNo;
+     }
+    </script>

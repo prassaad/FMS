@@ -1,0 +1,74 @@
+﻿@model IEnumerable<FMS.Models.tbl_km_client_rate>
+@using FMS.Models
+@{
+    core objCore = new core();
+    long ID = 0;
+    } 
+
+ <p style="color: Red; font-style: italic;">
+        @(ViewBag.ErrorMsg)
+     </p>
+    @if (Model != null)
+    {
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>SNO</th>
+        <th>
+            Location 
+        </th>
+        <th>
+            Approved KM
+        </th>
+        <th>
+            Client Rate
+        </th>
+    
+      @*  <th></th>*@
+    </tr>
+    @{ID = 0;}
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @{
+    ID = ID + 1;
+            }
+            @ID
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Location)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApprovedKM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClientRate)
+        </td>
+     @*   <td>
+            <a href="#" onclick="RemoveItem('@Html.Encode(ID)');">
+                <img alt="Delete" src="../../Content/images/minus.png" /></a>
+        </td>*@
+    </tr>
+}
+
+</table>
+    }
+<script type="text/javascript">
+
+    function RemoveItem(ID) {
+        $.ajax(
+    {
+        type: "POST",
+        url: "/Client/RemoveKMItem",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddedClientRateList').html(result);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+</script>

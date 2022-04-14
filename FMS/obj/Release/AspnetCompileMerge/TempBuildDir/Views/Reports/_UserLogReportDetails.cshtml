@@ -1,0 +1,177 @@
+﻿@using FMS.Models;
+@{
+    bool IsLogSheet = ViewBag.IsLogSheet;
+    List<tbl_log_sheets> _logDet = null;
+    List<tbl_diesel_tracking> _dieselDet = null;
+    core objCr = new core();
+    string displayMessage = string.Empty; 
+    if (IsLogSheet)
+    {
+        _logDet = (List<tbl_log_sheets>)ViewBag.List;
+        displayMessage = "View LogSheet Details";
+    }
+    else
+    {
+        _dieselDet = (List<tbl_diesel_tracking>)ViewBag.List;
+        displayMessage = "View Diesel Tracking Details";
+    }
+}
+<style type="text/css">
+    p
+    {
+    	margin:10px;
+    	margin-bottom:15px;
+    }    
+</style>
+<div class="clsmodalheader">&nbsp; @displayMessage </div>
+ <div style="overflow: auto;z-index:9999;height:480px;" id="divNewDutylog">
+@if (_logDet != null)
+{
+    <table class="table table-striped table-condensed dTableR dataTable" id="tbl_DutyLogs">
+        <tr>
+            <th>
+                Client Name
+            </th>
+            <th>
+                Vehicle Reg#
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Driver Name
+            </th>
+            <th>
+                Log Date
+            </th>
+            <th>
+                LogSheet#
+            </th>
+            <th>
+                Tripe Type
+            </th>
+            <th>
+                Location
+            </th>
+        </tr>
+        @foreach (var item in _logDet)
+        {
+            <tr>
+                <td>
+                    @(objCr.GetClient((long)item.ClientID))
+                </td>
+                <td>
+                    @objCr.GetVehicleRegNumber((long)item.VehicleID)
+                </td>
+                <td>
+                    @objCr.GetVehicleType((long)item.VehicleTypeID)
+                </td>
+                <td>
+                    @objCr.GetVehicleModel((long)item.VehicleModelID)
+                </td>
+                <td>
+                    @objCr.GetDriver((long)item.DriverID)
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+                </td>
+                <td>
+                    @item.LogSheetNum
+                </td>
+                <td>
+                    @item.TripeType
+                </td>
+                <td>
+                    @item.Location
+                </td>
+            </tr>
+            }
+    </table>
+}
+else if (_dieselDet != null)
+{
+    <table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Date
+        </th>
+        <th>
+            Client
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Book#    
+        </th>
+        <th>
+            Token# 
+        </th>
+        <th>
+            Liter(s)
+        </th>
+        <th>
+            Price/Liter
+        </th>
+        <th>
+            Total Amount
+        </th>
+    </tr>
+     
+    @foreach (var item in _dieselDet)
+    {
+        <tr>
+            <td>
+                @Html.Encode(item.Date.Value.ToString("dd/MM/yyyy"))
+            </td>
+            <td>
+                @(objCr.GetClient((long)item.ClientID))
+            </td>
+            <td>
+                @(objCr.GetVehicleRegNumber((long)item.VehicleID))
+            </td>
+            <td>
+                @(item.CardNum)
+            </td>
+            <td>
+                @(item.DieselTokenNum)
+            </td>
+            <td>
+                @(item.TokenValue)
+            </td>
+            <td>
+                @(item.PricePerLiter)
+            </td>
+            <td>
+                @(item.TotalAmount)
+            </td>
+        </tr>
+    }
+     
+</table>
+}
+else
+{
+    <center>
+    <br />
+    <h2 style="color: #d11717; font-weight: bold;">
+        No Data Found</h2>
+    <br />
+    <p>
+        Your search did not match any Data/deleted
+    </p>
+    <br />
+   
+    <p style="text-decoration: underline; font-weight: bold;">
+        Suggestions:</p>
+    <p>
+        <span>&#10003</span> Make sure all fields are correct.</p>
+    <p>
+        <span>&#10003</span> Try different keywords.
+    </p>
+</center>
+}
+</div>

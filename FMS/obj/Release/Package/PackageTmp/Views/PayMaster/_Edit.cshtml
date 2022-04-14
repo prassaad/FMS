@@ -1,0 +1,56 @@
+﻿@model FMS.Models.tbl_pay_master
+ <form id="frmEditPayMaster" method="post" enctype="multipart/form-data">
+ <div class="clsmodalheader">Edit Pay Master </div>
+<div style="overflow: auto;z-index:9999;">
+<table class="table-striped table-condensed dTableR dataTable">
+    <tr>
+        <td>
+            Emp No.
+        </td>
+        <td>
+            @Html.TextBox("EmpNo", Model.tbl_employees.EmpNo, new { @readonly = true, @style = "background-color:#DDD" })
+        </td>
+    </tr> 
+    <tr>
+        <td>
+            Emp Name.
+        </td>
+        <td>
+            @Html.TextBox("EmpName", Model.tbl_employees.FirstName + " " + Model.tbl_employees.LastName , new { @readonly = true, @style = "background-color:#DDD" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Pay Name
+        </td>
+        <td>
+            @Html.TextBox("PayName", Model.tbl_pay_fields.PayName, new { @readonly = true, @style = "background-color:#DDD" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+           @if (Model.tbl_pay_fields.PayName == "BP")
+           { <text>Salary </text> }
+           else {<text>Formula </text> } 
+        </td>
+        <td>
+            @Html.TextBox("Formula", Model.Formula)
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <input type="button" id="btnEditPayMaster" value="Save" />
+        </td>
+    </tr>
+</table>
+</div>
+</form>          
+<script type="text/javascript">
+    $('#btnEditPayMaster').click(function () {
+        $.post('/PayMaster/Edit?Id=' + '@Model.ID', $('#frmEditPayMaster').serialize(), function (data) {
+            $("#divSimpleModalDet").html(data);
+        });
+    });
+</script>

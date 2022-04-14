@@ -1,0 +1,224 @@
+﻿@model FMS.Models.tbl_diesel_books
+ @{
+     Session["DieselBook"] = null;
+  }
+ 
+<style type="text/css">
+ .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+     .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+     .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+</style>
+<div class="clsmodalheader">Add Diesel Book Details</div>
+@using (Html.BeginForm("Create", "DieselBook", FormMethod.Post, new { id = "frmDieselBook", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+ <div style="overflow: auto;z-index:9999;height:450px;" id="divDieselBookDet">
+     <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+             <td colspan="2" style="height: 12px; padding-top: 10px;">
+                 <span id="SpanValidateMsg" style="color: Red; display: none; font-weight: bold;">
+                 </span>
+             </td>
+         </tr>
+         <tr>
+             <td>
+                 Fuel Station <span style="color: Red;">*</span>
+             </td>
+             <td>
+                 @Html.DropDownList("FuelStationID", null, "-Select Fuel Station-", new { @tabindex = 1, @style = "width:220px;" })
+             </td>
+         </tr>
+          <tr>
+            <td>
+                Book No. <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("BookNo", null, new { @class = "txtInput isAlphaNumeric", @tabindex = 2 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Token No. <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("TokenNumber", null, new { @class = "txtInput isAlphaNumeric", @tabindex = 3 })
+            </td>
+        </tr>
+         <tr>
+             <td>
+                 Liters <span style="color: Red;">*</span>
+             </td>
+             <td>
+                 @Html.TextBox("TokenValue", null, new { @class = "txtInput isFloat", @tabindex = 4 })
+             </td>
+         </tr>
+         <tr>
+            <td>
+                Rate per liter <span style="color:Red">*</span>
+            </td>
+            <td>
+                @Html.TextBox("PricePerLiter", null, new { @class = "txtInput isFloat", @tabindex = 5 })
+            </td>
+         </tr>
+         <tr>
+            <td>
+                Site
+            </td>
+            <td>
+                @Html.TextBox("Site", null, new { @class = "txtInput isAlphaNumeric", @tabindex = 6 })
+            </td>
+         </tr>
+         <tr>
+             <td>
+             </td>
+             <td>
+                 <input type="button" value="Add Diesel Book" id="btnCreateDieselBook" tabindex="7" />
+             </td>
+         </tr>
+     </table>
+</div>
+}
+<script type="text/javascript" language="javascript">
+    
+    // Set on focus to vehicle reg number
+    $("#FuelStationID").focus();
+    var i = 0;
+    // button click event for btnCreateAdvance
+    $("#btnCreateDieselBook").click(function () {
+        if (!ValidateFields()) {
+            return;
+        }
+        // Call Ajax Post Method Here 
+        var frmColl = $("#frmDieselBook").serialize();
+        $("#div_loading").show();
+        $("#div_loading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "POST",
+                  url: "../DieselBook/AddNewDieselBookDetails",
+                  dataType: "html",
+                  data: "FuelStationID=" + $('#FuelStationID').val() + "&frm=" + frmColl,
+                  success: function (result, textStatus, jqXHR) {
+                      $('#divDieselBookList').html('');
+                      $('#divDieselBookList').html(result);
+
+                      if (i < 10) {
+                          if (confirm('Are you want to Add one more Diesel Book Entry in the List?')) {
+                              i = i + 1;
+                              ClearAllFields();
+                              $("#div_loading").hide();
+                              $("#div_loading").fadeOut('slow');
+                          }
+                          else {
+                              document.getElementById("frmDieselBook").submit();
+                              i = 0;
+                              ClearAllFields();
+                              $("#div_loading").hide();
+                              $("#div_loading").fadeOut('slow');
+                          }
+                      }
+                      else {
+                          alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                          document.getElementById("frmDieselBook").submit();
+                          i = 0;
+                      }
+                  },
+                  error: function (error) {
+                      // alert(error);
+                  }
+              });
+
+    });
+    // Validation Method
+    function ValidateFields() {
+        var FuelStationId = $('#FuelStationID').val();
+        var BookNo = $('#BookNo').val();
+        var TokenNo = $('#TokenNumber').val();
+        var TokenValue = $('#TokenValue').val();
+        var PricePerLiter = $('#PricePerLiter').val();
+
+        if (FuelStationId == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select fuel station name.');
+            $("#FuelStationID").focus();
+            return false;
+        }
+        if (BookNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter book number.');
+            $("#BookNo").focus();
+            return false;
+        }
+        if (TokenNo == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter token number.');
+            $("#TokenNumber").focus();
+            return false;
+        }
+        if (TokenValue == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter token value.');
+            $("#TokenValue").focus();
+            return false;
+        }
+        if (PricePerLiter == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter rate.');
+            $("#PricePerLiter").focus();
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+        return true;
+    }
+    // Clear All Fields
+    function ClearAllFields() {
+        $('#FuelStationID').val("");
+        $('#BookNo').val("");
+        $('#TokenNumber').val("");
+        $('#TokenValue').val("");
+        $('#PricePerLiter').val("");
+    }
+
+    $(".isAlphaNumeric").change(function () {
+       var title = isAlphaNumeric(this.value);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Special Characters are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $('#divDieselBookDet').animate({ scrollTop: 0 }, 'slow');
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+    });
+
+    $(".isFloat").change(function () {
+        var title = isFloat(this.value);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Special Characters and Alphabets are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $('#divDieselBookDet').animate({ scrollTop: 0 }, 'slow');
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+    });
+</script>

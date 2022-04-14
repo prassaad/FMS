@@ -1,0 +1,17 @@
+﻿@model FMS.Models.tbl_deposits_deductions
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Delete</h2>
+<h3>
+    Are you sure you want to delete this deposit in the name of @(Model.tbl_vendor_details.FirstName + " " + Model.tbl_vendor_details.LastName)
+    ?</h3>
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+}

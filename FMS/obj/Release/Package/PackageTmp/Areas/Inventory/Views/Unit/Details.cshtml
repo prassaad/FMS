@@ -1,0 +1,35 @@
+﻿@model FMS.Models.InventoryUnitsMaster
+
+@{
+    ViewBag.Title = "Unit Details";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+<ol class="breadcrumb">
+    <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Unit")">
+        Cancel</a> </li>
+</ol>
+<h3>Unit Details</h3>
+
+<div class="col-sm-8">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>
+                Unit
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.UnitsText)
+            </td>
+        </tr>
+        <tr>
+            <td>
+               Short Name
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.UnitsShortText)
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $('#loading').hide();
+</script>

@@ -1,0 +1,212 @@
+﻿@model FMS.Models.tbl_booking_cab_details
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+<style type="text/css">
+    .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+   
+
+    .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+ 
+ #btnAddlogentry:focus {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+}
+</style>
+<fieldset>
+  <legend>Vehicle Details</legend>
+    
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2">
+                <span style="color: Red" id="spnValidateMsg"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Veh. Reg# <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.VehicleId, new { @class = "txtAutoComplete", @tabindex = 1 , @placeholder = "Search cab number" })
+                @Html.Hidden("vid")
+                @Html.HiddenFor(model => model.BookingId)
+                
+            </td>
+            
+        </tr>
+        <tr>
+            <td>
+                Driver <span style="color: Red;">*</span>
+            </td>
+            <td>
+                <select id="DriverID" name="DriverId" class="txtInput" tabindex="3">
+                    <option value="0">--Select Driver--</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Veh. Type <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.DropDownList("VehicleTypeId", null, "--Select Vehicle Type--", new { @class = "txtInput", @tabindex = 4 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact No. <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ContactNo, new { @maxlength = 10, @class = "txtInput", @onkeypress = "return numberValidate(event);" , @tabindex = 5 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Auto Trigger<small>(Mail)</small>  
+            </td>
+            <td>
+                <input type="checkbox" id="IsTrigger" name="IsTrigger" tabindex="6" /> <input type="button" style="margin-top: 5px;" id="btnConfirmBooking" class="btnnewlog" tabindex="7" value="Confirm Booking" onclick="ConfirmVehicleBooking();" />
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript">
+//    $("#VehicleId").focus();
+    $("html, body").animate({ scrollTop: 200 }, "slow");
+    $("#VehicleId").autocomplete("/LogsheetManagement/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+    $('#DriverID').change(function () {
+        if ($(this).val() != '') {
+            GetDriverNumberByDriver($(this).val());
+        }
+    });
+    function OnselectItem(li) {
+        $('#vid').val(0);
+        if (li == null) $('#vid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+            GetVehicleDriver(sValue);
+            $('input[tabindex="7"]').focus();
+        }
+        else var sValue = li.selectValue;
+        $('#vid').val(sValue);
+        $('input[tabindex="7"]').focus();
+    }
+    function GetVehicleDriver(VehicleID) {
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").hide();
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#DriverID").append(options);
+                    $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+                    GetDriverNumberByDriver(sModel);
+                    $('#DriverID option:contains("Loading...")').remove();
+                    $("#divlog_loading").fadeOut('slow');
+                }
+                else {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").show();
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#DriverID").append(options);
+                        $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+                        GetDriverNumberByDriver(sModel);
+                    }
+                    $("#divlog_loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function ConfirmVehicleBooking() {
+        if (ValidateForm()) {
+            $('#loading').fadeIn('slow');
+            $.post('/Bookings/ConfirmBooking', $('#frmBooking').serialize(), function (data) {
+                alert(data.msg);
+                $('#loading').fadeOut('slow');
+                if (data.success) {
+                    window.location.href = '/Bookings/Index';
+                }
+            }); 
+        }
+    }
+    function ValidateForm() {
+        var vehicle = $('#VehicleId').val();
+        var driverId = $('#DriverID').val();
+        var VehicleTypeId = $('#VehicleTypeId').val();
+        var contact = $('#ContactNo').val();
+        if (vehicle == '') {
+            $('#spnValidateMsg').html('Please search the vehicle number');
+            $('#VehicleId').focus();
+            return false;
+        }
+        if (driverId == '') {
+            $('#spnValidateMsg').html('Please select the driver');
+            $('#DriverID').focus();
+            return false;
+        }
+        if (VehicleTypeId == '') {
+            $('#spnValidateMsg').html('Please select the vehicle type');
+            $('#VehicleTypeId').focus();
+            return false;
+        }
+        if (contact == '') {
+            $('#spnValidateMsg').html('Please enter driver contact number');
+            $('#ContactNo').focus();
+            return false;
+        }
+        return true;
+    }
+    function GetDriverNumberByDriver(Id) {
+        $.get('/Bookings/GetDriverNumberByDriver?Id=' + Id, function (data) {
+            $('#ContactNo').val(data);
+        });
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>

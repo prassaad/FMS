@@ -1,0 +1,83 @@
+﻿@model IEnumerable<FMS.Models.tbl_diesel_tracking>
+@using FMS.Models;
+@{
+    ViewBag.Title = "List of Diesel Tracking Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+}
+
+<h2>List of Diesel Tracking Details</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(28, User.Identity.Name).List)
+            {  <li>@Html.ActionLink("Bulk Upload", "DieselTrackingUpload", "Upload")</li> }
+            @if ((bool)core.GetUserAccess(7, User.Identity.Name).Add)
+            {  <li class="active">@Html.ActionLink("Create New", "Create")</li>}
+        </ul>
+    </div>
+</div>
+ <div id="div_export" style="padding-bottom: 5px;padding-left:85%; ">
+    <a href="@Url.Action("DieselTrackingExportToExcel", "DieselTracking")" id="btnExportExcel" class="DTTT_button" >Excel</a> 
+</div>
+    <table class="table table-striped table-condensed dTableR dataTable" id="tbl_diesel_tracking_list">
+      
+        
+    </table>
+ 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_diesel_tracking_list').dataTable({
+            "bStateSave": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "iDisplayLength": 10,
+            "sDom": "<'row'<'span6'<'dt_actions'>l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "sAjaxSource": "/DieselTracking/GetDieselTracking",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var id = aData[0];
+                $('td:eq(0)', nRow).html('&nbsp;');
+                if (aData[12] == "True") {
+                    $('td:eq(12)', nRow).html('<span class="system positive">Yes</span>')
+                }
+                else {
+                    $('td:eq(12)', nRow).html('<span class="system negative">No</span>')
+                }
+                $('td:eq(13)', nRow).html('@if ((bool)core.GetUserAccess(7, User.Identity.Name).Edit){ <a href="/DieselTracking/Edit/' + aData[0] + '">Edit</a>  } ' +
+                    '@if ((bool)core.GetUserAccess(7, User.Identity.Name).Audit){ <text> | </text> <a href="#" onclick="AuditDiesel(' + aData[0] + ')">Audit</a> }' +
+                    '@if ((bool)core.GetUserAccess(7, User.Identity.Name).Delete){ <text> | </text> <a href="/DieselTracking/Delete/' + aData[0] + '">Delete</a> }');
+                $('td:eq(13)', nRow).attr('style', 'width:80px;');
+                return nRow;
+            },
+            "aoColumns": [
+            { "sTitle": "" },
+            { "sTitle": "Date" },
+            { "sTitle": "Fuel Station Name" },
+            { "sTitle": "Diesel Token#" },
+            { "sTitle": "Book No." },
+            { "sTitle": "Litre(s)" },
+            { "sTitle": "Price/liter" },
+            { "sTitle": "Total Amount" },
+            { "sTitle": "Client Name" },
+            { "sTitle": "Vehicle Reg#" },
+            { "sTitle": "Issued To" },
+            { "sTitle": "Issued By" },
+            { "sTitle": "Audited" },
+            { "sTitle": "" }
+            ]
+
+        });
+    });
+
+    function AuditDiesel(id) {
+        if (confirm('Are you sure want to audit ?')) {
+            window.location.href = '@Url.Action("AuditDiesel","DieselTracking")?Id=' + id;
+        }
+        else
+        {return false; }
+    }
+     
+</script>

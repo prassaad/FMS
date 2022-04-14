@@ -1,0 +1,106 @@
+﻿@{
+     var ClientList = (Dictionary<long, string>)ViewBag.Client;
+}
+<form id="frmProfitNLossReport" enctype="multipart/form-data" method="post">
+<table>
+    <tr>
+        <td>
+            Client
+        </td>
+        <td>
+            <div class="side-by-side clearfix">
+                <select id="ClientID"  name="ClientID" data-placeholder="Choose Client..." class="chzn-select" multiple
+                    style="width: 250px;">
+                    <option value=""></option>
+                    @foreach (var item in ClientList.Keys)
+                    {
+                        <option value="@item">
+                            @ClientList[item]
+                        </option>
+                    }
+                </select>
+            </div>
+        </td>
+        <td>
+            From Date
+        </td>
+        <td>
+            @Html.TextBox("StartDate", "", new { @style = "width:200px;" })
+        </td>
+        <td>
+            To Date
+        </td>
+        <td>
+            @Html.TextBox("EndDate", "", new { @style = "width:200px;" })
+        </td>
+        <td>
+            <input type="button" value="Get Report" id="btnGetProfitNLoss" />
+        </td>
+    </tr>
+</table>
+</form>
+<div id="ClientWiseProfitNLossDivData" style="margin-top:15px;"></div>
+ <script src="../../Scripts/chosen.jquery.js" type="text/javascript"></script>
+ <script type="text/javascript">
+     $('#div_loading').hide();
+     $('#print-icon').hide();
+     var myDate = new Date();
+     var dd = myDate.getDate();
+     var mm = myDate.getMonth() + 1;  //January is 0! 
+     var yyyy = myDate.getFullYear();
+     if (dd < 10) { dd = '0' + dd }
+     if (mm < 10) { mm = '0' + mm }
+     var TodayDate = dd + '/' + (mm) + '/' + yyyy;
+     $("#StartDate").val('01' + '/' + mm + '/' + yyyy); $("#EndDate").val(TodayDate);
+     $('#StartDate').datepicker({
+         changeMonth: true,
+         changeYear: true,
+         dateFormat: 'dd/mm/yy'
+     });
+     $('#EndDate').datepicker({
+         changeMonth: true,
+         changeYear: true,
+         dateFormat: 'dd/mm/yy'
+     });
+     LoadClientWiseProfitNLoss();
+     var config = {
+         '.chzn-select': {},
+         '.chzn-select-deselect': { allow_single_deselect: true },
+         '.chzn-select-no-single': { disable_search_threshold: 10 },
+         '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+         '.chzn-select-width': { width: "95%" }
+     }
+     for (var selector in config) {
+         $(selector).chosen(config[selector]);
+     }
+     $('#btnGetProfitNLoss').click(function () {
+         $('#loading').fadeIn('slow');
+         LoadClientWiseProfitNLoss();
+         $('#loading').fadeOut('slow');
+     });
+
+     function LoadClientWiseProfitNLoss() {
+         $.post("/Home/GetMonthlyClientWiseProfitNLoss", $("#frmProfitNLossReport").serialize(), function (result) {
+             $("#ClientWiseProfitNLossDivData").html(result);
+         });
+     }
+    
+     function ClickHereToPrint(divid) {
+         try {
+             var oIframe = document.getElementById('ifrmPrint').contentDocument;
+             var oContent = document.getElementsById(divid).innerHTML;
+             oIframe.document.write("<html><head>");
+             oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+             oIframe.document.write(oContent + "</body></html>");
+             oIframe.document.close();
+             oIframe.focus();
+             // oIframe.print();
+         }
+         catch (e) {
+             $('#wrapper').removeAttr("style");
+             self.print();
+         }
+     }
+       
+  </script>	

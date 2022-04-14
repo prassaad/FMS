@@ -1,0 +1,129 @@
+﻿@model FMS.Models.ClientInvoice
+
+<style type="text/css">
+  
+    .clsInvoiceDet 
+    {
+    	font-size:14px;
+    	font-weight:bold;
+    	color:#0A27FF;
+    } 
+</style>
+<div class="clsmodalheader">View Payment</div>
+<div style="overflow: auto;z-index:9999;height:450px;" id="divClientInvoiceDet">
+     <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+            <td colspan="2">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                     <tr>
+                         <td>
+                             Client
+                         </td>
+                         <td>
+                             <span class="clsInvoiceDet">@Model.clientInvoices.tbl_clients.CompanyName.ToUpper() </span>
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Invoice#
+                         </td>
+                         <td>
+                             <span class="clsInvoiceDet">@Model.clientInvoices.InvoiceNum</span>
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Invoice Amount
+                         </td>
+                         <td>
+                             <span class="clsInvoiceDet">@Model.clientInvoices.NetTotal</span>
+                         </td>
+                     </tr>
+                     <tr>
+                         <td>
+                             Invoice Date
+                         </td>
+                         <td>
+                             <span class="clsInvoiceDet">@Model.clientInvoices.InvoiceDate.Value.ToString("dd/MM/yyyy")</span>
+                         </td>
+                     </tr>
+                 </table>
+            </td>
+         </tr>
+         <tr>
+            <td colspan="2">
+               <h2> Payment Details  </h2>
+            </td>
+         </tr>
+         <tr>
+            <td colspan="2">
+                <table class="table table-striped table-condensed dTableR dataTable">
+                    
+                    <tr>
+                        <th>
+                            ReceptNo
+                        </th>
+                        <th>
+                            Paid Date
+                        </th>
+                        <th>
+                            Amount
+                        </th>
+                        <th>
+                            PayMode
+                        </th>
+                        <th>
+                            DD/Cheque#
+                        </th>
+                        <th>
+                            DD/Cheque Date
+                        </th>
+                        <th>
+                            Bank Name
+                        </th>
+                        <th>
+                            Branch
+                        </th>
+                        <th>
+                            Trans.No
+                        </th>
+                    </tr> 
+                   
+                    @foreach (var item in Model.clientPayments)
+                    {
+                        <tr>
+                            <td>
+                                @item.ReceptNo
+                            </td>
+                            <td>
+                                @item.PaidDate.Value.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @item.Amount
+                            </td>
+                            <td>
+                                @item.PayMode
+                            </td>
+                            <td>
+                                @item.DDChequeNo
+                            </td>
+                            <td>
+                                @(item.DDChequeDate == null ? "" : item.DDChequeDate.Value.ToString("dd/MM/yyyy"))
+                            </td>
+                            <td>
+                                @item.BankName
+                            </td>
+                            <td>
+                                @item.Branch
+                            </td>
+                            <td>
+                                @item.TransactionNum
+                            </td>
+                        </tr>
+                     }
+                 
+                </table>
+            </td>
+         </tr>
+     </table>
+</div>

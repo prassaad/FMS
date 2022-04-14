@@ -1,0 +1,4 @@
+[2016-01-19 13:55:47.9339] [127.0.0.1] [ERROR] [Input string was not in a correct format.] [superadmin] [   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt64(String value, NumberStyles options, NumberFormatInfo numfmt)
+   at System.Convert.ToInt64(String value)
+   at FMS.Controllers.CardAssignmentController.AdhocLogEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\26-12-2015\FMS\Controllers\CardAssignmentController.cs:line 980]

@@ -1,0 +1,15 @@
+[2015-12-09 17:26:16.2461] [127.0.0.1] [ERROR] [An entity object cannot be referenced by multiple instances of IEntityChangeTracker.] [superadmin] [   at System.Data.Objects.ObjectContext.VerifyContextForAddOrAttach(IEntityWrapper wrappedEntity)
+   at System.Data.Objects.ObjectContext.AddSingleObject(EntitySet entitySet, IEntityWrapper wrappedEntity, String argumentName)
+   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.SaveBulkCardAssignments(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\CardAssignmentController.cs:line 204]
+[2015-12-09 17:26:16.4641] [127.0.0.1] [ERROR] [An entity object cannot be referenced by multiple instances of IEntityChangeTracker.] [superadmin] [   at System.Data.Objects.ObjectContext.VerifyContextForAddOrAttach(IEntityWrapper wrappedEntity)
+   at System.Data.Objects.ObjectContext.AddSingleObject(EntitySet entitySet, IEntityWrapper wrappedEntity, String argumentName)
+   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.SaveBulkCardAssignments(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\CardAssignmentController.cs:line 204]
+[2015-12-09 17:26:16.5961] [127.0.0.1] [ERROR] [An entity object cannot be referenced by multiple instances of IEntityChangeTracker.] [superadmin] [   at System.Data.Objects.ObjectContext.VerifyContextForAddOrAttach(IEntityWrapper wrappedEntity)
+   at System.Data.Objects.ObjectContext.AddSingleObject(EntitySet entitySet, IEntityWrapper wrappedEntity, String argumentName)
+   at System.Data.Objects.ObjectContext.AddObject(String entitySetName, Object entity)
+   at System.Data.Objects.ObjectSet`1.AddObject(TEntity entity)
+   at FMS.Controllers.CardAssignmentController.SaveBulkCardAssignments(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\FMS\Controllers\CardAssignmentController.cs:line 204]

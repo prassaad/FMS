@@ -1,0 +1,103 @@
+﻿@model FMS.Models.tbl_pay_fields
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Pay Fields</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("List of PayFields", "Index", "PayFields")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+  <fieldset>
+        <legend>Pay Fields</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+             <tr>
+                <td colspan="2">
+                    <p style="color:Red;"> @(ViewBag.Message) </p>
+                </td>
+                 
+            </tr>
+            <tr>
+                <td>
+                    Pay Name <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("PayName", Model.PayName)
+                    @Html.ValidationMessage("PayName")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    @Html.TextBox("Description", Model.Description)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Type <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("Type", null, "--Select Type--", new { @style = "width:310px;" }) 
+                    @Html.ValidationMessage("Type")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Entry Mode <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("EntryMode", null, "--Select Entry Mode--", new { @style = "width:310px;" })
+                    @Html.ValidationMessage("EntryMode")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Formula
+                </td>
+                <td>
+                    @Html.TextBox("Formula", Model.Formula)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Calc Type <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("CalcType", null, "--Select Calc Type--", new { @style = "width:310px;" })
+                    @Html.ValidationMessage("CalcType")
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Order <span style="color:Red">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("OrderNo",Model.OrderNo)
+                    @Html.ValidationMessage("OrderNo")
+                </td>
+            </tr>
+            <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Save Pay Fields" />
+            </td>
+            </tr>
+        </table>
+    </fieldset>   
+}
+<script type="text/javascript">
+    if ('@Model.PayName' == "BP") {
+        $('#PayName').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+    }
+</script> 

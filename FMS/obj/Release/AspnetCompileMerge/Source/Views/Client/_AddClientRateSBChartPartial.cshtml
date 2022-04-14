@@ -1,0 +1,265 @@
+﻿@model FMS.Models.tbl_slab_client_rate
+@{
+    Session["SBClientList"] = null; Session["SBPrevClientList"] = null;
+}
+<style type="text/css">
+    .btnbulkupload
+    {
+    	background-color: #555;
+        border: 1px solid #FFF;
+        color: #FFF;
+        padding: 2px 7px;
+        margin-left:50%;
+    }
+   .ClsempSelection{display :none;}
+</style>
+@using (Html.BeginForm("AddClientSLABRateChart", "Client", FormMethod.Post, new { id = "frmAddSBClientRate", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+   @* @Html.ActionLink("Bulk Upload", "upload", "Client", new { ClientID = ViewBag.ClientID }, new { @class = "btnbulkupload" })<br />*@
+    <a class="btnbulkupload" href="#" id="btnbulkupload" name="btnbulkupload" onclick="ClientRateBulkupload('@ViewBag.ClientID')">Bulk Upload</a><br />
+    <input type="checkbox" name="LocationBased" id="LocationBased" class="selection"/><span style="font-weight:bold;">  Based on location</span>
+    <input type="checkbox" name="EmpIdBased" id="EmpIdBased"  class="selection"/><span style="font-weight:bold;">  Based on Emp Id</span>
+    <h2>Trips Chart Rate   <input type="button" class="cls_btnsave" id="btnSave" value="Save All" /> </h2>
+       
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th id="thEmpId"class="ClsempSelection"> Emp No#</th>
+         <th id="thEmpName" class="ClsempSelection"> Emp Name</th>
+          <th id="thEmpGender" class="ClsempSelection"> Emp Gender</th>
+       <th>
+            Location
+        </th>
+        <th>
+            Seater 
+        </th>
+       <th>
+        Type
+       </th>
+         <th>
+          
+          Client  SLAB
+        </th>
+        <th>
+            Client Rate
+        </th>
+       <th>
+          
+          Vendor  SLAB
+        </th>
+        <th>
+            Vendor Rate
+        </th>
+        
+        <th></th>
+    </tr>
+    <tr>
+        <td id="tdEmpId" class="ClsempSelection">
+            @Html.TextBox("EmpId", "", new { style = "width:40px;" })
+        </td>
+         <td id="tdEmpName" class="ClsempSelection">
+            @Html.TextBox("EmpName", "", new { style = "width:100px;" })
+        </td>
+        <td id="tdEmpGender" class="ClsempSelection">
+           @Html.TextBox("EmpGender", "", new { style = "width:100px;" })
+          
+        </td>
+        <td>  
+           @Html.TextBox("Location", "", new { style = "width:100px;" })
+            <input type="hidden" id="BillTypeID" name="BillTypeID" value="@ViewBag.BillTypeID" />
+            <input type="hidden" id="ClientID" name="ClientID" value="@ViewBag.ClientID" /> 
+            <input type="hidden" id="IsEmpBased" name="IsEmpBased" value="@ViewBag.IsEmpBased" />
+        </td>
+        <td>
+            @Html.TextBox("Seater", "", new { style = "width:100px;" })
+        </td>
+          <td>
+            @Html.TextBox("VehicleType", "", new { style = "width:100px;" })
+        </td>
+        <td>
+            @Html.TextBox("ClientSlab", "", new { style = "width:40px;" })
+        </td>
+        <td>
+            @Html.TextBox("ClientRate", "", new { style = "width:40px;" })
+        </td>
+        
+        <td>
+            @Html.TextBox("VendorSlab", "", new { style = "width:40px;" })
+        </td>
+        <td>
+            @Html.TextBox("VendorRate", "", new { style = "width:40px;" })
+        </td>
+        
+       
+        <td>
+            <img class="statusicon" src="../../Content/images/plus.png" id="btnAddRate" style="cursor: pointer;">
+        </td>
+         
+    </tr>
+</table>
+    
+    
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var IsEmpBased = $("#IsEmpBased").val();
+        if (IsEmpBased == 'True') {
+            $('#EmpIdBased').attr('checked', 'checked');
+            ShowEmpDetails() 
+        }
+        else if (IsEmpBased == 'False')  {
+            $('#LocationBased').attr('checked', 'checked');
+            HideEmpDetails() 
+        }
+    });
+
+    $("#btnSave").hide();
+    $("#btnAddRate").click(function () {
+        if (ValidateForm()) {
+            $('#loading').fadeIn('slow');
+            $.post("/Client/AddClientSLABRateChart", $("#frmAddSBClientRate").serialize(), function (result) {
+                $("#divAddedClientRateList").html(result);
+                $("#Location").val('');
+                $("#Seater").val('');
+                $("#VehicleType").val('');
+                $("#ClientSlab").val('');
+                $("#ClientRate").val('');
+                $("#VendorSlab").val('');
+                $("#VendorRate").val('');
+                $("#EmpId").val('');
+                $("#EmpName").val('');
+                $("#EmpGender").val('');
+                $("#btnSave").show();
+                $('#loading').fadeOut('slow');
+            });
+        }
+    });
+    function ValidateForm() {
+        var EmpBased = $("#EmpIdBased").is(':checked') ? 1 : 0;
+        if (EmpBased == "1") {
+            if ($("#EmpId").val() == "") {
+                alert('Please enter Employee Id.');
+                $("#EmpId").val('');
+                $("#EmpId").focus();
+                return false;
+            }
+        }
+        if ($("#Location").val() == "") {
+            alert("Location is missing! Please enter location.");
+            $("#Location").focus();
+            return false;
+        }
+        if ($("#Seater").val() == "") {
+            alert("Seater is missing! Please enter seater.");
+            $("#Seater").focus();
+            return false;
+        }
+        if ($("#VehicleType").val() == "") {
+            alert("VehicleType is missing! Please enter VehicleType.");
+            $("#VehicleType").focus();
+            return false;
+        }
+        if ($("#ClientSlab").val() == "") {
+            alert("ClientSlab is missing! Please enter slab");
+            $("#ClientSlab").focus();
+            return false;
+        }
+        if (isAlphaFewChars($("#ClientSlab").val()) == false) {
+            alert("Please enter valid character for Slab");
+            $("#Slab").val('');
+            $("#Slab").focus();
+            return false;
+        }
+        if ($("#ClientRate").val() == "") {
+            alert("Client rate is missing! Please enter client rate.");
+            $("#ClientRate").focus();
+            return false;
+        }
+        if (isFloat(parseInt($("#ClientRate").val())) == false) {
+            alert('Please enter valid digit for client rate');
+            $("#ClientRate").val('');
+            $("#ClientRate").focus();
+            return false;
+        }
+        if ($("#VendorSlab").val() == "") {
+            alert("Vendor Slab is missing! Please enter slab");
+            $("#VendorSlab").focus();
+            return false;
+        }
+        if ($("#VendorRate").val() == "") {
+            alert("Vendor rate is missing! Please enter vendor rate");
+            $("#VendorRate").focus();
+            return false;
+        }
+        if (isFloat(parseInt($("#VendorRate").val())) == false) {
+            alert('Please enter valid digit for vendor rate');
+            $("#VendorRate").val('');
+            $("#VendorRate").focus();
+            return false;
+        }
+        if (parseInt($("#ClientRate").val()) < parseInt($("#VendorRate").val())) {
+            alert("Vendor rate should be less than client rate");
+            $("#ClientRate").val('');
+            $("#VendorRate").val('');
+            $("#ClientRate").focus();
+            return false;
+        }
+       
+        return true;
+    }
+    $("#btnSave").click(function () {
+        $('#loading').fadeIn('slow');
+        $.post("/Client/SaveClientSLABRateChart", $("#frmAddSBClientRate").serialize(), function (data) {
+            $("#divAddedClientRateList").html(data);
+            $("#btnSave").hide();
+            $('#loading').fadeOut('slow');
+        });
+    });
+    function ClientRateBulkupload(ClientID) {
+        var LocBased =  $("#LocationBased").is(':checked') ? 1 : 0;
+        var EmpBased = $("#EmpIdBased").is(':checked') ? 1 : 0;
+        window.location = "/Upload/SLABUpload?ClientID=" + ClientID + "&LocBased=" + LocBased + "&EmpBased=" + EmpBased;
+
+    }
+    $('input.selection').on('change', function () {
+        // $('input.selection').not(this).prop('checked', false);
+        if (this.id == "LocationBased") {
+            if ($(this).is(':checked') == false) {
+                $('#EmpIdBased').prop('checked', true);
+                ShowEmpDetails();
+            }
+            else {
+                $('#EmpIdBased').prop('checked', false);
+                HideEmpDetails();
+            }
+        }
+        else {
+            if ($(this).is(':checked') == false) {
+                $('#LocationBased').prop('checked', true);
+                HideEmpDetails();
+            }
+            else {
+                $('#LocationBased').prop('checked', false);
+                ShowEmpDetails();
+            }
+        }
+    });
+
+    function ShowEmpDetails() {
+        $("#tdEmpId").show();
+        $("#tdEmpName").show();
+        $("#tdEmpGender").show();
+        $("#thEmpId").show();
+        $("#thEmpName").show();
+        $("#thEmpGender").show();
+    }
+    function HideEmpDetails() {
+        $("#tdEmpId").hide();
+        $("#tdEmpName").hide();
+        $("#tdEmpGender").hide();
+        $("#thEmpId").hide();
+        $("#thEmpName").hide();
+        $("#thEmpGender").hide();
+    }
+</script>

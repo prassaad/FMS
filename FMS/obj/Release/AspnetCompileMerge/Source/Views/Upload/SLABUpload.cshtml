@@ -1,0 +1,120 @@
+﻿@model FMS.Models.tbl_diesel_tracking
+@{
+    ViewBag.Title = "Bulk Upload SLAB Rates";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Bulk Upload SLAB Rates</h2>
+
+<script src="../../Scripts/swfupload.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery-asyncUpload-0.1.js" type="text/javascript"></script>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>
+               @Html.ActionLink("Download Sample Sheet", "DownloadSampleFile", "Upload", new { ID = @ViewBag.LocBased},null)
+            </li>
+            <li class="active">@Html.ActionLink("Client", "Edit", "Client", new { ID = @ViewBag.ClientID }, null)</li>
+        </ul>
+    </div>
+</div>
+<div id="uploadSLABRatediv">
+@using (Html.BeginForm("SLABUpload", "Upload", FormMethod.Post, new { id = "uploadslabrates", enctype = "multipart/form-data" }))
+{
+@Html.ValidationSummary(true)
+<fieldset>
+        <legend>Bulk Upload SLAB Rates</legend>
+    <table class="table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2">
+                <div style="color: Red">
+                    @(ViewBag.ErrorMsg)</div>
+                   
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Excel sheet path :<span style="color:Red">*</span>
+            </td>
+            <td>
+                <input type="file" id="upload" name="upload" />
+                @Html.ValidationMessage("upload", "Upload file is  required.")
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Enter Sheet Name :<span style="color:Red">*</span>
+            </td>
+            <td>
+                <input type="text" id="sheetname" name="sheetname" />
+                @Html.ValidationMessage("sheetname", "Type Sheet name.")
+                <text> Type Sheet name Eg:Sheet1 </text>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" value="Export" class="btn_Class" name="upload" />
+                  <input type="hidden" id="ClientID" name="ClientID" value="@ViewBag.ClientID" /> 
+                     <input type="hidden" id="hdnLocationBased" name="hdnLocationBased" value="@ViewBag.LocBased" /> 
+                        <input type="hidden" id="hdnEmpIdBased" name="hdnEmpIdBased" value="@ViewBag.EmpBased" /> 
+            </td>
+            <td>
+                <span id="errormsg" style="color: Red; font-style: italic; font-size: medium;"></span>
+            </td>
+        </tr>
+        @if (ViewBag.ExcelStatus == "1")
+        {
+            <tr>
+                <td colspan="2" style="color: Red;">
+                    There are some error(s) while uploading data you can download excel by click on
+                    <a href="@Url.Action("NotUpdatedExportToExcel", "Upload")">Download Excel</a>
+                </td>
+            </tr>
+        }
+    </table>
+    </fieldset>
+}
+</div>
+<script language="javascript" type="text/javascript">
+    $(function () {
+
+            $("#upload").makeAsyncUploader({
+                upload_url: "/Upload/AsyncUpload",
+                flash_url: '/Scripts/swfupload.swf',
+                button_image_url: '/Content/blankButton.png'
+            });
+
+        });
+        $("#sheetname").change(function (e) {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \n These are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                $("#errormsg").hide();
+            }
+        });
+
+  
+</script>

@@ -1,0 +1,15 @@
+[2015-04-07 10:11:10.1122] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Models.core.<GetInvItemCodes>b__52(InventoryItemsMaster a) in D:\ProjectRelatedfiles\JMJ\FMS\Models\core.cs:line 631
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at FMS.Models.core.GetInvItemCodes() in D:\ProjectRelatedfiles\JMJ\FMS\Models\core.cs:line 630
+   at FMS.Areas.Inventory.Controllers.ItemController.AddItemPartial(Int32 ItemType) in D:\ProjectRelatedfiles\JMJ\FMS\Areas\Inventory\Controllers\ItemController.cs:line 313
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

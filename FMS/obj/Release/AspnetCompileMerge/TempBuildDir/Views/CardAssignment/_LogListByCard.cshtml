@@ -1,0 +1,77 @@
+﻿@model IEnumerable<FMS.Models.tbl_log_sheets>
+@{
+    int sno = 0;
+}  
+@if (Model.Count() == 0)
+{
+    <h2>
+        No logsheets(s) were found
+    </h2>
+}
+else
+{
+    <h2>
+        Existing Log Sheets
+    </h2>
+    <table class="table table-striped table-condensed dataTable">
+        <thead>
+            <tr>
+                <th>
+                    SNo.
+                </th>
+                <th>
+                    Log#
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Trip
+                </th>
+                <th>
+                    Model
+                </th>
+                <th>
+                    Route 
+                </th>
+                <th>
+                    Amount
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+    sno = 1;
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @sno
+                        @{
+                sno = sno + 1;
+                        }
+                    </td>
+                    <td>
+                        @item.LogSheetNum
+                    </td>
+                    <td>
+                        @(item.LogDate.HasValue ? item.LogDate.Value.ToShortDateString() : "")
+                    </td>
+                    <td>
+                        @item.TripeType
+                    </td>
+                    <td>
+                        @(item.tbl_vehicle_types.VehicleType + "-" + item.tbl_vehicle_models.VehicleModelName)
+                    </td>
+                    <td>
+                        @item.Location
+                    </td>
+                    <td>
+                        @String.Format("{0:N}",item.NetAmount)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

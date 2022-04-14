@@ -1,0 +1,28 @@
+﻿@model FMS.Models.tbl_vehicles
+
+@{
+    ViewBag.Title = "Delete Vehicle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Delete Vehicle</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            @if (Model.IsProxy == false || Model.IsProxy == null)
+                            {
+                            <li class="lastactive">@Html.ActionLink("List of Vehicles", "Index")</li>
+                            }
+                            else
+                            {
+                            <li class="lastactive">@Html.ActionLink("List of Proxy", "ProxyVehicles", "Vehicle")</li>
+                            }
+                        </ul>
+                    </div>
+            </div>
+<h3>Are you sure you want to delete this @Model.VehicleRegNum ?</h3>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> 
+    </p>
+}

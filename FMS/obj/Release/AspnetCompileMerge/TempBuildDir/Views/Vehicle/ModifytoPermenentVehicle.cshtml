@@ -1,0 +1,453 @@
+﻿@model FMS.Models.tbl_vehicles
+
+@{
+    ViewBag.Title = "Modify to Permenent Vehicle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Modify to Permanent Vehicle Reg. Number [@Model.VehicleRegNum]</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li class="active">@Html.ActionLink("List of Proxy Vehicles", "ProxyVehicles", "Vehicle")</li>
+                        </ul>
+                    </div>
+            </div>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm("ModifytoPermenentVehicle", "Vehicle", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset title="Vehicle" class="step" id="callback-step-1" style="display: block;
+        width: 98%">
+       <legend>Vehicle Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+         <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    Vehicle Reg# :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehicleRegNum)
+                    @Html.ValidationMessageFor(model => model.VehicleRegNum)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    @if (Model.tbl_vendor_details.SubVendor == true)
+                    {
+                        
+                        @Html.RadioButton("Vendor", "True", false) <text> Vendor</text> @Html.RadioButton("Vendor", "False", true) 
+                        <text> Sub-Vendor</text>
+                    }
+                    else
+                    {
+                        @Html.RadioButton("Vendor", "True", true) <text> Vendor</text> @Html.RadioButton("Vendor", "False", false) 
+                        <text> Sub-Vendor</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor :
+                </td>
+                <td>
+                    <select id="VendorID" name="VendorID" class="txtInput" tabindex="3" style = "width: 310px;">
+                        <option value="0">--Select Vendor--</option>
+                    </select>
+                     <span style="margin-left:8px;" id="spnVendor">Current Vendor : <b style="color:Red;font-weight:bold;"> @Model.tbl_vendor_details.FirstName.ToUpper() @Model.tbl_vendor_details.LastName.ToUpper() </b>  <a href="#" onclick="AddNewVendor();"> <img alt="Add New" src="../../Content/images/plus.png" style="margin-bottom: -8px;" /></a> </span> 
+                    @Html.ValidationMessageFor(model => model.VendorID)
+                    <input type="hidden" id="VID" value="@ViewBag.VendorID" name="VID" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Model :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleModelID", null, "--Select Vehicle Model--", new { style = "width: 310px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleModelID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Manuf. Month,Year :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ManufactureYearMonth)
+                    @Html.ValidationMessageFor(model => model.ManufactureYearMonth)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Type :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { style = "width: 310px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleTypeID)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     Capacity :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("SeaterID", null, "--Select Seater", new { style = "width:310px;" })
+                    @Html.ValidationMessageFor(model => model.SeatingCapacity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax Validity :
+                </td>
+                <td>
+                    @Html.TextBox("TaxValidity", Model.TaxValidity == null ? "" : Model.TaxValidity.Value.ToShortDateString(), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.TaxValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Permit Validity :
+                </td>
+                <td>
+                    @Html.TextBox("PermitValidity", Model.PermitValidity == null ? "" : Model.PermitValidity.Value.ToShortDateString(), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.PermitValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    FitNess Validity :
+                </td>
+                <td>
+                    @Html.TextBox("FitnessValidity", Model.FitnessValidity == null ? "" : Model.FitnessValidity.Value.ToShortDateString(), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.FitnessValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Insurance Validity :
+                </td>
+                <td>
+                    @Html.TextBox("InsuranceValidity", Model.InsuranceValidity == null ? "" : Model.InsuranceValidity.Value.ToShortDateString(), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.InsuranceValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pollution Validity :
+                </td>
+                <td>
+                    @Html.TextBox("PollutionValidity", Model.PollutionValidity == null ? "" : Model.PollutionValidity.Value.ToShortDateString(), new { @class = "validDate" })
+                    @Html.ValidationMessageFor(model => model.PollutionValidity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Owner/Driver :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                     @Html.RadioButton("OwnerCumDriver", "True") &nbsp;&nbsp;YES &nbsp;&nbsp; @Html.RadioButton("OwnerCumDriver", "False") &nbsp;&nbsp;NO
+                    @Html.ValidationMessageFor(model => model.OwnerCumDriver)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Driver :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                   @Html.RadioButton("SingleDoubleDriver", "Single") &nbsp;&nbsp;SINGLE &nbsp;&nbsp; @Html.RadioButton("SingleDoubleDriver", "Double") &nbsp;&nbsp;DOUBLE
+                 @Html.ValidationMessageFor(model => model.SingleDoubleDriver)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    SIM# :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SIMNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Priority :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VehiclePriority)
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Vendor Non-AC Rate :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VendorRate)
+                     @Html.ValidationMessageFor(model => model.VendorRate)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vendor AC Rate :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.VendorAcRate)
+                     @Html.ValidationMessageFor(model => model.VendorAcRate)
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Diesel Card Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DieselCardNum)
+                    @Html.ValidationMessageFor(model => model.DieselCardNum)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save Changes" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var dateToday = new Date();
+    $(document).ready(function () {
+        LoadVendors('@Model.tbl_vendor_details.SubVendor');
+        $('#TaxValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PermitValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#FitnessValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#InsuranceValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#PollutionValidity').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: dateToday,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    //replace selectMonth with your date pickers id here at all places 
+    $('#ManufactureYearMonth').datepicker({
+        changeMonth: true,      //provide option to select Month
+        changeYear: true,       //provide option to select year
+        showButtonPanel: true,  // button panel having today and done button
+        dateFormat: 'MM yy',    //set date format
+        yearRange: '1970:+0',
+        onClose: function (dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1)); //here set the date when closing.
+            $(this).blur(); //remove focus input box
+
+        }
+    });
+
+    //on foucus event on this code is to hide the calender part
+    $("#ManufactureYearMonth").focus(function () {
+        $(".ui-datepicker-calendar").hide();
+        $("#ui-datepicker-div").position({
+            my: "center top",
+            at: "center bottom",
+            of: $(this)
+        });
+    });
+    // Vendor Radio button Click Event
+    $("input:radio[name=Vendor]").click(function () {
+        var val = $(this).val();
+        if (val == 'True') {
+            LoadVendors(false);
+        }
+        else {
+            LoadVendors(true);
+        }
+    });
+    // Add New Vendor
+    function AddNewVendor() {
+        var selectedVendor = ($("input[type='radio'][name='Vendor']:checked").val() == 'False') ? true : false;
+        $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 740,
+              height: 550
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+
+              $.ajax(
+    {
+        type: "GET",
+        url: "../../Vendor/AddNewVendorDetails",
+        data: "IsSubVendor=" + selectedVendor,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+            //$('html,body').animate({ scrollTop: 200 }, 'slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+          }
+
+      });
+    }
+    // Load Vendors in dropdown
+    function LoadVendors(IsSubVendor) {
+
+        if (IsSubVendor == false || IsSubVendor == 'False') {
+            $('#VendorID').hide();
+            $('#spnVendor').show();
+        }
+        else {
+            $('#VendorID').show(); $('#spnVendor').hide();
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/vendor/LoadVendors?IsSubVendor=" + IsSubVendor,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#VendorID').html('<option value="">--Select Vendor--</option>');
+                        var options = ""; var sModel = "";
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + "  " + data[i].LastName + "</option>";
+                            sModel = '@Model.VendorID';
+                        }
+                        $("#VendorID").append(options);
+                        $('#VendorID option:contains("Loading...")').remove();
+                        $("#VendorID option[value=" + sModel + "]").attr("selected", "selected");
+                    }
+                    else {
+
+                        $('#VendorID').html('<option value="">--Select Vendor--</option>');
+                    }
+                },
+                error: function (error) {
+                    // alert(error);
+                }
+            });
+        }
+    }
+    $("#VendorRate").change(function () {
+        var result = isFloat(this.value);
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Vendor rate has special characters or alphabets. These are not allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            $("#" + this.id).focus();
+        }
+    });
+
+    $("#VehicleRegNum").change(function () {
+        var result = isAlphaNumeric(this.value);
+        $("#SpanValidateMsg").hide();
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Vehicle registration number should be alphanumeric.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    });
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        if (this.id == "TaxValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+        else if (this.id == "PermitValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+        else if (this.id == "FitnessValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+        else if (this.id == "InsuranceValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+        else if (this.id == "PollutionValidity") {
+            var dateval = $("#" + this.id).val();
+            var msg = validateDate(dateval);
+            if (msg != "") {
+                document.getElementById("" + this.id + "").value = '';
+                this.focus();
+                $("#SpanValidateMsg").show();
+                $("#SpanValidateMsg").html(msg);
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
+                return false;
+            }
+        }
+    });
+</script>

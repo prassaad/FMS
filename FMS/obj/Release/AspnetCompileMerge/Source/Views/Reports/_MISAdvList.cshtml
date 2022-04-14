@@ -1,0 +1,92 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+@using FMS.Models;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    core objcore = new core();
+}
+<p>
+    No. of entries @(ViewBag.ListCount) showing
+</p>
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_DutyLogs">
+    <thead>
+        <tr>
+            <th>
+                Vehicle Reg#
+            </th>
+            <th>
+                Driver
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Adv. Amount
+            </th>
+            <th>
+                Towards
+            </th>
+            <th>
+                Pay Mode
+            </th>
+            <th>
+                Transaction#
+            </th>
+            <th>
+                Received Amt.
+            </th>
+            <th>
+                Invoice#
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+             <tr>
+                <td>
+                    @item.Text1
+                </td>
+                <td>
+                    @item.Text2
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.Date1))
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:N}",item.Value2))
+                </td>
+                <td>
+                    @item.Text3
+                </td>
+                <td>
+                     @item.Text4
+                </td>
+                <td>
+                    @item.Text5
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:N}",item.Value4))
+                </td>
+                <td>
+                    @item.Text6
+                </td>
+                <td>
+                    @if (item.Text7.ToUpper() == "RECEIVABLE")
+                    {
+                        <span class="label label-important">@item.Text7 </span>
+                    }
+                    else{
+                       <span class="label label-success">@item.Text7 </span>
+                    }
+                </td>
+               
+            </tr>
+        }
+    </tbody>
+</table>
+<p style="float:right;">
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))  
+</p>

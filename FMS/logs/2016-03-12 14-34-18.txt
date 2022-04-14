@@ -1,0 +1,5 @@
+[2016-03-12 14:34:18.8603] [127.0.0.1] [ERROR] [An error occurred while updating the entries. See the inner exception for details.] [superadmin] [   at System.Data.Mapping.Update.Internal.UpdateTranslator.Update(IEntityStateManager stateManager, IEntityAdapter adapter)
+   at System.Data.EntityClient.EntityAdapter.Update(IEntityStateManager entityCache)
+   at System.Data.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   at System.Data.Objects.ObjectContext.SaveChanges()
+   at FMS.Controllers.CardAssignmentController.NoCabEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\SarathVinod\FMS\Controllers\CardAssignmentController.cs:line 1323]

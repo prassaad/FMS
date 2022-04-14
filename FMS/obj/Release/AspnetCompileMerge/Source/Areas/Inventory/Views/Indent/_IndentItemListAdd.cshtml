@@ -1,0 +1,219 @@
+﻿@model IEnumerable<FMS.Models.tbl_inv_indent_details>
+@using FMS.Models;
+@using FMS.Areas.Inventory.Controllers;
+@{
+    FMSDBEntities db = new FMSDBEntities();
+    StoresController objStore = new StoresController();
+    int QtyTot = 0;
+    decimal Amt = 0;
+}
+@if (Model.ToList().Count > 0)
+{
+ <h2  class="clsmark">@ViewBag.ErrorMessage</h2>
+    <div class="col-md-12">
+        <table class="table table-striped table-condensed dTableR dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Item Name
+                    </th>
+                    <th>
+                        Reorder Level
+                    </th>
+                    <th>
+                        Lead Time
+                    </th>
+                    <th>
+                        Procure
+                    </th>
+                    <th>
+                        Purpose For
+                    </th>
+                    <th>
+                        Specification
+                    </th>
+                    <th>
+                        Qty Req.
+                    </th>
+                    @if (ViewData["IsEdit"].ToString() == "1")
+                    {  
+                        <th>
+                            Avail Qty
+                        </th>
+          }
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Total Amt.
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    //TotAmount = 0; 
+                    QtyTot = 0; Amt = 0;
+                    decimal AvailQty = 0;  
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @{
+    InventoryItemsMaster _itemMaster = db.InventoryItemsMasters.FirstOrDefault(a => a.ID == item.ItemId && a.Active == true);
+                        }
+                        @if (ViewData["IsEdit"].ToString() == "1")
+                        {
+                            tbl_inv_indents IndentReg = db.tbl_inv_indents.Where(a => a.Id == item.IndentId).FirstOrDefault();
+                            long VehicleId = Convert.ToInt64(IndentReg.VehicleId);
+                            AvailQty = (decimal)objStore.GetAvailQty("",(int)item.ItemId, VehicleId);
+                        }
+                        <td>
+                            @_itemMaster.ItemText
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReorderLevel)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LeadTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Procure)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PurposeFor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Specification)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QtyReq)
+                            @{
+                                QtyTot += (int)item.QtyReq;
+                            }
+                        </td>
+                        @if (ViewData["IsEdit"].ToString() == "1")
+                        {
+                            <td>@Html.Encode(AvailQty)
+                            </td>
+                        }
+                        <td style="text-align: right;">
+                            @String.Format("{0:N}", _itemMaster.Amount)
+                            @{
+                                //TotAmount += (decimal)_itemMaster.Amount;
+                            }
+                        </td>
+                        <td style="text-align: right;">
+                            @{
+                                decimal TotAmt = ((int)item.QtyReq * (decimal)_itemMaster.Amount);
+                            }
+                            @String.Format("{0:N}", TotAmt)
+                            @{
+                                Amt += TotAmt;
+                            }
+                        </td>
+                        <td>
+                            @if (ViewData["IsEdit"].ToString() == "1")
+                            {  
+                                <input type="hidden" value="@item.IndentId" name="hdnIndentId" id="hdnIndentId" />   
+                                <a data-toggle="modal" href="#" id="@item.Id"onclick="EditIndentItemModal('@item.Id')" title="Edit Indent Details"  class="cls_edit">
+                                </a>
+                                <a href="#" onclick="DeleteIndentDetails(1,'@item.Id');"  class="cls_delete"  title="delete Indent Details" >
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" onclick="DeleteIndentDetails(0,'@item.Id');"  class="cls_delete"  title="delete Indent Details">
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                    }
+                <tr>
+                    <td colspan="6">
+                    </td>
+                    <td>@QtyTot
+                    </td>
+                    <td>
+                    </td>
+                    @if (ViewData["IsEdit"].ToString() == "1")
+                    {
+                        <td>
+                        </td>
+                    }
+                    <td style="text-align: right;">@String.Format("{0:N}", Amt)
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>
+        No Indent Item added.  
+    </p>
+}
+<script type="text/javascript" language="javascript">
+    function EditIndentItemModal(Id) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 650,
+                 height: 550
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 $('#div_loading').show();
+                 EditIndentItemDetails(Id);
+             }
+         });
+    }
+    function EditIndentItemDetails(id) {
+        $('#div_loading').show();
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("EditIndentDetails", "Indent", new { area = "Inventory" })?Id=' + id,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDetAdd').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function DeleteIndentDetails(IsEdit, Id) {
+        if (confirm('Are you sure want to delete this indent item?')) {
+            $('#loading').show();
+            var Actions = Id + "_" + IsEdit;
+            $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("DeleteStockDetails", "Indent", new { area = "Inventory" })?Id=' + Actions,
+                  dataType: "html",
+                  success: function (result) {
+                      if (IsEdit == 0) {
+                          $('#loading').hide();
+                          $('#IndentDetList').html(result);
+                      }
+                      else {
+                          window.location.href = '@Url.Action("Edit","Indent",new{ area = "Inventory"})?Id=' + $("#hdnIndentId").val();
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+        }
+    }
+</script>

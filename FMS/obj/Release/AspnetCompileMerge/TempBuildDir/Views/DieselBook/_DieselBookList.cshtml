@@ -1,0 +1,52 @@
+﻿@model IEnumerable<FMS.Models.tbl_diesel_books>
+@using FMS.Models
+@{
+    core objCore = new core(); 
+}  
+<table class="table table-striped table-condensed dTableR dataTable">
+    <tr>
+        <th>
+            Fuel Station
+        </th>
+        <th>
+            Book No.
+        </th>
+        <th>
+            Token No.r
+        </th>
+        <th>
+            Token Value
+        </th>
+        <th>
+            Rate/Liter
+        </th>
+        <th>
+            Site
+        </th>
+        <th>
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @objCore.GetFuelStation((long)item.FuelStationID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TokenNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TokenValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePerLiter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Site)
+            </td>
+        </tr>
+}
+</table>

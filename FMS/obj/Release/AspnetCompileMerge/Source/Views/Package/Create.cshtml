@@ -1,0 +1,128 @@
+﻿@model FMS.Models.tbl_package_client_rates
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Add Package</h2>
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            
+                <li class="lastactive">@Html.ActionLink("<List of Packages>", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+    <legend>ADD PACKAGE</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    <span id="errormsg" class="clsmark"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Effective Date <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("LogDate", "", new { @style = "width:150px" })
+                    @Html.ValidationMessageFor(model => model.EffectiveDt)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Client Name <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("ClientId", null, "---Select Client---", new { @style = "width:160px;" })
+                    @Html.ValidationMessageFor(model => model.ClientId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Project Name <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("ProjectId", null, "--Select Project--", new { style = "width:160px;" })
+                    @Html.ValidationMessageFor(model => model.ProjectId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    VehicleReg#. <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleId", null, "--Select Vehicle Reg Num--", new { style = "width:160px;" })
+                    @Html.ValidationMessageFor(model => model.tbl_vehicles.VehicleRegNum)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Type <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleTypeId", null, "--Select Type--", new { style = "width:160px;" })
+                    @Html.ValidationMessageFor(model => model.VehicleTypeId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Vehicle Model : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("VehicleModelId", null, "--Select Model--", new { @style = "width:160px" })
+                    @Html.ValidationMessageFor(model => model.VehicleModelId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Location : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                @Html.DropDownList("LocationId", null, "--Select loaction--", new { @style = "width:160px" })
+                    @Html.ValidationMessageFor(model => model.LocationId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Time Unit <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("TimeUnit", null, "--Select Days/Months--", new { @style = "width:160px" })
+                    @Html.ValidationMessageFor(model => model.TimeUnit)
+                </td>
+                </tr>
+                <tr>
+                    <td>
+                        No of Day(s)/Month(s): <span style="color: Red;">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.WorkingDays, new { @style = "width:150px" })
+                        @Html.ValidationMessageFor(model => model.WorkingDays)
+                    </td>
+                </tr>
+            
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Create"  />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+
+}
+<script type="text/javascript">
+    $("#LogDate").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    });
+
+
+</script>

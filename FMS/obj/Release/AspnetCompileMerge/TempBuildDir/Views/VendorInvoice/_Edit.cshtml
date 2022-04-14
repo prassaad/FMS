@@ -1,0 +1,168 @@
+﻿@model FMS.Models.tbl_vendor_invoices
+@{
+  string MonthYear = Model.MonthYear.HasValue ? (new System.Globalization.CultureInfo("en-GB").DateTimeFormat.MonthNames[Model.MonthYear.Value.Month - 1] + " " + Model.MonthYear.Value.Year) : ""; 
+}
+<div class="clsmodalheader">Edit Vendor Invoice </div>
+@using (Html.BeginForm("Edit", "VendorInvoice", FormMethod.Post, new { id = "frmVendorInvoice", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+ <div style="overflow: auto;z-index:9999;height:500px;">
+<table class="table-striped table-condensed" style="width:100%;">
+    <tr>
+        <td colspan="2" style="padding-top: 10px;">
+            <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Invoice Number <span style="color: Red;">*</span>
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.InvoiceNum)
+        </td>
+    </tr>
+    <tr>
+        <td> 
+            Owner <span style="color: Red;">*</span>
+        </td>
+        <td>
+            @Html.TextBox("Vendor", Model.tbl_vendor_details.FirstName + " " + Model.tbl_vendor_details.LastName)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Vehicle Reg# <span style="color: Red;">*</span>
+        </td>
+        <td>
+            @Html.TextBox("Vehicle", Model.tbl_vehicles.VehicleRegNum)
+        </td>
+    </tr>
+    <tr>
+         <td>
+                Month & Year <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBox("MonthYear", MonthYear, new { @class = "txtInput", @tabindex = 1, @maxlength = 20 })
+            </td>
+    </tr>
+    <tr>
+        <td>
+            Invoice Date <span style="color: Red;">*</span>
+        </td>
+        <td>
+            @Html.TextBox("InvoiceDate", Model.InvoiceDate.Value.ToString("dd-MM-yyyy"), new { @class = "validDate" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Invoice Amt. <span style="color: Red;">*</span>
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.InvoiceAmt, new { @class = "isValidCurrency" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <input type="button" id="btnSave" value="Save" />
+        </td>
+    </tr>
+</table>
+</div>
+}
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $('#MonthYear').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy'
+        }).focus(function () {
+            var thisCalendar = $(this);
+            $('.ui-datepicker-calendar').detach();
+            $('.ui-datepicker-close').click(function () {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                thisCalendar.datepicker('setDate', new Date(year, month, 1));
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('#InvoiceNum').attr({ 'readonly': true, 'style': 'background-color:#DDD' }); 
+        $('#Vehicle').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+        $('#Vendor').attr({ 'readonly': true, 'style': 'background-color:#DDD' });
+    });
+    $('#InvoiceDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        onSelect: function () {
+            //$('input[tabindex="7"]').focus();
+        }
+    });
+    
+
+    // button click event for save
+
+    $('#btnSave').click(function () {
+        var InvoiceDate = $('#InvoiceDate').val();
+        var InvoiceAmt = $('#InvoiceAmt').val();
+        var MonthYear = $('#MonthYear').val();
+        if (MonthYear == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please select month & year.");
+            document.getElementById("MonthYear").value = '';
+            return false;
+        }
+        if (InvoiceDate == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please select date.");
+            document.getElementById("InvoiceDate").value = '';
+            return false;
+        }
+        if (InvoiceAmt == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please enter invoice amount.");
+            document.getElementById("InvoiceAmt").value = '';
+            return false;
+        }
+        $("#SpanValidateMsg").hide();
+
+        $.post('/VendorInvoice/Edit?Id=' + '@Model.ID', $('#frmVendorInvoice').serialize(), function (data) {
+            alert(data.msg);
+            if (data.success) {
+                $.modal.close();
+                window.location.href = '/VendorInvoice/Index';
+            }
+        });
+    });
+
+    $(".isValidCurrency").change(function () {
+        var title = isValidRupees(this.value);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please enter valid currrency.");
+            document.getElementById("" + this.id + "").value = '';
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+    });
+    $(".validDate").change(function () {
+        $("#SpanValidateMsg").hide();
+        var dateval = $("#" + this.id).val();
+        var msg = validateDate(dateval);
+        if (msg != "") {
+            document.getElementById("" + this.id + "").value = '';
+            this.focus();
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html(msg);
+            return false;
+        }
+        else
+        { $("#SpanValidateMsg").hide(); }
+    });
+</script>

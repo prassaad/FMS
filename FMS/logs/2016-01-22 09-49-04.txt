@@ -1,0 +1,16 @@
+[2016-01-22 09:49:04.2122] [127.0.0.1] [ERROR] [The partial view '_CardComments' was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/CardAssignment/_CardComments.aspx
+~/Views/CardAssignment/_CardComments.ascx
+~/Views/Shared/_CardComments.aspx
+~/Views/Shared/_CardComments.ascx
+~/Views/CardAssignment/_CardComments.cshtml
+~/Views/CardAssignment/_CardComments.vbhtml
+~/Views/Shared/_CardComments.cshtml
+~/Views/Shared/_CardComments.vbhtml] [superadmin] [   at System.Web.Mvc.PartialViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResult(ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass1c.<InvokeActionResultWithFilters>b__19()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass1c.<>c__DisplayClass1e.<InvokeActionResultWithFilters>b__1b()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

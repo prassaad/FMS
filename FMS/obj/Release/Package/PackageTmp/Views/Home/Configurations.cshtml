@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Configurations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using FMS.Models;
+
+
+
+<div id="tileContainer" class="container" style="display: block; margin-left: 10%">
+    <h2>Configurations</h2>
+    @if ((bool)core.GetUserAccess(29, User.Identity.Name).List)
+    {  <div class="sidebyside">
+        <a href="@Url.Action("Index", "VehicleModel")" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(50, 113, 194);
+                     padding: 0px; display: block; opacity: 1;">
+            <h1 style="color: white">
+                &nbsp; Vehicle Models
+            </h1>
+        </a>
+    </div>}
+    @if ((bool)core.GetUserAccess(31, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "Seater")" class="tile" style=" width: 145px; height: 145px; background-color: rgb(255, 153, 0);
+                 display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Seater</h1>
+            </a>
+        </div>
+    }
+    @if ((bool)core.GetUserAccess(32, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "EHSCodes")" class="tile" style="width: 145px; height: 145px; background-color: rgb(173, 21, 143);
+                 display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;EHS Codes</h1>
+            </a>
+        </div>
+    }
+    @if ((bool)core.GetUserAccess(33, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "DocumentType")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(209, 90, 90); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Document Types
+                </h1>
+            </a>
+        </div>
+                  }
+    @if ((bool)core.GetUserAccess(34, User.Identity.Name).List)
+    {             
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "Departments")" class="tile tileFlip support3D"
+             style=" width: 145px; height: 145px; display: block;
+             opacity: 1; background-color: rgb(105, 80, 171); display: block; opacity: 1; " >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Departments</h1>
+            </a>
+        </div>
+       }
+    @if ((bool)core.GetUserAccess(35, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "Designations")" class="tile tileFlip support3D"
+             style=" width: 145px; height: 145px; display: block;
+             opacity: 1; background-color: rgb(50, 113, 194); display: block; opacity: 1; " >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Designation</h1>
+            </a>
+        </div>
+           }
+    @if ((bool)core.GetUserAccess(36, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "PayFields")" id="tileSlideshow1-2-0" class="tile tileSlideshow group1 "
+         style=" width: 145px; height: 145px; background-color: rgb(105, 80, 171);
+         display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Pay fields</h1>
+            </a>
+        </div>
+             }
+    @if ((bool)core.GetUserAccess(37, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Create", "PayMaster")" id="tileScroll0_1-1" class="tile"
+             style=" width: 145px; height: 145px; background-color: rgb(255, 153, 0);
+             display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp; Pay Master
+                </h1>
+            </a>
+        </div>
+                }
+    @if ((bool)core.GetUserAccess(38, User.Identity.Name).List)
+    {
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "FuelStation")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(74, 168, 66); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Fuel Station</h1>
+            </a>
+        </div>
+                   }
+    @if ((bool)core.GetUserAccess(39, User.Identity.Name).List)
+    { 
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "ServiceSchMaster")" id="tileScroll0_1-2" class="tile"
+             style=" width: 145px; height: 145px; background-color: rgb(209, 90, 90);
+             display: block; opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp; Service Schedules</h1>
+            </a>
+        </div>
+                    }
+    @if ((bool)core.GetUserAccess(39, User.Identity.Name).List)
+    { 
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "DieselBook")" class="tile" style="
+                 width: 145px; height: 145px; background-color: rgb(74, 168, 66); display: block;
+                 opacity: 1;" >
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Diesel Book</h1>
+            </a>
+        </div>
+                     }
+    @if (User.IsInRole("superadmin"))
+    { 
+        <div class="sidebyside">
+            <a href="@Url.Action("Create", "AdminSettings")" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(45, 167, 236);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Admin Settings</h1>
+            </a>
+        </div>
+      
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "Unit", new { area = "Inventory" })" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(105, 80, 171);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp;&nbsp;UOM</h1>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "ItemCategories", new { area = "Inventory" })" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(209, 90, 90);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Item Categories</h1>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "Item", new { area = "Inventory" })" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(45, 167, 236);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Item Master</h1>
+            </a>
+        </div>
+        <div class="sidebyside">
+            <a href="@Url.Action("Index", "ServiceStation", new { area = "Inventory" })" class="tile tileSlide up" style=" width: 145px; height: 145px; background-color: rgb(50, 113, 194);
+                     padding: 0px; display: block; opacity: 1;">
+                <h1 style="color: white">
+                    &nbsp;&nbsp;Service Stations</h1>
+            </a>
+        </div>
+        <div class="sidebyside">
+        <a href="@Url.Action("Index","Location",new { area  = ""})" class="tile tileSlide Up" style=" width: 145px; height:145px; background-color:rgb(10,209,50);
+        padding: 0px; display: block; opacity:1;">
+        <h1 style="color: White">
+        &nbsp;&nbsp;Locations</h1>
+        </a></div>
+                     }
+</div>

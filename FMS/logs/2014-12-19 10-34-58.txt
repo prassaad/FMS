@@ -1,0 +1,8 @@
+[2014-12-19 10:34:58.8565] [127.0.0.1] [ERROR] [Session state has created a session id, but cannot save it because the response was already flushed by the application.] [] [   at System.Web.SessionState.SessionIDManager.SaveSessionID(HttpContext context, String id, Boolean& redirected, Boolean& cookieAdded)
+   at System.Web.SessionState.SessionStateModule.CreateSessionId()
+   at System.Web.SessionState.SessionStateModule.DelayedGetSessionId()
+   at System.Web.SessionState.SessionStateModule.ReleaseStateGetSessionID()
+   at System.Web.SessionState.SessionStateModule.OnReleaseState(Object source, EventArgs eventArgs)
+   at System.Web.SessionState.SessionStateModule.OnEndRequest(Object source, EventArgs eventArgs)
+   at System.Web.HttpApplication.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)]

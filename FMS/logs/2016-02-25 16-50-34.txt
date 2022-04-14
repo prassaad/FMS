@@ -1,0 +1,15 @@
+[2016-02-25 16:50:34.8101] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Models.core.<GetCardEntryDetailsListByClientProjectAndDate>b__75(<>f__AnonymousType4`2 <>h__TransparentIdentifier6f) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Models\core.cs:line 744
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at FMS.Models.core.GetCardEntryDetailsListByClientProjectAndDate(Int64 ClientId, Int64 ProjectId, DateTime LogDate) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Models\core.cs:line 737
+   at FMS.Controllers.CardAssignmentController.BulkCardEntryList(Int64 ClientId, Int64 ProjectId, String logDate) in D:\ProjectRelatedfiles\SuryaTravels\Backup\sarath\FMS\Controllers\CardAssignmentController.cs:line 863
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<InvokeActionMethodWithFilters>b__12()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass15.<>c__DisplayClass17.<InvokeActionMethodWithFilters>b__14()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName)]

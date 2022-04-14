@@ -1,0 +1,387 @@
+﻿@{
+    ViewBag.Title = "View Purchase Order Details";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    long POId = ViewBag.POId;
+    string Status = ViewBag.Status;
+    string RefNo = ViewBag.RefNo;
+}
+<style type="text/css">
+.col-m-6
+{
+	padding-right: 0px ! important; padding-left:-10px ! important;
+}
+ #printable { display: none; }
+   .Printable { display: none; }
+ @@media print
+{
+   #printable { display: block; }
+   .Printable{display:block;} 
+   #IssueDetList4 {page-break-after: always;}
+}
+</style>
+<h2 class="nonPrintable"><i class="clip-list"></i> Purchase Order Details  with Reference number [ @RefNo ] </h2>
+<div class="bread_title" style="width: 100%">
+    <div class="bread_navigation" style="width: 40%;">
+        <ul>
+            <li><i class="clip-arrow-left-2"></i>&nbsp;<a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "PurchaseOrders")"  style="margin-top:-15px;" >Cancel</a>
+            </li>
+            @if (Status.Trim().ToUpper() == "RFQ")
+            {
+      
+                <li>
+                    <input type="button" class="btn btn-orange btn-xs" onclick="SavePOrderBid('@POId')" value="Bid Receive" style="margin-top:-5px;" /></li>
+            }
+            @if (Status.Trim().ToUpper() == "BIDRECEIVED")
+            {
+                <li><a class="button_bg" data-toggle="modal" href="#" onclick="GetRFQBidModalDetails(@POId)">
+                    RFQ & Bid Details</a></li>
+                <li><a class="button_bg"  data-toggle="modal" href="#" onclick="GetDeliveryModalInvoices(@POId)">
+                    Delivery Invoices</a></li> 
+                <li>
+                    <input type="button" class="btn btn-green btn-xs" onclick="ConfirmPurchaseOrderEntry('@POId')" value="Confirm Order" style="margin-top:-5px;" /></li>
+            }
+            @if (Status.Trim().ToUpper() == "CONFIRMORDER")
+            {
+                <li>
+                    <input type="button" class="btn btn-success btn-xs" onclick="POReceiveProducts('@POId')" value="Receive Products" style="margin-top:-5px;" /></li>
+                <li>
+                    <input type="button" class="btn btn-yellow btn-xs" onclick="ConfirmPurchaseOrderEntry('@POId')" value="Receive Invoices" style="margin-top:-5px;" /></li>
+                <li>
+                    <button type="button" class="btn btn-primary btn-xs" id="btnPrint" onclick="ClickHereToPrint('divConfirmOrders')" style="margin-top:-5px;" >
+                        Print</button></li>
+            }
+        </ul>
+    </div>
+    <div style="float: right; width: 45%; margin-top: -5px;">
+        <ul id="tabs" class="wizard-steps">
+            <li id="tab-hd-1" class="step">@* if completed "completed-step"*@
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetOrderItemDetails(@POId,'@Status')"><span>1</span>
+                    PO Draft </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-2" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"  onclick="GetOrderItemDetails(@POId,'@Status')"><span>
+                    2</span> RFQ </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-3" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"  onclick="GetOrderItemDetails(@POId,'@Status')"><span>
+                    3</span> Bid Received </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-4" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetOrderItemDetails(@POId,'@Status')"><span>4</span>
+                    Confirm Order </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-5" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetOrderItemDetails(@POId,'@Status')"><span>5</span>
+                    Done </a>
+                <div class="a-after">
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul id="tab">
+            <li>
+                <fieldset>
+                    <legend>
+                        <b><i class="clip-grid"></i>&nbsp;PO Draft</b>
+                    </legend>
+                    <div id="IssueDetList1">
+                        </div>
+                </fieldset>
+            </li>
+            <li>
+                <fieldset>
+                    <legend>
+                        <b><i class="clip-grid"></i>&nbsp;Request for Quotation</b>
+                    </legend>
+                    <div id="IssueDetList2">
+                        </div>
+                </fieldset>
+            </li>
+            <li>
+                <fieldset>
+                    <legend>
+                        <b><i class="clip-grid"></i>&nbsp; Bid Received </b>
+                    </legend>
+                    <div id="IssueDetList3">
+                        </div>
+                </fieldset>
+                
+            </li>
+            <li>
+                <fieldset>
+                    <legend>
+                        <b><i class="clip-grid"></i>&nbsp;Confirm Order</b>
+                    </legend>
+                     <div class="Printable" style="text-align:center;">
+                            <h3>
+                                Office Copy</h3>
+                            <i>----------------------------------------------------------------------------------------------------------------------------------------------------</i>
+                        </div>
+                    <div id="IssueDetList4">
+                        </div>
+                        <br/> 
+                        <div class="Printable" style="text-align: center;">
+                            <h3>
+                                Receiver Copy</h3>
+                            <i>----------------------------------------------------------------------------------------------------------------------------------------------------</i>
+                        </div>
+                </fieldset>
+                
+            </li>
+            <li>
+                <fieldset>
+                    <legend>
+                        <b><i class="clip-grid"></i>&nbsp; Done </b>
+                    </legend>
+                    <div id="IssueDetList5">
+                        </div>
+                </fieldset>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="printable" class="panel panel-default PrintCopy Printable">
+  
+</div>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+<script type="text/javascript">
+    GetOrderItemDetails('@POId', '@Status');
+    SetIssueItemTabsByStaus('@Status')
+    function GetOrderItemDetails(POId, Status) {
+        $.get('@Url.Action("GetOrderItemDetails", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId, function (data) {
+            SetIssueItemTabsByStaus(Status);
+            SelectDivByStatus(Status, data);
+            $("#loading").fadeOut('slow');
+        });
+    }
+    
+    function SelectDivByStatus(Status, data) {
+        if (Status.toLowerCase() == "rfq") {
+            $('#IssueDetList2').html('');
+            $('#IssueDetList2').html(data);
+        }
+        else if (Status.toLowerCase() == "bidreceived") {
+            $('#IssueDetList3').html('');
+            $('#IssueDetList3').html(data);
+        }
+        else if (Status.toLowerCase() == "confirmorder") {
+            $('#IssueDetList4').html('');
+            $('#IssueDetList4').html(data);
+        }
+        else if (Status.toLowerCase() == "done") {
+            $('#IssueDetList5').html('');
+            $('#IssueDetList5').html(data);
+        }
+        else {
+            $('#IssueDetList1').html('');
+            $('#IssueDetList1').html(data);
+        }
+    }
+    function SetIssueItemTabsByStaus(Status) {
+        if (Status.toLowerCase() == "rfq") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-2").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 2+ ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "bidreceived") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-3").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" +3 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "confirmorder") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-4").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 4 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "done") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-5").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 5 + ")").addClass("current-tab");
+        }
+        else {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-1").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+        }
+    }
+    function SavePOrderBid(POId)
+    {
+        $("#loading").fadeIn('slow');
+        $.post('@Url.Action("SavePOrderBid", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId, function (data) {
+            if (data.success) {
+                alert(data.msg);
+                var delay = 1000; //1 seconds
+                setTimeout(function () {                         //your code to be executed after 1 seconds
+                    window.location.href = '@Url.Action("ViewPurchaseOrders", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId + '';
+                }, delay);
+                $("#loading").fadeOut('slow');
+            }
+            else {
+                alert(data.msg);
+                $("#loading").fadeOut('slow');
+            }
+        });
+    }
+    function ConfirmPurchaseOrderEntry(POId) {
+        $("#loading").fadeIn('slow');
+        $.post('@Url.Action("ConfirmPurchaseOrder", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId, function (data) {
+            if (data.success) {
+                alert(data.msg);
+                var delay = 1000; //1 seconds
+                setTimeout(function () {                         //your code to be executed after 1 seconds
+                    window.location.href = '@Url.Action("ViewPurchaseOrders", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId + '';
+                }, delay);
+                $("#loading").fadeOut('slow');
+            }
+            else {
+                alert(data.msg);
+                $("#loading").fadeOut('slow');
+            }
+        });
+    }
+    function GetRFQBidModalDetails(POId) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+            ({
+                containerCss: {
+                    width: 610,
+                    height: 550
+                },
+                close: false,
+                onShow: function (dialog) {
+                    dialog.data.find('.no').click(function () {
+                        $.modal.close();
+                    });
+                    $("#btnItemAdd").attr("href", "#");
+                    $('#div_loading').show();
+                    var SupplierId = $('#SupplierId').val();
+                    GetRFQBidDetails(POId);
+                }
+            });
+    }
+    function GetRFQBidDetails(POId) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("GetRFQBidDetails", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+    }
+    function GetDeliveryModalInvoices(POId) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+            ({
+                containerCss: {
+                    width: 610,
+                    height: 550
+                },
+                close: false,
+                onShow: function (dialog) {
+                    dialog.data.find('.no').click(function () {
+                        $.modal.close();
+                    });
+                    $("#btnItemAdd").attr("href", "#");
+                    $('#div_loading').show();
+                    var SupplierId = $('#SupplierId').val();
+                    GetDeliveryInvoices(POId);
+                }
+            });
+    }
+    function GetDeliveryInvoices(POId) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("GetDeliveryInvoices", "PurchaseOrders", new { area = "Inventory" })?Id=' + POId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+    }
+    function POReceiveProducts(Id) {
+        if (!confirm('Are you sure want to receive products for this purchase order?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("CheckReceiveStockFromPurchaseOrder", "PurchaseOrders", new { area = "Inventory" })?Id=' + Id, function (data) {
+                if (data.success) {
+                    window.location.href = '@Url.Action("ReceiveProducts", "Stores", new { area = "Inventory" })?Id=' + Id;
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+
+          function ClickHereToPrint(divid) {
+              try {
+                  var oIframe = document.getElementById('ifrmPrint').contentDocument;
+                  var oContent = document.getElementsById(divid).innerHTML;
+                  oIframe.document.write("<html><head>");
+                  oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+                  oIframe.document.write(oContent + "</body></html>");
+                  oIframe.document.close();
+                  oIframe.focus();
+                  // oIframe.print();
+              }
+              catch (e) {
+                  $('.PrintCopy').empty();
+                  $("#IssueDetList4").clone().appendTo(".PrintCopy");
+                 // $('#divConfirmOrders').append('<br/> <div class="Printable" style="text-align:center;"> <h3> Receiver Copy</h3><i>----------------------------------------------------------------------------------------------------------------------------------------------------</i></div>');
+                  self.print();
+              }
+          }
+    </script>

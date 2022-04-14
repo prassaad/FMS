@@ -1,0 +1,105 @@
+﻿@model IEnumerable<FMS.Models.tbl_projects>
+@{
+    ViewBag.Title = "Index";
+}
+<style type="text/css">
+    .tooltip-inner
+    {
+        display: inline;
+        position: relative;
+    }
+</style>
+<h2>
+    List of Projects</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="active">@Html.ActionLink("Create New", "Create")</li>
+        </ul>
+    </div>
+</div>
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+    <thead>
+        <tr>
+            <th>
+                Client
+            </th>
+            <th>
+                Project#
+            </th>
+            <th>
+                Project
+            </th>
+            <th>
+                Type
+            </th>
+            
+            <th>
+                Spoc Name
+            </th>
+            <th>
+                Spoc Mobile
+            </th>
+            <th>
+                Spoc MailId(s)
+            </th>
+            <th>
+                Manager
+            </th>
+            <th>
+                Manager Mobile
+            </th>
+             <th>
+                Manager MailId(s)
+            </th>
+             <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.Encode(item.ClientId == null ? "" : item.tbl_clients.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
+                </td>
+                <td>
+                    @Html.Encode(item.BillingTypeId == null ? "" : item.tbl_billing_types.BillingType)
+                </td>
+                 
+                <td>
+                    <span title="@item.SpocName"> @Html.Encode(item.SpocName == null ? "" : (item.SpocName.Length > 50 ? item.SpocName.Substring(0, 50) + "..." : item.SpocName)) </span> 
+                </td>
+                <td>
+                    <span title="@item.SpocMobile">   @Html.Encode(item.SpocMobile == null ? "" : (item.SpocMobile.Length > 10 ? item.SpocMobile.Substring(0, 10) + "..." : item.SpocMobile)) </span>
+                </td>
+                <td>
+                    <span title="@item.SpocMailId" class="tooltip-inner"> @Html.Encode(item.SpocMailId == null ? "" : (item.SpocMailId.Length > 50 ? item.SpocMailId.Substring(0, 50) + "..." : item.SpocMailId)) </span>
+                </td>
+                <td>
+                    <span title="@item.MgrName"> @Html.Encode(item.MgrName == null ? "" : (item.MgrName.Length > 50 ? item.MgrName.Substring(0, 50) + "..." : item.MgrName)) </span>
+                </td>
+                <td>
+                   <span title="@item.MgrMobile"> @Html.Encode(item.MgrMobile == null ? "" : (item.MgrMobile.Length > 10 ? item.MgrMobile.Substring(0,10) + "..." : item.MgrMobile)) </span>
+                </td>
+                <td>
+                    <span title="@item.MgrMailId"> @Html.Encode(item.MgrMailId == null ? "" : (item.MgrMailId.Length > 10 ? item.MgrMailId.Substring(0, 10) + "..." : item.MgrMailId)) </span>
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+ 

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<FMS.Models.GeneralClassFields>
+<p style="margin-top: 10px;">
+    No of entries @(ViewBag.ListCount)
+    showing
+</p>
+@{
+    decimal MailAge = 0;
+}
+<table class="table table-striped table-condensed dTableR dataTable">
+   <thead>
+    <tr>
+        <th>
+            SNo.
+        </th>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Type
+        </th>
+        <th>
+            Start - End
+        </th>
+        <th>
+            Litre(s)
+        </th>
+        <th>
+            KMs
+        </th>
+        <th>
+            Mailage
+        </th>
+    </tr>
+   </thead>
+   <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.Encode(item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text2)
+            </td>
+            <td>
+                @(item.Value3)
+            </td>
+            <td>
+                @(item.Value2)
+            </td>
+            <td>
+               @if (item.Value3 == 0 || item.Value2 == 0)
+               {
+                   MailAge = 0;
+               }
+               else
+               {
+                   MailAge = Convert.ToDecimal(item.Value2 / (decimal)item.Value3);
+               }
+               @Html.Encode(Math.Round(MailAge, 2))
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<p style="float: right;">
+    Generated on @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>

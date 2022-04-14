@@ -1,0 +1,250 @@
+﻿@{
+    ViewBag.Title = "View Indent";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    int IndentId = ViewBag.IndentId;
+    string Status = ViewBag.Status;
+    string IndentManager = ViewBag.IndentManager;
+    string IndentCreatedBy = ViewBag.IndentCreatedBy;
+    string IndRefNo = ViewBag.RefferNo;
+}
+<h2><i class="clip-list"></i>View Indent with reference number [ @IndRefNo ] </h2>
+<div class="bread_title" style="width: 100%">
+    <div class="bread_navigation" style="width: 30%;">
+        <ul>
+            <li><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Indent")">Cancel</a>
+            </li>
+            @if (Status.Trim().ToUpper() == "WAITINGFORAPPROVAL" && (IndentManager.Trim().ToUpper() == User.Identity.Name.Trim().ToUpper()))
+            {
+                <li>
+                    <input type="button" class="btn btn-primary btn-xs" onclick="ApproveIndent('@IndentId')" value="Approve"  style="margin-top: -5px;"/></li>
+                <li>
+                    <input type="button" class="btn btn-orange btn-xs" onclick="RejectIndent('@IndentId')" value="Reject" style="margin-top: -5px;"/></li>
+            }
+            @if (Status.Trim().ToUpper() == "INPROGRESS" && (IndentManager.Trim().ToUpper() == User.Identity.Name.Trim().ToUpper()) && ViewBag.AlreadyIssue == 0)
+            {
+                <li>
+                    <input type="button" class="btn btn-primary btn-xs" onclick="IssuedProducts('@IndentId')" value="Issue Products" style="margin-top: -5px;"/></li>
+            }
+        </ul>
+    </div>
+    <div style="float: left; width: 0; margin-top: -8px;">
+    </div>
+    <div style="float: right; width: 45%; margin-top: -5px;">
+        <ul id="tabs" class="wizard-steps">
+            <li id="tab-hd-1" class="step">@* if completed "completed-step"*@
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetIndentDetails(@IndentId,'@Status')"><span>1</span>
+                    Indent Draft </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-2" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"  onclick="GetIndentDetails(@IndentId,'@Status')"><span>
+                    2</span> Waiting for Approval </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-3" class="step">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)" onclick="GetIndentDetails(@IndentId,'@Status')"><span>3</span>
+                    InProgress </a>
+                <div class="a-after">
+                </div>
+            </li>
+            <li id="tab-hd-4" class="step"  onclick="GetIndentDetails(@IndentId,'@Status')">
+                <div class="a-before">
+                </div>
+                <a href="javascript:void(0)"><span>4</span> Received </a>
+                <div class="a-after">
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <ul id="tab">
+            <li>
+                <fieldset>
+                    <legend> <i class="clip-grid"></i>&nbsp; Indent Info  </legend>
+                    &nbsp; &nbsp; &nbsp; &nbsp; <b><i class="clip-user"></i>Authority User : <span class="label label-info"> @IndentCreatedBy</span></b>
+                    &nbsp; &nbsp; &nbsp; &nbsp;<b><i class="clip-user-5"></i>Approval Manager : <span class="label label-success">  @IndentManager</span></b>
+                      <div id="IndentDetList1">
+                      </div>   
+                </fieldset>
+            </li>
+            <li>
+             <fieldset>
+                    <legend>  <i class="clip-grid"></i>&nbsp; Waiting for Indent Approval  </legend>
+                     &nbsp; &nbsp; &nbsp;&nbsp;  <b><i class="clip-user"></i>Authority User : <span class="label label-info"> @IndentCreatedBy</span></b>
+                     &nbsp; &nbsp; &nbsp; &nbsp;  <b><i class="clip-user-5"></i>Approval Manager:  <span class="label label-success">  @IndentManager</span></b>
+                     <div id="IndentDetList2">
+                     </div>   
+                </fieldset>
+            </li>
+            <li>    
+                 <fieldset>
+                    <legend> <i class="clip-grid"></i>&nbsp;  Indent in progress  </legend>
+                     &nbsp; &nbsp; &nbsp;&nbsp;<b><i class="clip-user"></i>Authority User :  <span class="label label-info"> @IndentCreatedBy</span></b>
+                        &nbsp; &nbsp; &nbsp; &nbsp;<b><i class="clip-user-5"></i>Approval Manager:  <span class="label label-success">  @IndentManager</span></b>
+                     <div id="IndentDetList3">
+                     </div>   
+                </fieldset>
+            </li>
+            <li> 
+                <fieldset>
+                    <legend> <i class="clip-grid"></i>&nbsp; Indent received </legend>
+                     &nbsp; &nbsp; &nbsp;&nbsp; <b> <i class="clip-user"></i>Authority User :  <span class="label label-info"> @IndentCreatedBy</span></b>
+                        &nbsp; &nbsp; &nbsp; &nbsp; <b><i class="clip-user-5"></i>Approval Manager:  <span class="label label-success">  @IndentManager</span></b>
+                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                     <div id="IndentDetList4">
+                     </div>   
+                </fieldset>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    GetIndentDetails('@IndentId', '@Status');
+    SetIndentTabsByStaus('@Status')
+    function GetIndentDetails(IndentId, Status) {
+       // $("#loading").fadeIn('slow');
+        $.get('@Url.Action("GetIndentDetails", "Indent", new { area = "Inventory" })?IndentId=' + IndentId, function (data) {
+             SetIndentTabsByStaus(Status);
+             SelectDivByStatus(Status, data);
+            $("#loading").fadeOut('slow');
+        });
+}
+
+function SelectDivByStatus(Status, data) {
+    if (Status.toLowerCase() == "waitingforapproval") {
+            $('#IndentDetList2').html('');
+            $('#IndentDetList2').html(data);
+        }
+        else if (Status.toLowerCase() == "inprogress") {
+            $('#IndentDetList3').html('');
+            $('#IndentDetList3').html(data);
+        }
+        else if (Status.toLowerCase() == "received") {
+            $('#IndentDetList4').html('');
+            $('#IndentDetList4').html(data);
+        }
+        else {
+            $('#IndentDetList1').html('');
+            $('#IndentDetList1').html(data);
+        }
+    }
+    function SetIndentTabsByStaus(Status) {
+        if (Status.toLowerCase() == "waitingforapproval") {
+         $("ul#tabs li.active-step").removeClass("active-step");
+         $("#tab-hd-2").addClass("active-step");
+         $("ul#tab li.current-tab").removeClass("current-tab");
+         $("ul#tab li:nth-child(" + 2 + ")").addClass("current-tab");
+        }
+       else if (Status.toLowerCase() == "inprogress") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-3").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 3 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "received") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-4").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 4 + ")").addClass("current-tab");
+        }
+        else {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-1").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+        }
+    }
+    function ApproveIndent(IndentId) {
+        if (!confirm('Are you sure want to approve this indent?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("Approve", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIndent", "Indent", new { area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIndent", "Indent", new { area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function RejectIndent(IndentId) {
+     if (!confirm('Are you sure want to reject this indent?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("RejectIndent", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("Index", "Indent", new { area = "Inventory" })';
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIndent", "Indent", new { area = "Inventory" })?Id=' + data.IndentId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+  function IssuedProducts(IndentId) {
+      if (!confirm('Are you sure want to issue products for this indent?')) {
+          return;
+      }
+      else {
+          $("#loading").fadeIn('slow');
+          $.post('@Url.Action("IssuedProducts", "Indent", new { area = "Inventory" })?Id=' + IndentId, function (data) {
+              if (data.success) {
+                  alert(data.msg);
+                  var delay = 1000; //1 seconds
+                  setTimeout(function () {
+                      //your code to be executed after 1 seconds
+                      window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + data.Id;
+                  }, delay);
+                  $("#loading").fadeOut('slow');
+              }
+              else {
+                  alert(data.msg);
+                  $("#loading").fadeOut('slow');
+              }
+          });
+      }
+  }
+  
+</script>

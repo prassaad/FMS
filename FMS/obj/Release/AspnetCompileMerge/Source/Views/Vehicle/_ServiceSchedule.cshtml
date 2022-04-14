@@ -1,0 +1,112 @@
+﻿<center>
+<table class="table table-bordered" style="width:50%">
+    <tr>
+        <td>
+           Select
+        </td>
+        <td>
+           <input type="radio" name="Selection" id="rdExisted" value="1" checked="checked" /> Apply Existed Structure <input type="radio" name="Selection" id="rdNew" value="2" /> Add New / Update Existing
+        </td>
+    </tr>
+    <tr>
+        <td>
+            
+        </td>
+        <td>
+            <input type="button" value="continue" id="btnContinue" />
+        </td>
+    </tr>
+</table>
+</center>
+<div id="ServiceSchedule">
+    
+</div>
+<br /><br />
+<div id="VehServiceList">
+</div>
+<script type="text/javascript">
+
+    $('#btnContinue').click(function () {
+        var selectionMode = $('input[name=Selection]:radio:checked').val();
+        if (selectionMode == "1") {
+            GetExistStructure('@ViewBag.VehicleId');
+            VehServiceList('@ViewBag.VehicleId');
+        }
+        else if (selectionMode == "2") {
+            AddNewService('@ViewBag.VehicleId');
+            VehServiceList('@ViewBag.VehicleId');
+        }
+    });
+
+    // Get Existing Structure
+    function GetExistStructure(vehicleId) {
+        $.ajax({
+            type: "GET",
+            url: "/ServiceSchMaster/GetAllExistServices",
+            data: "vehicleId=" + vehicleId,
+            beforeSend : function(){
+                $('#loading').fadeIn('slow');
+            },
+            dataType: "html",
+            success: function (result) {
+                $('#ServiceSchedule').html(result);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+
+    // Add New Service 
+    function AddNewService(Id) {
+        $.ajax({
+            type: "GET",
+            url: "/Vehicle/AddNewServiceToVeh",
+            beforeSend: function () {
+                $('#loading').fadeIn('slow');
+            },
+            data: "VehicleId=" + Id,
+            dataType: "html",
+            success: function (result) {
+                $('#ServiceSchedule').html(result);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+
+    function VehServiceList(VehicleID) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            url: "../../Vehicle/GetVehServiceList",
+            beforeSend: function () {
+                $('#loading').fadeIn('slow');
+            },
+            data: "vehicleId=" + VehicleID,
+            dataType: "html",
+            success: function (result) {
+                $('#VehServiceList').html(result);
+                $('#loading').fadeOut('slow');
+            },
+            error: function (error) {
+
+            }
+        });
+        $("#loading").fadeOut('slow');
+    }
+
+    $("input:radio[name=Selection]").click(function () {
+        var selectedVal = $(this).val();
+        if (selectedVal == "1") {
+            $('#ServiceSchedule').empty(); $('#VehServiceList').empty();
+        }
+        else if (selectedVal == "2") {
+            $('#ServiceSchedule').empty(); $('#VehServiceList').empty();
+        }
+
+    });
+</script>

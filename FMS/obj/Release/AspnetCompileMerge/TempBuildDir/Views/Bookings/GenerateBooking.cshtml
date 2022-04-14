@@ -1,0 +1,417 @@
+﻿@model FMS.Models.tbl_bookings
+
+@{
+    ViewBag.Title = "Generate Booking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery-ui-1.8.11.js" type="text/javascript"></script>
+<style type="text/css">
+    .txtAutoComplete
+    {
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+   .clsemail
+   {
+       text-transform: none !important;
+   }
+   .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+   }
+ .btnnewlog:focus {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+    }
+</style>
+<h2>
+    Generate Booking</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Bookings", "Index")</li>
+        </ul>
+    </div>
+</div>
+@using (Html.BeginForm("GenerateBooking", "Bookings", FormMethod.Post, new { id = "frmBooking", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+<fieldset>
+<legend>Booking Details</legend>
+    <table style="width: 100%;">
+        <tr style="width: 100%;">
+            <td style="width: 50%;" valign="top">
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td colspan="2">
+                            <span id="spnMsg" style="color: Red;"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Client Name <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.ClientId, new { @class = "txtAutoComplete", @tabindex = 1, @maxlength = 50 })
+                            <input type="hidden" id="cid" name="cid" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Mail From <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBox("FromMail", (string)ViewBag.EmailAddress, new { @maxlength = 50, @tabindex = 2, @class = "clsemail" })
+                            @Html.Hidden("CC", (string)ViewBag.CC)
+                            @Html.Hidden("BCC", (string)ViewBag.BCC)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date of Mail <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBox("BookingDt", (string)ViewBag.DateOfMail, new { @maxlength = 15, @tabindex = 3 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date of Reporting <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.DateofReport, new { @maxlength = 15, @style = "width:180px;", @tabindex = 4 })
+                            Time <span style="color: Red;">*</span>
+                            @Html.TextBoxFor(model => model.ReportingTime, new { @maxlength = 10, @style = "width:60px;", @tabindex = 5, @onkeypress = "return TimeValidate(event);" , @placeholder = "HH:MM" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Vehicle Model <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("VehicleModelId", null, "--Select Model--", new { @class = "txtinput", @style = "width:220px;", @tabindex = 6 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Vehicle Type <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("VehicleTypeId", null, "--Select Vehicle Type--", new { @class = "txtInput", @tabindex = 7 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Trip Type <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("TripType", null, "--Select Trip--", new { @class = "txtInput", @tabindex = 8 })
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Priority <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.DropDownList("Priority", null, "--Select Priority--", new { @class = "txtInput", @tabindex = 9 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Guest Name <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.GuestName, new { @class = "txtinput", @maxlength = 50, @tabindex = 10 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Contact No. <span style="color: Red;">*</span>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.GuestMobile, new { @class = "txtinput", @maxlength = 12, @tabindex = 11, @onkeypress = "return numberValidate(event);" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Guest Details
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(model => model.GuestDetails, new { @class = "txtinput", @style = "resize:none", @maxlength = 250, @tabindex = 12 })
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 50%;" valign="top">
+                <table class="table-striped table-condensed dTableR dataTable">
+                    <tr>
+                        <td colspan="2">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Body Of Mail
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(model => model.BookingText, new { @class = "txtinput", @style = "resize:none", @rows = 6, @maxlength = 1000, @tabindex = 13 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Additional Info.
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(model => model.AdditionalInfo, new { @class = "txtinput", @style = "resize:none", @maxlength = 250, @tabindex = 14 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            From Location
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.FromLocation, new { @class = "txtinput", @maxlength = 50, @tabindex = 15 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            To Location
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.ToLocation, new { @class = "txtinput", @maxlength = 50, @tabindex = 16 })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Auto Trigger<small>(Mail)</small>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="IsTrigger" name="IsTrigger" tabindex="17" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="button" style="margin-top: 5px;" id="btnGenBooking" class="btnnewlog"
+                                value="Generate Booking" tabindex="18" onfocus="focus();" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</fieldset>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+
+        $("#ClientId").autocomplete("/LogsheetManagement/getAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: selectItem });
+        $("#ClientId").focus();
+        var myDate = new Date();
+        var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+        //$("#BookingDt").val(prettyDate);  
+        $('#BookingDt').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            //maxDate: prettyDate,
+            onSelect: function () {
+                $('input[tabindex="7"]').focus();
+            }
+        });
+        $('#DateofReport').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            //minDate: prettyDate,
+            onSelect: function () {
+                $('input[tabindex="7"]').focus();
+            }
+        });
+    
+    });
+
+    function selectItem(li) {
+        $('#cid').val(0);
+        if (li == null) $('#cid').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+        $('#cid').val(sValue);
+
+        $('input[tabindex="2"]').focus();
+    }
+
+    $('#btnGenBooking').click(function () {
+        
+        if (ValidationForm()) {
+            $('#loading').fadeIn('slow');
+            $('#btnGenBooking').attr('disabled', true);
+            $('#btnGenBooking').attr('style', 'cursor:no-drop');
+            $.post('/Bookings/GenerateBooking', $('#frmBooking').serialize(), function (data) {
+                alert(data.msg);
+                $('#btnGenBooking').attr('disabled', false);
+                $('#btnGenBooking').attr('style', 'cursor:pointer');
+                $('#loading').fadeOut('slow');
+                if (data.success) {
+                    window.location.href = '/Bookings/Index';
+                }
+            });
+        }
+    });
+    $('.clsemail').change(function () {
+        if (!isValidEmailAddress($(this).val())) {
+            $('#spnMsg').html('Invalid email address');
+            $('#FromMail').val(''); $('#FromMail').focus();
+            return false;
+        }
+    });
+    $('#ReportingTime').change(function () {
+        ValidateTimeFormat(this.value, this.id);
+    });
+    function ValidationForm() {
+        var ClientId = $('#ClientId').val();
+        var MailFrom = $('#FromMail').val();
+        var BookingDt = $('#BookingDt').val();
+        var DateofReport = $('#DateofReport').val();
+        var ReportingTime = $('#ReportingTime').val();
+        var VehicleModelId = $('#VehicleModelId').val();
+        var VehicleTypeId = $('#VehicleTypeId').val();
+        var TripType = $('#TripType').val();
+        var GuestName = $('#GuestName').val(); 
+        var GuestMobile = $('#GuestMobile').val();
+        var Priority = $('#Priority').val();
+
+        if (ClientId == '') {
+            $('#spnMsg').html('Please search client');
+            $('#ClientId').focus();
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (MailFrom == '') {
+            $('#spnMsg').html('Please enter mail.');
+            $('#FromMail').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (BookingDt == '') {
+            $('#spnMsg').html('Please enter booking date.');
+            $('#BookingDt').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (DateofReport == '') {
+            $('#spnMsg').html('Please enter date of reporting');
+            $('#DateofReport').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (ReportingTime == '') {
+            $('#spnMsg').html('Please enter reporting time');
+            $('#ReportingTime').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (VehicleModelId == '') {
+            $('#spnMsg').html('Please select vehicle model');
+            $('#VehicleModelId').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (VehicleTypeId == '') {
+            $('#spnMsg').html('Please select vehicle type');
+            $('#VehicleTypeId').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (TripType == '') {
+            $('#spnMsg').html('Please select trip type');
+            $('#TripType').focus();
+            return false;
+        }
+        if (Priority == '') {
+            $('#spnMsg').html('Please select priority');
+            $('#Priority').focus();
+            return false;
+        }
+        if (GuestName == '') {
+            $('#spnMsg').html('Please enter guest name');
+            $('#GuestName').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        if (GuestMobile == '') {
+            $('#spnMsg').html('Please enter contact number');
+            $('#GuestMobile').focus(); 
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            return false;
+        }
+        return true;
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    function TimeValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9 || charCode == 58)
+        { return true; } else { return false; }
+    }
+    function ValidateTimeFormat(TimeValue, FieldId) {
+        var result = IsNumericTime($.trim(TimeValue))
+        if (result == false) {
+            $('#spnMsg').html('Please enter valid time.Time format is HH:MM');
+            document.getElementById("" + FieldId + "").value = '';
+            $("#" + FieldId).focus();
+            return false;
+        }
+        // Validate Time Format into HH:MM
+        var myString = TimeValue.toString();
+        var arr = myString.split(':');
+        if (arr.length != 2) {
+            $('#spnMsg').html('Please enter valid time.Time format is HH:MM');
+            document.getElementById("" + FieldId + "").value = '';
+            $("#" + FieldId).focus();
+            return false;
+        }
+        var hours = parseInt(arr[0]);
+        var mins = parseInt(arr[1]);
+        if (hours >= 24) {
+            $('#spnMsg').html('Hours should not be greater than 24');
+            document.getElementById("" + FieldId + "").value = '';
+            $("#" + FieldId).focus();
+            return false;
+        }
+        if (mins >= 60) {
+            $('#spnMsg').html('Minutes should not be greater than 60');
+            document.getElementById("" + FieldId + "").value = '';
+            $("#" + FieldId).focus();
+            return false;
+        }
+        $('#spnMsg').empty();
+        return true;
+    } 
+</script>

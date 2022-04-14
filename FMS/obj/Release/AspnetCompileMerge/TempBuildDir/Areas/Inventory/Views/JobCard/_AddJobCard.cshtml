@@ -1,0 +1,399 @@
+﻿@model FMS.Models.tbl_jobcard
+
+<div class="clsmodalheader">Add Job Card Details</div>
+@using (Html.BeginForm("AddJobCard", "JobCard", FormMethod.Post, new { id = "frmAddJobCard", enctype = "multipart/form-data" }))
+{
+    <div style="overflow: auto; z-index: 9999; height: 500px;" id="divNewDutylog">
+        <table class="table table-striped table-condensed table-bordered">
+            <tr>
+                <td colspan="2">
+                    <span id="Itemerrormsg" style="color: Red;"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Item Type
+                </td>
+                <td>
+                    Item<input type="radio" name="Itemtype" class="Itemtype" id="itemRadio" value="Item"
+                        checked="checked" />
+                    Service
+                    <input type="radio" class="Itemtype" name="ItemType" id="serviceRadio" value="Service" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Select Item to Add<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    <select id="itemId" name="itemId" style="width: 180px;">
+                        <option value="null">--Select Item--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Qty.<span class="clsmark" style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBox("Qty", null, new { @style = "width:60px;", @maxlength = 8, @class = "validate BoxBackground", @onkeypress = "return numberValidate(event);" })
+                    <input type="hidden" id="vheID" name="vheID"  value="@ViewBag.vheID"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Avail Qty
+                </td>
+                <td>
+                    <span id="SpanAvailQty"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Amount
+                </td>
+                <td>
+                    <span id="ItemAmount"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Total Amt.
+                </td>
+                <td>
+                    <span id="TotalAmount"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Specifications
+                </td>
+                <td>
+                    @Html.TextBox("Specifications", null, new { @style = "width:160px;", @maxlength = 200, @class = "validate" })
+                </td>
+            </tr>
+            <tr id="vtTxTr" style="display: none">
+                <td>
+                    Vat Tax
+                </td>
+                <td>@Html.TextBox("VatTax", "", new { @onkeypress = "return numberValidate(event);", @maxlength = 8, @style = "width:70px" })
+                    <small>in (%)</small>
+                </td>
+            </tr>
+            <tr id="srvcTxTr" style="display: none">
+                <td>
+                    Service Tax
+                </td>
+                <td>@Html.TextBox("ServiceTax", "", new { @onkeypress = "return numberValidate(event);", @maxlength = 8, @style = "width:70px" })
+                    <small>in (%)</small>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    &nbsp;&nbsp;
+                    <input type="button" class="btn btn-primary" value="Save & Next" id="btnSaveAndNextItem" />
+                    &nbsp;&nbsp;
+                    <input type="button" class="btn btn-primary" value="Save & Close" id="btnAddAndCloseItem" />
+                    &nbsp;&nbsp;
+                    <input type="button" class="btn btn-light-grey" data-dismiss="modal" id="btnClose"
+                        value="Close" />
+                    <input type="hidden" id="isEdit" value="@ViewBag.IsEdit" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<script type="text/javascript">
+    if ($(itemRadio).val() == "Item") {
+        LoadItem($(itemRadio).val());
+        $("#vtTxTr").show();
+        $("#srvcTxTr").hide();
+    }
+    else {
+        $("#vtTxTr").hide();
+        $("#srvcTxTr").show();
+    }
+
+    var radioBtnTyp;
+    $(".Itemtype").change(function () {
+        LoadItem($(this).val())
+        radioBtnTyp = $(this).val();
+        if ($(this).val() == "Item") {
+            $("#vtTxTr").show();
+            $("#srvcTxTr").hide();
+        }
+        else {
+            $("#vtTxTr").hide();
+            $("#srvcTxTr").show();
+        }
+    });
+    $("#btnClose").click(function () {
+        $.modal.close();
+    })
+
+    function LoadItem(itemType) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("LoadItmsByItemType", "JobCard", new { area = "Inventory" })',
+            data: "itemType=" + itemType,
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#itemId').html('<option value="null">--Select Item--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].ItemText + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#itemId").append(options);
+                }
+                else {
+                    $('#itemId').html('<option value="null">--Select Item--</option>');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    $("#Qty").change(function () {
+        var Qty = $(this).val();
+        var AvailQty = $('#SpanAvailQty').html();
+        var ItemAmt = $('#ItemAmount').html();
+        $('#TotalAmount').html(Qty * ItemAmt);
+        var a = parseInt(Qty)
+        var b = parseInt(AvailQty)
+        if (Qty.charAt(0) == 0) { // or use Qty.slice(0, 1)
+            $(this).val("")
+            return;
+        }
+        if ($.trim($('#itemId').val()) == "") {
+            alert("Please select the item to be added");
+            $(this).val("");
+            $('#TotalAmount').html('0');
+            $('#itemId').focus();
+            $("#Itemerrormsg").hide();
+            return;
+        }
+
+    });
+    $("#itemId").change(function () {
+        var ItemId = $(this).val();
+        //alert(ItemId);
+        if (ItemId == "") {
+            $('#SpanAvailQty').html('0')
+            $('#ReorderLevel').val("");
+            $('#Specifications').val("");
+            $('#ItemAmount').html(0);
+            $('#TotalAmount').html('0');
+            $('#spnStock').hide();
+            $('#spnPurchase').hide();
+            $("#Qty").val('');
+            //  document.getElementById('QtyReq').disabled = false;
+            $("#Itemerrormsg").hide();
+            return;
+        }
+        // var CampusId = $("#CampusId").val();
+
+        if (ItemId != "") {
+            $("#Itemerrormsg").hide();
+            $('#Indent_loading').show();
+            $.get('@Url.Action("GetItemDetails", "JobCard", new { area = "Inventory" })?ItemId=' + ItemId, function (data) {
+                if (data.success) {
+                    $('#ReorderLevel').val(data.ReorderLevel);
+                    $('#Specifications').val(data.Specifications);
+                    $('#ItemAmount').html(data.Amount);
+                    $('#SpanAvailQty').html(data.AvailQty);
+                    if (data.AvailQty > 0) {
+                        $('#spnStock').show();
+                        $('#spnPurchase').hide();
+                    }
+                    else {
+                        $('#spnPurchase').show();
+                        $('#spnStock').hide();
+                    }
+                    var b = parseInt(data.AvailQty)
+
+                    $('#Indent_loading').hide();
+                }
+            });
+        }
+        else {
+            alert("Please select a branch to get available quantity.");
+            $('#itemId').val("");
+            $('#itemId option[value=""]').attr("selected", "selected");
+        }
+    });
+    $("#btnAddAndCloseItem").click(function () {
+        $('#Indent_loading').show();
+        AddJobCardItem($(this).attr('id'));
+    });
+
+    $('#btnSaveAndNextItem').click(function () {
+
+        AddJobCardItem($(this).attr('id'));
+    });
+    function AddJobCardItem(ClickId) {
+        //alert(ClickId);
+        if ($.trim($('#itemId').val()) == "" || $.trim($('#itemId').val()) == "0") {
+            $("#Itemerrormsg").show();
+            $("#Itemerrormsg").text("Please select an item to be added");
+            $('#itemId').focus(); $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return;
+        }
+        if ($.trim($('#Qty').val()) == "") {
+            $("#Itemerrormsg").show();
+            $("#Itemerrormsg").text("Please enter quantity");
+            $('#Qty').focus(); $('#divNewDutylog').animate({ scrollTop: 0 }, 'slow');
+            return;
+        }
+
+        var ItemId = $('#itemId').val();
+        var Qty = $('#Qty').val();
+        var Specifications = $('#Specifications').val();
+        var AvalQty = $('#SpanAvailQty').html();
+        var Id = $("#Id").val();
+        var vtTx = $("#VatTax").val();
+        var srvcTx = $("#ServiceTax").val();
+        $('#Indent_loading').show();
+        $("#Itemerrormsg").hide();
+        var jobCardId = $("#hdnJobcardId").val();
+        var CampusId = $("#CampusId").val();
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $.post('@Url.Action("JobCardItemListAdd", "JobCard", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty  + '&Specifications=' + Specifications + '&JobcardId=' + jobCardId + "&AvalQty=" + AvalQty + "&VatTax=" + vtTx + "&ServiceTax=" + srvcTx, function (data) {
+                if (data.success) {
+                    LoadJobCardItems(data.JobCardId);
+                    ClearAll();
+                    // $('#Indent_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        SaveJobCardItems();
+                    }
+                }
+                else {
+                    LoadJobCardItems(data.JobCardId);
+                    $("#Itemerrormsg").show();
+                    $("#Itemerrormsg").text(data.msg);
+                    // $('#Indent_loading').hide();
+                    var delay = 2000; //1 seconds
+                    setTimeout(function () {
+                        if (confirm('Are you sure want to save previous indent items?')) {
+                            SaveJobCardItems();
+                        }
+                        else {
+                            window.location.href = '@Url.Action("Create", "JobCard", new { area = "Inventory" })';
+                        }
+                    }, delay);
+
+                }
+            });
+        } else {
+
+            $.post('@Url.Action("JobCardItemListAdd", "JobCard", new { area = "Inventory" })?ItemId=' + ItemId + '&Qty=' + Qty + '&ReorderLevel=' + ReorderLevel + '&LeadTime=' + LeadTime + '&PurposeFor=' + PurposeFor + '&Specifications=' + Specifications + '&JobcardId=' + jobCardId + '&AvalQty=' + AvalQty + '&VatTax=' + vtTx + '&ServiceTax=' + srvcTx, function (data) {
+                if (data.success) {
+                    LoadJobCardItems(data.JobCardId);
+                    ClearAll();
+                    $('#Indent_loading').hide();
+                    if (ClickId == 'btnAddAndCloseItem') {
+                        $('#Indent_loading').show();
+                        SaveJobCardItems();
+                        $('#Indent_loading').show();
+                    }
+                }
+                else {
+                    LoadJobCardItems(data.JobCardId);
+                    $("#Itemerrormsg").show();
+                    $("#Itemerrormsg").text(data.msg);
+                    $('#Indent_loading').hide();
+                    var delay = 2000; //1 seconds
+                    setTimeout(function () {
+                        if (confirm('Are you sure want to save previous indent items?')) {
+                            SaveJobCardItems();
+                        }
+                        else {
+                            window.location.href = '@Url.Action("Edit", "JobCard", new { area = "Inventory" })?Id=' + data.JobCardId;
+                        }
+                    }, delay);
+                }
+            });
+        }
+
+    }
+    function LoadJobCardItems(JobCardId) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("LoadJobCardItems", "JobCard", new { area = "Inventory" })?JobcardId=' + JobCardId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#JobCarddet').html('');
+                      $('#JobCarddet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function SaveJobCardItems() {
+        var IsEdit = $("#isEdit").val();
+        if (IsEdit == 0) {
+            $('#Indent_loading').show();
+            $.post('@Url.Action("Create", "JobCard", new { area = "Inventory" })', $('#frmCreateJbCard').serialize(), function (data) {
+                //$('#Indent_loading').show();
+                if (data.success) {
+
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    //$('#Indent_loading').hide();
+                    window.location.href = '@Url.Action("Edit", "JobCard", new { area = "Inventory" })?Id=' + data.IndentId;
+                }
+                else {
+                    alert(data.msg);
+                    // $('#Indent_loading').hide();
+                }
+            });
+        }
+        else {
+
+            $('#Indent_loading').show();
+            $.post('@Url.Action("Edit", "JobCard", new { area = "Inventory" })', $('#JobCardEditForm').serialize(), function (data) {
+                $('#Indent_loading').show();
+                if (data.success) {
+                    var btn = $("#btnAddAndCloseItem");
+                    btn.attr("disabled", "disabled");
+                    var btn1 = $("#btnSaveAndNextItem");
+                    btn1.attr("disabled", "disabled");
+                    alert(data.msg);
+                    $('#Indent_loading').hide();
+                    window.location.href = '@Url.Action("Edit", "JobCard", new { area = "Inventory" })?Id=' + data.JobcardId;
+                }
+                else {
+                    alert(data.msg);
+                    $('#Indent_loading').hide();
+                }
+            });
+        }
+    }
+
+    function ClearAll() {
+        $('#itemId').val("");
+        $('#hdnItem').val("");
+        $('#Qty').val("");
+        $('#ReorderLevel').val("");
+        $('#LeadTime').val("");
+        $('#PurposeFor').val("");
+        $('#Specifications').val("");
+        $('#ItemAmount').html(0);
+        $('#spnStock').hide();
+        $('#spnPurchase').hide();
+        $('#SpanAvailQty').html('0')
+        $('#TotalAmount').html('0');
+        $('#VatTax').val(0);
+        $('#ServiceTax').val(0);
+    }
+</script>

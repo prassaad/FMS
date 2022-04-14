@@ -1,0 +1,132 @@
+﻿@model IEnumerable<FMS.Models.tbl_log_sheets>
+ @{
+     int sno = 0;
+ }
+      
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_DutyLogs">
+    <thead>
+        <tr>
+            <th>
+                Sno
+            </th>
+            <th>
+                Route Id
+            </th>
+             <th>
+                Card Number
+            </th>
+            <th>
+                Client 
+            </th>
+             <th>
+                Route Name
+            </th>
+            <th>
+                Vehicle Reg#
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Driver Name
+            </th>
+            <th>
+                Log Date
+            </th>
+            <th>
+                LogSheet#
+            </th>
+            <th>
+                Tripe Type
+            </th>
+           
+            <th>
+                LogIn Time
+            </th>
+            <th>
+                LogOut Time
+            </th>
+           
+            <th>
+                Alter.Vehiclie
+            </th>
+            <th>
+                Contact#
+            </th>
+            <th>
+                Amount
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @{
+        sno = 1;
+    }
+        @foreach (var item in Model)
+        {
+             <tr>
+                <td>
+                    @sno
+                    @{
+            sno = sno + 1;
+        }
+                </td>
+                    
+                <td>
+                    @(string.IsNullOrEmpty(item.Location) ? "" : (item.Location.Contains("-") ? item.Location.Split('-')[0].ToString() : ""))
+                </td>
+                 <td>
+                    @item.CardNumber
+                </td>
+                <td>
+                    @item.tbl_clients.CompanyName
+                </td>
+                 <td>
+                    @(string.IsNullOrEmpty(item.Location) ? "" : (item.Location.Contains("-") ? item.Location.Split('-')[1].ToString() : ""))
+                </td>
+                <td>
+                    @(item.VehicleID == null ? "" : item.tbl_vehicles.VehicleRegNum)
+                </td>
+                <td>
+                    @item.tbl_vehicle_types.VehicleType
+                </td>
+                <td>
+                    @(item.VehicleModelID == null ? "" : item.tbl_vehicle_models.VehicleModelName)
+                </td>
+                <td>
+                    @(item.DriverID == null ? "" : (item.tbl_drivers.FirstName + " " + item.tbl_drivers.LastName))
+                </td>
+                <td>
+                    @Html.Encode(String.Format("{0:dd/MM/yyyy}", item.LogDate))
+                </td>
+                <td>
+                    @item.LogSheetNum
+                </td>
+                <td>
+                    @item.TripeType
+                </td>
+               
+                <td>
+                    @item.ShiftTime
+                </td>
+                <td>
+                    @item.ReachTime
+                </td>
+               
+                <td>
+                    @item.AlterVehNum
+                </td>
+                <td>
+                    @item.ContactNumber
+                </td>
+                <td>
+                    @String.Format("{0:N}",item.NetAmount)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,1 @@
+[2016-04-07 18:25:23.4178] [127.0.0.1] [ERROR] [Object reference not set to an instance of an object.] [superadmin] [   at FMS.Controllers.CardAssignmentController.NoCabEntry(FormCollection frm) in D:\ProjectRelatedfiles\SuryaTravels\Backup\SarathVinod\FMS\Controllers\CardAssignmentController.cs:line 1299]

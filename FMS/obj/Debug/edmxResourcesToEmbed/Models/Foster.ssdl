@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FosterModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="FosterModelStoreContainer">
+    <EntitySet Name="aspnet_Roles" EntityType="FosterModel.Store.aspnet_Roles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="aspnet_Users" EntityType="FosterModel.Store.aspnet_Users" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="bill_no_seq" EntityType="FosterModel.Store.bill_no_seq" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="billing_types" EntityType="FosterModel.Store.billing_types" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="customers" EntityType="FosterModel.Store.customers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="dc_det" EntityType="FosterModel.Store.dc_det" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="dc_no_seq" EntityType="FosterModel.Store.dc_no_seq" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="dcs" EntityType="FosterModel.Store.dcs" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="grn_no_seq" EntityType="FosterModel.Store.grn_no_seq" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="locations" EntityType="FosterModel.Store.locations" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="lots" EntityType="FosterModel.Store.lots" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="packing_types" EntityType="FosterModel.Store.packing_types" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="product_categories" EntityType="FosterModel.Store.product_categories" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="product_types" EntityType="FosterModel.Store.product_types" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="products" EntityType="FosterModel.Store.products" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="stock_register" EntityType="FosterModel.Store.stock_register" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="stock_register_det" EntityType="FosterModel.Store.stock_register_det" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="units" EntityType="FosterModel.Store.units" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="user_cust" EntityType="FosterModel.Store.user_cust" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_dc_det_customers" Association="FosterModel.Store.FK_dc_det_customers">
+      <End Role="customers" EntitySet="customers" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dc_det_dcs" Association="FosterModel.Store.FK_dc_det_dcs">
+      <End Role="dcs" EntitySet="dcs" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dc_det_products" Association="FosterModel.Store.FK_dc_det_products">
+      <End Role="products" EntitySet="products" />
+      <End Role="dc_det" EntitySet="dc_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_products_product_categories" Association="FosterModel.Store.FK_products_product_categories">
+      <End Role="product_categories" EntitySet="product_categories" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_products_product_types" Association="FosterModel.Store.FK_products_product_types">
+      <End Role="product_types" EntitySet="product_types" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_billing_types" Association="FosterModel.Store.FK_stock_register_billing_types">
+      <End Role="billing_types" EntitySet="billing_types" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_customers" Association="FosterModel.Store.FK_stock_register_customers">
+      <End Role="customers" EntitySet="customers" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_det_packing_types" Association="FosterModel.Store.FK_stock_register_det_packing_types">
+      <End Role="packing_types" EntitySet="packing_types" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_det_stock_register1" Association="FosterModel.Store.FK_stock_register_det_stock_register1">
+      <End Role="stock_register" EntitySet="stock_register" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_det_units" Association="FosterModel.Store.FK_stock_register_det_units">
+      <End Role="units" EntitySet="units" />
+      <End Role="stock_register_det" EntitySet="stock_register_det" />
+    </AssociationSet>
+    <AssociationSet Name="FK_stock_register_locations" Association="FosterModel.Store.FK_stock_register_locations">
+      <End Role="locations" EntitySet="locations" />
+      <End Role="stock_register" EntitySet="stock_register" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_cust_aspnet_Users" Association="FosterModel.Store.FK_user_cust_aspnet_Users">
+      <End Role="aspnet_Users" EntitySet="aspnet_Users" />
+      <End Role="user_cust" EntitySet="user_cust" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_cust_customers" Association="FosterModel.Store.FK_user_cust_customers">
+      <End Role="customers" EntitySet="customers" />
+      <End Role="user_cust" EntitySet="user_cust" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="aspnet_Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="ApplicationId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="RoleId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="LoweredRoleName" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="Description" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="aspnet_Users">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="ApplicationId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="LoweredUserName" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="MobileAlias" Type="nvarchar" MaxLength="16" />
+    <Property Name="IsAnonymous" Type="bit" Nullable="false" />
+    <Property Name="LastActivityDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="bill_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prefix" Type="varchar" MaxLength="50" />
+    <Property Name="bno" Type="int" />
+  </EntityType>
+  <EntityType Name="billing_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="billing_type" Type="nvarchar" MaxLength="150" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="customers">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="cust_text" Type="nvarchar" MaxLength="256" />
+    <Property Name="cust_desc" Type="nvarchar" MaxLength="512" />
+    <Property Name="cust_add1" Type="nvarchar" MaxLength="100" />
+    <Property Name="cust_add2" Type="nvarchar" MaxLength="100" />
+    <Property Name="city" Type="nvarchar" MaxLength="100" />
+    <Property Name="cust_phone" Type="nvarchar" MaxLength="10" />
+    <Property Name="cust_mobile" Type="nvarchar" MaxLength="10" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="dc_det">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="slno" Type="int" />
+    <Property Name="dc_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="lot_no" Type="nvarchar" MaxLength="25" />
+    <Property Name="issued_to" Type="nvarchar" MaxLength="150" />
+    <Property Name="prod_id" Type="int" />
+    <Property Name="prod_title" Type="nvarchar" MaxLength="100" />
+    <Property Name="dt_received" Type="datetime" />
+    <Property Name="qty" Type="float" />
+    <Property Name="total" Type="float" />
+  </EntityType>
+  <EntityType Name="dc_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prefix" Type="nvarchar" MaxLength="50" />
+    <Property Name="dcno" Type="int" />
+  </EntityType>
+  <EntityType Name="dcs">
+    <Key>
+      <PropertyRef Name="dc_no" />
+    </Key>
+    <Property Name="dc_no" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="dc_dt" Type="datetime" />
+    <Property Name="qty_issued" Type="float" />
+    <Property Name="vech_no" Type="nvarchar" MaxLength="10" />
+    <Property Name="driver_name" Type="nvarchar" MaxLength="150" />
+    <Property Name="other_details" Type="nvarchar" MaxLength="512" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="grn_no_seq">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prefix" Type="nvarchar" MaxLength="50" />
+    <Property Name="grnno" Type="int" />
+  </EntityType>
+  <EntityType Name="locations">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="location_text" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="lots">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="lot_text" Type="nvarchar" MaxLength="100" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="packing_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="packing_type" Type="nvarchar" MaxLength="100" />
+    <Property Name="packing_type_short_text" Type="nvarchar" MaxLength="25" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="product_categories">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prod_cat_text" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="bit" Type="bit" />
+  </EntityType>
+  <EntityType Name="product_types">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prod_ty_text" Type="nvarchar" MaxLength="100" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="products">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="prod_text" Type="nvarchar" MaxLength="100" />
+    <Property Name="prod_ty_id" Type="int" />
+    <Property Name="prod_cat_id" Type="int" />
+    <Property Name="acvtive" Type="bit" />
+  </EntityType>
+  <EntityType Name="stock_register">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="billing_type_id" Type="int" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="dt_recived" Type="datetime" />
+    <Property Name="lot_no" Type="nvarchar" MaxLength="25" />
+    <Property Name="marking" Type="nvarchar" MaxLength="150" />
+    <Property Name="hamali_charges" Type="float" />
+    <Property Name="location_id" Type="int" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="vech_no" Type="nvarchar" MaxLength="15" />
+    <Property Name="grn_no" Type="nvarchar" MaxLength="25" />
+    <Property Name="incharge" Type="nvarchar" MaxLength="150" />
+    <Property Name="incharge_contact" Type="varchar" MaxLength="12" />
+    <Property Name="remarks" Type="nvarchar(max)" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="stock_register_det">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="lot_no" Type="nvarchar" Nullable="false" MaxLength="25" />
+    <Property Name="stock_reg_id" Type="bigint" />
+    <Property Name="slno" Type="int" />
+    <Property Name="prod_id" Type="int" />
+    <Property Name="prod_title" Type="nvarchar" MaxLength="150" />
+    <Property Name="mfg_dt" Type="datetime" />
+    <Property Name="exp_dt" Type="datetime" />
+    <Property Name="units_id" Type="int" />
+    <Property Name="packing_type_id" Type="int" />
+    <Property Name="weight" Type="float" />
+    <Property Name="rec_qty" Type="float" />
+    <Property Name="rate" Type="float" />
+    <Property Name="total_weight" Type="float" />
+    <Property Name="issued_slod" Type="float" />
+    <Property Name="qoh" Type="float" />
+    <Property Name="description" Type="nvarchar" MaxLength="512" />
+  </EntityType>
+  <EntityType Name="units">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="units_text" Type="nvarchar" MaxLength="100" />
+    <Property Name="units_short_text" Type="nvarchar" MaxLength="50" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="user_cust">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="cid" Type="int" />
+    <Property Name="UserId" Type="uniqueidentifier" />
+  </EntityType>
+  <Association Name="FK_dc_det_customers">
+    <End Role="customers" Type="FosterModel.Store.customers" Multiplicity="0..1" />
+    <End Role="dc_det" Type="FosterModel.Store.dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="cust_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dc_det_dcs">
+    <End Role="dcs" Type="FosterModel.Store.dcs" Multiplicity="0..1" />
+    <End Role="dc_det" Type="FosterModel.Store.dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="dcs">
+        <PropertyRef Name="dc_no" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="dc_no" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dc_det_products">
+    <End Role="products" Type="FosterModel.Store.products" Multiplicity="0..1" />
+    <End Role="dc_det" Type="FosterModel.Store.dc_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="dc_det">
+        <PropertyRef Name="prod_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_products_product_categories">
+    <End Role="product_categories" Type="FosterModel.Store.product_categories" Multiplicity="0..1" />
+    <End Role="products" Type="FosterModel.Store.products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_categories">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="prod_cat_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_products_product_types">
+    <End Role="product_types" Type="FosterModel.Store.product_types" Multiplicity="0..1" />
+    <End Role="products" Type="FosterModel.Store.products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="prod_ty_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_billing_types">
+    <End Role="billing_types" Type="FosterModel.Store.billing_types" Multiplicity="0..1" />
+    <End Role="stock_register" Type="FosterModel.Store.stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="billing_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="billing_type_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_customers">
+    <End Role="customers" Type="FosterModel.Store.customers" Multiplicity="0..1" />
+    <End Role="stock_register" Type="FosterModel.Store.stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="cust_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_det_packing_types">
+    <End Role="packing_types" Type="FosterModel.Store.packing_types" Multiplicity="0..1" />
+    <End Role="stock_register_det" Type="FosterModel.Store.stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="packing_types">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="packing_type_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_det_stock_register1">
+    <End Role="stock_register" Type="FosterModel.Store.stock_register" Multiplicity="0..1" />
+    <End Role="stock_register_det" Type="FosterModel.Store.stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="stock_register">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="stock_reg_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_det_units">
+    <End Role="units" Type="FosterModel.Store.units" Multiplicity="0..1" />
+    <End Role="stock_register_det" Type="FosterModel.Store.stock_register_det" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="units">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register_det">
+        <PropertyRef Name="units_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_stock_register_locations">
+    <End Role="locations" Type="FosterModel.Store.locations" Multiplicity="0..1" />
+    <End Role="stock_register" Type="FosterModel.Store.stock_register" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="locations">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="stock_register">
+        <PropertyRef Name="location_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_cust_aspnet_Users">
+    <End Role="aspnet_Users" Type="FosterModel.Store.aspnet_Users" Multiplicity="0..1" />
+    <End Role="user_cust" Type="FosterModel.Store.user_cust" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="aspnet_Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="user_cust">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_cust_customers">
+    <End Role="customers" Type="FosterModel.Store.customers" Multiplicity="0..1" />
+    <End Role="user_cust" Type="FosterModel.Store.user_cust" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="user_cust">
+        <PropertyRef Name="cid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

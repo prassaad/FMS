@@ -1,0 +1,372 @@
+﻿@model FMS.Models.tbl_client_invoice
+
+@{
+    ViewBag.Title = "Generate Client Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="../../Content/SecurityGuard/commonstyles.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+    .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .ac_loading {
+			background: white url("../../Content/images/loading-icon.gif") right center no-repeat;
+        }
+ 
+    table tr td { width:100px; }
+</style>
+<h2>
+    Generate Client Invoice</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="lastactive">@Html.ActionLink("List of Client Invoice", "Index")</li>
+        </ul>
+    </div>
+</div>
+
+@using (Html.BeginForm("GenerateInvoice", "ClientInvoice", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+<fieldset>
+<legend>Invoice Details</legend>
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top: 10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                </span>
+                <p style="color: Red; font-style: italic;">
+                    @(ViewBag.message)
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Client Name <span style="color: Red;">*</span>
+                <input type="hidden" id="ClientID" name="ClientID" />
+            </td>
+            <td>
+                @Html.TextBox("Client", "", new { @class = "txtAutoComplete", @tabindex = 1 })
+                @Html.ValidationMessage("ClientID")
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Invoice Date <span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.InvoiceDate, new { @class = "txtInput", @tabindex = 2 })
+                @Html.ValidationMessageFor(model => model.InvoiceDate)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Month & Year<span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.MonthYear, new { @class = "txtInput", @tabindex = 3 })
+                @Html.ValidationMessageFor(model => model.MonthYear)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Invoice No.<span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.InvoiceNum, new { @class = "txtInput", @tabindex = 4 })
+                @Html.ValidationMessageFor(model => model.InvoiceNum)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Invoice Particular
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.InvoiceParticular, new { @class = "txtInput", @tabindex = 5 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Invoice Amount<span style="color: Red;">*</span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.InvoiceAmount, new { @class = "txtInput", @tabindex = 6 })
+                @Html.ValidationMessageFor(model => model.InvoiceAmount)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Service Tax <span style="color: Red">@@ (@ViewBag.ClientServiceTax) % </span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.ServiceTax, new { @class = "txtInput isValidCurrency", @tabindex = 7 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Amount with ServiceTax
+            </td>
+            <td>
+                @Html.TextBox("NetAmountWithST", "", new { @class = "txtInput isValidCurrency", @tabindex = 8 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                VAT <span style="color: Red">@@ (@ViewBag.ClientVatTax) % </span>
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.VatTax, new { @class = "txtInput isValidCurrency", @tabindex = 9 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Amount with ServiceTax,VAT
+            </td>
+            <td>
+                @Html.TextBox("NetAmtwithTSVAT", "", new { @class = "txtInput isValidCurrency", @tabindex = 10 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Less ServiceTax
+            </td>
+            <td>
+                @Html.TextBox("LessServiceTax", "", new { @class = "txtInput isValidCurrency", @tabindex = 11 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Final Invoice Amt.
+            </td>
+            <td>
+                @Html.TextBox("FinalInvoiceAmt", "", new { @class = "txtInput isValidCurrency", @tabindex = 12 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Less TDS <span style="color: Red">@@ (@ViewBag.ClientTDS) % </span>of Final Invoice
+                Amt.
+            </td>
+            <td>
+                @Html.TextBox("TDS", "", new { @class = "txtInput isValidCurrency", @tabindex = 13 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Final Amount
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.NetTotal, new { @class = "txtInput isValidCurrency", @tabindex = 14 })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Invioce Doc.  
+            </td>
+            <td>
+                <input type="file" name="InvDocFile" id="InvDocFile" />&nbsp;&nbsp;&nbsp;&nbsp; 
+                 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Remark
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Remark, new { @class = "txtInput", @tabindex = 15 })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="submit" style="margin-top: 5px;" id="btnInvoice" class="btnnewlog" value="Generate Invoice"
+                    tabindex="14" />
+            </td>
+        </tr>
+    </table>
+</fieldset>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $('input[name=MonthYear]').bind('keyup keydown keypress', function (evt) {
+            return false;
+        });
+    });
+    $('#div_loading').hide();
+    $(document).ready(function () {
+        var InvoiceAmt = $('#InvoiceAmount').val();
+        if (InvoiceAmt != '')
+            CalcTotalAmount(InvoiceAmt);
+        $("#divlog_loading").fadeOut('slow');
+        $("#Client").autocomplete("/LogsheetManagement/getAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: selectItem });
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+        $("#Client").focus();
+        var myDate = new Date();
+        var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear();
+        $("#InvoiceDate").val(prettyDate);
+        $('#InvoiceDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+                $('input[tabindex="3"]').focus();
+            }
+        });
+        $('#MonthYear').datepicker({
+            changeMonth: true,      //provide option to select Month
+            changeYear: true,       //provide option to select year
+            showButtonPanel: true,  // button panel having today and done button
+            dateFormat: 'MM yy',    //set date format
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, month, 1)); //here set the date when closing.
+                //$(this).blur(); //remove focus input box
+            }
+        });
+    });
+
+    function selectItem(li) {
+        $('#ClientID').val(0);
+        if (li == null) $('#ClientID').val(0);
+        if (!!li.extra) {
+            var sValue = li.extra[0];
+        }
+        else var sValue = li.selectValue;
+
+        $('#ClientID').val(sValue);
+        $('input[tabindex="2"]').focus();
+    }
+
+    $(".isValidCurrency").change(function () {
+        var title = isValidRupees(this.value);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please enter valid currrency.");
+            document.getElementById("" + this.id + "").value = '';
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+    });
+ 
+
+    // Change Event for InvoiceAmount
+
+    $('#InvoiceAmount').change(function () {
+        var InvoiceAmt = $(this).val();
+        // Check Valid Currency 
+        var title = isValidRupees(InvoiceAmt);
+        if (title == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").text("Please enter valid currrency.");
+            document.getElementById("" + this.id + "").value = '';
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+            ClearFields();
+            return false;
+        }
+        else {
+            $("#SpanValidateMsg").hide();
+        }
+        //CalcTotalAmount(InvoiceAmt);
+    });
+
+    function CalcServiceTax(InvoiceAmt) {
+        var serviceTax = parseFloat('@ViewBag.ClientServiceTax');
+        var val = parseFloat(InvoiceAmt) * (serviceTax / 100);
+        return val; 
+    }
+
+    function CalcVatTax(InvoiceAmt) {
+        var VatTax = parseFloat('@ViewBag.ClientVatTax');
+        var val = parseFloat(InvoiceAmt) * (VatTax / 100);
+        return val;
+    }
+
+    function CalcTDS(InvoiceAmt) {
+        var TDSTax = parseFloat('@ViewBag.ClientTDS');
+        var val = parseFloat(InvoiceAmt) * (TDSTax / 100);
+        return val;
+    }
+
+    function SetDecimalPlaces(x) {
+        return parseFloat(x).toFixed(2);
+    }
+
+    function ClearFields() {
+        $('#ServiceTax').val(0); $('#NetAmountWithST').val(0); $('#VatTax').val(0); $('#NetAmtwithTSVAT').val(0); $('#LessServiceTax').val(0); $('#FinalInvoiceAmt').val(0); $('#TDS').val(0); $('#NetTotal').val(0);
+    }
+
+    function CalcTotalAmount(InvoiceAmt) {
+        // Calculate Service Tax by Total Amount
+        var serviceTax = CalcServiceTax(InvoiceAmt);
+        $('#InvoiceAmount').val(SetDecimalPlaces(InvoiceAmt));
+        // Set Indain Rupees format in Service Tax Amount
+        $('#ServiceTax').val(SetDecimalPlaces(serviceTax));
+        // Set Indain Rupees format in Net ammount with service tax
+        $('#NetAmountWithST').val(SetDecimalPlaces(parseFloat(InvoiceAmt) + serviceTax));
+        // Get VAT Tax
+        var vatTax = CalcVatTax(InvoiceAmt);
+        $('#VatTax').val(SetDecimalPlaces(vatTax));
+        // Retrive final Invoice 
+        var finalInvoiceAmt = parseFloat(parseFloat(InvoiceAmt) + serviceTax + vatTax);
+        $('#NetAmtwithTSVAT').val(SetDecimalPlaces(finalInvoiceAmt));
+        // Less Service Tax from final Invoice amount
+        $('#LessServiceTax').val(SetDecimalPlaces(serviceTax));
+        // Get Invoice Final Amount
+        var InvoiceFinal = parseFloat(finalInvoiceAmt - serviceTax);
+        $('#FinalInvoiceAmt').val(SetDecimalPlaces(InvoiceFinal));
+        // Get TDS from Invoice final Amount 
+        var TDS = CalcTDS(InvoiceFinal);
+        // Set Indian Rupees format in TDS
+        $('#TDS').val(SetDecimalPlaces(TDS));
+        $('#NetTotal').val(SetDecimalPlaces(finalInvoiceAmt - serviceTax - TDS));
+        // Set fields to Readable
+        $('#ServiceTax').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#NetAmountWithST').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#LessServiceTax').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#VatTax').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#NetAmtwithTSVAT').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#FinalInvoiceAmt').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#TDS').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#NetTotal').attr({ 'readonly': true, 'style': 'background-color:#EEE' });
+        $('#Remark').focus();
+    }
+
+//    $('#MonthYear').change(function () {
+//        var val = $(this).val();
+//        $.post('/ClientInvoice/GetInvoiceNumber?MonthYear=' + val, function (data) {
+//            if (data != '') {
+//                $('#InvoiceNum').val(data);
+//            }
+//        });
+//    });
+
+</script>

@@ -1,0 +1,696 @@
+﻿@model FMS.Models.GenerateInvoice
+           @using FMS.Models
+           @{
+               int TotalKm = 0;
+               decimal DieselTotAmt = 0;
+               string id = string.Empty;
+               string PaidLogSheetIds = TempData["PaidLogSheets"] == null ? "" : TempData["PaidLogSheets"].ToString();
+               string PaidDieselIds =  TempData["PaidDieselTrack"] == null ? "" : TempData["PaidDieselTrack"].ToString();
+               string PaidAdvIds = TempData["PaidAdvanceDet"] == null ? "" : TempData["PaidAdvanceDet"].ToString();
+               string PaidEMIIds = TempData["PaidEMIDet"] == null ? "" : TempData["PaidEMIDet"].ToString();
+               string PaidDriverSalIds = TempData["PaidDriverSalDet"] == null ? "" : TempData["PaidDriverSalDet"].ToString();
+               TempData["PaidLogSheets"] = PaidLogSheetIds;
+               TempData["PaidDieselTrack"] = PaidDieselIds;
+               TempData["PaidAdvanceDet"] = PaidAdvIds;
+               TempData["PaidEMIDet"] = PaidEMIIds;
+               TempData["PaidDriverSalDet"] = PaidDriverSalIds;
+               bool IsOwn = ViewBag.IsOwn;
+          }
+<style>
+   #printable { display: none; }
+ @@media print
+        {
+            #printable { display: block; }
+        }
+        h1
+        {
+        	line-height:0;
+        }
+        .align-right
+        {
+            text-align:right;
+        }
+        .PrintCopy
+        {
+            top:5.8in;
+            position:absolute;
+        }
+    </style>
+<link href="../../Content/invoice.print.css" rel="stylesheet" type="text/css" media="print" />
+@*<a href="#" onclick="ClickHereToPrint('InvoiceView');">Print</a>*@
+<fieldset>
+<legend>Invoice</legend>
+@if (Model._InvoiceList == null || Model._InvoiceList.Count == 0)
+{
+      <center> <h2> No Invoice was found </h2>  </center> 
+}
+else
+{
+ <div>
+  @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmVendorInvoice", enctype = "multipart/form-data" }))
+  {
+    <center style="font-size:18px;"><u> @FMS.ApplicationSettings.OrgName , @FMS.ApplicationSettings.Address2 </u></center>   
+   <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                       <b> Vehicle Number</b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.VehicleRegNum
+                        @Html.Hidden("VehicleID", Model._VehicleDet.ID)
+                        @Html.Hidden("VendorID", Model._VehicleDet.VendorID)
+                        <input type="hidden" id="startDate" name="startDate" value="@ViewBag.startDate" />
+                        <input type="hidden" id="endDate" name="endDate" value="@ViewBag.endDate" />
+                        <input type="hidden" id="hasDiesel" name="hasDiesel" value="@ViewBag.hasDiesel" />
+                        <input type="hidden" id="hasAdv" name="hasAdv" value="@ViewBag.hasAdv" />
+                        <input type="hidden" id="IsAdhoc" name="IsAdhoc" value="@ViewBag.IsAdHoc" />
+                        <input type="hidden" id="MonthYear" name="MonthYear" value="@ViewBag.MonthYear" />
+                    </td>
+                     <td>
+                       <b> Type</b>
+                    </td>
+                    <td>
+                        @Model._VehicleDet.tbl_vehicle_models.VehicleModelName - @Model._VehicleDet.tbl_vehicle_types.VehicleType  
+                    </td> 
+                     <td>
+                      <b>  Invoice# </b><span style="color:Red">*</span>
+                    </td>
+                    <td>
+                    
+                      @Html.TextBox("InvoiceNum", (string)ViewBag.InvoiceNumber, new { @style = "width:250px;" })
+                    </td>
+                  @*  <td>
+                       <b>Invoice Date </b> <span style="color:Red">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("DueDate", DateTime.Now.Date.ToShortDateString(), new { @style = "width:120px;" })
+                    </td>*@
+                    @Html.Hidden("DueDate", DateTime.Now.Date.ToShortDateString())
+                </tr>
+             
+            </table>
+    <!--  Vendor Invoice Details  -->
+   <table class="table table-striped table-bordered" class="tbl_particulars">
+                    <!--  Vendor Invoice Header  -->
+                    <tr>
+                        <td>
+                            Particulars
+                        </td>
+                        <td>
+                            Qty.
+                        </td>
+                        <td>
+                            Rate
+                        </td>
+                        <td>
+                            Tot. Amt.
+                        </td>
+                        <td>
+                            Net Amt.
+                        </td>
+                    </tr>
+                    <tbody>
+                        @{ TotalKm = 0; id = ""; }
+                        <!--  Vendor Invoice List by Client Wise  -->
+                        @foreach (var item in Model._InvoiceList)
+                        {
+                            { id = item.ClientID + "_" + item.VehicleTypeID;  }
+                            <tr id="@id">
+                                <td>
+                                    @item.Client.ToUpper()
+                                    @if (item.BillingType == "TRIPS")
+                                    { <span style="color: Red">-- TRIP Rate </span> }
+                                    else if (item.BillingType == "KILO METER")
+                                    { <span style="color: Red">-- KM Rate </span> }
+                                    else if (item.BillingType == "PACKAGE")
+                                    {
+                                      <span style="color: Red">-- PACKAGE Rate </span>
+                                    }                                                                                 
+                                </td>
+                                <td>
+                                     @if (item.BillingType == "TRIPS")
+                                     {
+                                        <text> @item.Trips  </text>
+                                     }
+                                     else if (item.BillingType == "KILO METER")
+                                     {
+                                         @Html.Encode(String.Format("{0:N}", item.Qty)); 
+                                         TotalKm = TotalKm + item.Qty; 
+                                     }
+                                    else if (item.BillingType == "PACKAGE")
+                                    {
+                                       <text> @item.Qty </text>
+                                    }  
+                                </td>
+                                <td>
+                                    @if (item.Rate == 0)
+                                    {
+                                        <text> - </text>
+                                    }
+                                    else
+                                    {
+                                        @item.Rate
+                                    }
+                                </td>
+                                <td>
+                                    @Html.TextBox("TotalAmount_" + id , item.TotalAmt == null ? 0 : item.TotalAmt, new { onchange = "Calculate()", @style = "width:80px;", @class = "txtTotalAmt" })
+                                    @Html.Hidden("hdnTotalAmt_" + id , item.TotalAmt == null ? 0 : item.TotalAmt)
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                        <!--  Total KM travel  -->
+                     @*   <tr>
+                            <td>
+                                Total KM
+                            </td>
+                            <td>
+                                @Html.Encode(String.Format("{0:N}", TotalKm))
+                            </td>
+                            <td colspan="3">
+                            </td>
+                        </tr>*@
+                        <!--  Gross Total  Amount -->
+                        <tr>
+                            <td colspan="4">
+                                Gross Total Amount
+                            </td>
+                            <td>
+                                @Html.TextBox("NetTotal", "", new { @readonly = true, @style = "width:80px;cursor:no-drop;background-color:#ddd;" })
+                            </td>
+                        </tr>
+                         <!--  Calculating Service Tax  -->
+                        <tr>
+                            <td colspan="3">
+                                Less: Deduction &#64; <b>@(ViewBag.ServiceTax)
+                                    % </b>
+                            </td>
+                            <td>
+                                <span id="spnNetTaxAmt" style="margin-left: 7px;"></span>
+                                @Html.Hidden("hdnNetTaxAmt")
+                            </td>
+                            <td>
+                               
+                            </td>
+                        </tr>
+                        @{ DieselTotAmt = 0; }
+                        @foreach (var item in Model._DieselDet)
+                        {
+                            <!--  Calculating Diesel Price by Quantity wise  -->    
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    @Html.Encode(String.Format("{0:N}", item.TokenValue))
+                                </td>
+                                <td>
+                                    @Html.Encode(String.Format("{0:N}", item.PricePerLiter))
+                                </td>
+                                <td>
+                                    @Html.Encode(String.Format("{0:N}", item.TotalAmt))
+                                    @{ DieselTotAmt = DieselTotAmt + item.TotalAmt; }
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                        <!--  Total Diesel Amount   -->
+                        <tr style="border-top: 1px solid #000">
+                            <td colspan="3">
+                                Total Diesel Amount
+                            </td>
+                            <td>
+                                @Html.TextBox("NetDieselTotal", DieselTotAmt, new { @readonly = true, @style = "background-color:#ddd;width:80px;cursor:no-drop;" })
+                            </td>
+                            <td>
+                              
+                            </td>
+                        </tr>
+                        <!--  Display Service Tax for Net Diesel Amount   -->
+                        <tr>
+                            <td colspan="3">
+                                Less : Diesel &#64; <b>@(ViewBag.DieselTax)
+                                    % </b>
+                            </td>
+                            <td>
+                                <span id="spnDieselTaxAmt" style="margin-left: 7px;"></span>
+                                @Html.Hidden("hdnDieselTaxAmt")
+                            </td>
+                            <td>
+                               
+                            </td>
+                        </tr>
+                        
+                        <!--  Gross Amount after detecting TDS & Diesel  -->
+                        <tr>
+                            <td colspan="3">
+                                Gross Amount After Deduction & Diesel
+                            </td>
+                            <td>
+                                <span id="spnGrossDeduction"></span>
+                                <input type="hidden" name="hdnGrossDeduction" id="hdnGrossDeduction" />
+                            </td>
+                            <td>
+                                <span id="spnGrossNetAmtAfterDiesel" style="margin-left: 7px;"></span>
+                                <input type="hidden" id="hdnAdvances" name ="hdnAdvances" value="@ViewBag.AdvanceAmt" />
+                                <input type="hidden" id="hdnEHSPenalties" name ="hdnEHSPenalties" value="@ViewBag.EHSPenalty" />
+                                <input type="hidden" id="hdnPenalties" name ="hdnPenalties" value="@ViewBag.Penalty" />
+                                <input type="hidden" id="hdnEMIsAmt" name ="hdnEMIsAmt" value="@ViewBag.EMIAmt" />
+                                <input type="hidden" id="hdnDriverSal" name ="hdnDriverSal" value="@ViewBag.DriverSal" />
+                            </td>
+                        </tr>
+                        <!-- Maintenence -->
+                        <tr>
+                            <td colspan="4">
+                                Maintenance Amt.
+                            </td>
+                            <td>
+                                @Html.TextBox("MaintenanceAmt", 0, new { @style = "width:80px;" })
+                            </td>
+                        </tr>
+                        <!-- If Own Vehicle  -->
+                        @if (IsOwn)
+                        {
+                            if (ViewBag.EMIAmt != 0)
+                            {
+                            <tr>
+                                <td colspan="4">
+                                    Vehicle EMIs
+                                </td>
+                                <td>
+                                    <span id="spnVehEMIs" style="margin-left: 7px;">@(ViewBag.EMIAmt)</span>
+                                </td>
+                            </tr>
+                            }
+                            if (ViewBag.DriverSal != 0)
+                            {
+                            <tr>
+                                <td colspan="4">
+                                    Driver Salary
+                                </td>
+                                <td>
+                                    <span id="spnDriverSal" style="margin-left: 7px;">@(ViewBag.DriverSal)</span>
+                                </td>
+                            </tr>
+                            }
+                        }
+                        <!--  Gross Advances -->
+                        @if (ViewBag.AdvanceAmt != 0)
+                        {
+                        <tr>
+                            <td colspan="4">
+                                Less: Advances
+                            </td>
+                            <td>
+                                <span id="spnAdvances" style="margin-left: 7px;">@(ViewBag.AdvanceAmt)</span>
+                                
+                            </td>
+                        </tr>
+                        }
+                        
+                        @if (ViewBag.EHSPenalty != 0)
+                        {
+                            <!--  Gross Penalties -->
+                            <tr>
+                                <td colspan="4">
+                                    Less: EHS Penalties
+                                </td>
+                                <td>
+                                    <span id="spnPenalties" style="margin-left: 7px;">@(ViewBag.EHSPenalty)</span>
+                                    
+                                </td>
+                            </tr>
+                        }
+                        @if (ViewBag.Penalty != 0)
+                        {
+                            <!--  Gross EHS Penalties -->
+                            <tr>
+                                <td colspan="4">
+                                    Less: Penalties
+                                </td>
+                                <td>
+                                    <span id="spnEHSPenalties" style="margin-left: 7px;">@(ViewBag.Penalty)</span>
+                                </td>
+                            </tr>
+                        }
+                        @if (ViewBag.PreviousMnthAmt != 0)
+                        {
+                            <tr>
+                                <td colspan="4">
+                                    Less: Last Month @* Diesel/EHS/Penalty/Advances (Including Diesel Taxes)*@
+                                </td>
+                                <td>
+                                  @*  <span id="spnLastMnthDet" style="margin-left: 7px;">@(ViewBag.PreviousMnthAmt)</span>*@
+                                    <input type="text" id="hdnLastMnthDet" name ="hdnLastMnthDet" onchange="GetAfterLastMonthNetAmount(this.value)" value="@ViewBag.PreviousMnthAmt" style = "width:80px;" />
+                                </td>
+                            </tr>
+                        }
+                            
+                        <!--  Gross Netamount -->
+                        <tr>
+                            <td colspan="4">
+                                Net Amount =(Total Amount – Deductions)
+                            </td>
+                            <td>
+                                @Html.Hidden("hdnGrossDue")
+                                @Html.TextBox("GrossDue", "", new { @disabled = true, @style = "width:80px;cursor:no-drop;" })
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            
+   <table class="table table-striped table-bordered">
+          <tr>
+              <td>
+                  A/c Name
+              </td>
+              <td>
+                  @(Model._VehicleDet.tbl_vendor_details.AccountHolderName == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountHolderName)
+              </td>
+              <td>
+                  Bank A/c Number
+              </td>
+              <td>
+                  @(Model._VehicleDet.tbl_vendor_details.AccountNumber == null ? "" : Model._VehicleDet.tbl_vendor_details.AccountNumber)
+              </td>
+              <td>
+                  Bank Name
+              </td>
+              <td>
+                  @(Model._VehicleDet.tbl_vendor_details.BankName == null ? "" : Model._VehicleDet.tbl_vendor_details.BankName)
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  Branch
+              </td>
+              <td>
+                  @(Model._VehicleDet.tbl_vendor_details.Branch == null ? "" : Model._VehicleDet.tbl_vendor_details.Branch)
+              </td>
+              <td>
+                  IFSC Code
+              </td>
+              <td>
+                  @(Model._VehicleDet.tbl_vendor_details.IFSCCode == null ? "" : Model._VehicleDet.tbl_vendor_details.IFSCCode)
+              </td>
+              <td>
+                  Receiver's Name
+              </td>
+              <td>
+                  <input type="text" id="txtRecSignature" name="RecSignature" class="txtInput" />
+              </td>
+          </tr>
+          <tr>
+              <td>
+                 Remark 
+              </td>
+              <td colspan="5">
+                @Html.TextBox("Remark", null, new { @style = "width:350px;" })
+              </td>  
+          </tr>
+      </table>
+    <!-- Footer In Vendor Invoice -->  
+   <table style="width: 100%;">
+          <tr style="width: 100%">
+              <td>
+                  <p style="margin-top: 20px;" class="nonPrintable">
+                     <input type="button" id="btnMakeInvoice" value="Generate Invoice" /></p>
+              </td>
+              <td>
+                 <h2>  @(ViewBag.PrevInvoice) </h2> 
+              </td>
+          </tr>
+      </table>
+      <p id="printable" class="topAlign">
+          *Computer generated document signature not required.For Invoice billing & payment
+          queries call to @FMS.ApplicationSettings.Phone timing: 10:00 AM To 08:00 PM
+      </p>
+  }
+</div>
+} 
+</fieldset>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+   <div id="div_modal" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="../../Content/images/loading-icon.gif"  alt="Loading..."/>
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    function TransferDiesel(startDt, endDt, vehId) {
+        $("#div_modal").fadeIn('slow');
+        $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 810,
+                 height: 500
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close(); $('#div_loading').fadeOut('slow');
+                 });
+                 GetDiselTrackingList(startDt, endDt, vehId);
+             }
+         });
+    }
+
+     function GetDiselTrackingList(startDt, endDt, vehId) {
+         $.ajax({
+             type: "GET",
+             contentType: "application/json; charset=utf-8",
+             url: "/VendorInvoice/TransferDieselTracking",
+             data: "StartDate=" + startDt + "&EndDate=" + endDt + "&vehicleId=" + vehId,
+             dataType: "html",
+             success: function (data) {
+                 $("#divSimpleModalDet").html(data);
+                 $("#div_modal").fadeOut('slow');
+             },
+             error: function (error) {
+                 // alert(error);
+             }
+         });
+     }
+
+    // Call Methods on Page load 
+    Calculate();
+    // Load DatePicker for DueDate Field
+    $('#DueDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }); 
+    
+    // Calculate Netotal Amount 
+    function Calculate() {
+        var sum = 0;
+        try {
+            $(".tbl_particulars tbody tr").each(function () {
+                var bid = this.id; // button ID 
+                var trid = $(this).closest('tr').attr('id');
+                var payable = parseInt(document.getElementById("TotalAmount_" + trid).value);
+                var hdpayable = parseInt(document.getElementById("hdnTotalAmt_" + trid).value)
+                if (hdpayable < payable) {
+                    document.getElementById("TotalAmount_" + trid).value = hdpayable;
+                    alert("You can't enter more than " + hdpayable.toString());
+                }
+            });
+        }
+        catch (Exception)
+                   { }
+        try {
+            if (fees.value == 0) {
+                sum = 0.00;
+            }
+        }
+        catch (Exception) {
+
+        }    
+        $('.txtTotalAmt').each(function () {
+            //add only if the value is number
+            if (!isNaN(this.value) && this.value.length != 0) {
+                sum += parseFloat(this.value);
+                $('#NetTotal').val(sum);
+            }
+            if (this.value == "") {
+                this.value = 0;
+            }
+        });
+        GetServiceTaxFromNetTotal();
+        GetServiceTaxFromNetDieselAmt();
+    }
+    // Get Service tax from Net Total Amount 
+    function GetServiceTaxFromNetTotal() {
+        var ServiceTax = parseFloat('@ViewBag.ServiceTax');
+        var NetTotalAmt = parseFloat($('#NetTotal').val());
+        var NetAmt = ((ServiceTax * NetTotalAmt) / 100).toFixed();
+        $('#spnNetTaxAmt').html(NetAmt);
+        $('#hdnNetTaxAmt').val($('#spnNetTaxAmt').html());
+    }
+    
+    // Get Service Tax from Net Diesel Amount
+    function GetServiceTaxFromNetDieselAmt() {
+        var ServiceTax = parseFloat('@ViewBag.DieselTax');
+        var NetTotalAmt = parseFloat($('#NetDieselTotal').val());
+        var NetAmt = ((ServiceTax * NetTotalAmt) / 100).toFixed();
+        $('#spnDieselTaxAmt').html(NetAmt);
+        $('#hdnDieselTaxAmt').val(NetAmt);
+        // Get Total Deductions
+        GetTotalDeductions();
+        
+    }
+    // Deduce Service Tax Amount from NetAmount
+    function GetTotalDeductions() {
+        var ServiceTaxAmt = parseFloat($('#spnNetTaxAmt').html());
+        var DieselTotalAmt = parseFloat($('#NetDieselTotal').val());
+        var DieselSerTax = parseFloat($('#hdnDieselTaxAmt').val());
+        $('#spnGrossDeduction').html(ServiceTaxAmt + DieselTotalAmt + DieselSerTax);
+        $('#hdnGrossDeduction').val($('#spnGrossDeduction').html());
+        DetectDieselAmtFromGrossNetAmount();
+    }
+    // Detect Net Tax and Diesel Amount from Gross NetAmount 
+    function DetectDieselAmtFromGrossNetAmount(){
+        var GrossNetAmt = $('#NetTotal').val();
+        var GrossDedAmt = $('#spnGrossDeduction').html();
+        $('#spnGrossNetAmtAfterDiesel').html(parseFloat(parseFloat(GrossNetAmt) - parseFloat(GrossDedAmt)).toFixed(2));
+        GetNetAmount();
+    }
+    // Get Net Amount
+    function GetNetAmount() {
+        var NetGrossAmt = parseFloat($('#spnGrossNetAmtAfterDiesel').html());
+        var AdvancesAmt = parseFloat('@ViewBag.AdvanceAmt');
+        var PenaltyAmt = parseFloat('@ViewBag.EHSPenalty');
+        var EHSPenaltyAmt = parseFloat('@ViewBag.Penalty');
+        var LastMnthAmt = parseFloat('@ViewBag.PreviousMnthAmt');
+        var EMIAmt = parseFloat('@ViewBag.EMIAmt');
+        var SalAdv = parseFloat('@ViewBag.DriverSal');
+        if ('@ViewBag.PreviousMnthAmt' > 0) {
+            LastMnthAmt = $('#hdnLastMnthDet').val();    
+        }
+        //hdnLastMnthDet
+        var mainAmt = parseFloat($('#MaintenanceAmt').val());
+        $('#hdnGrossDue').val((NetGrossAmt - mainAmt - (AdvancesAmt + PenaltyAmt + EHSPenaltyAmt + LastMnthAmt + EMIAmt + SalAdv)).toFixed(2));
+        $('#GrossDue').val($('#hdnGrossDue').val());
+    }
+    function GetAfterMaintenNetAmount(maintenanceAmt) {
+        var NetGrossAmt = parseFloat($('#spnGrossNetAmtAfterDiesel').html());
+        var AdvancesAmt = parseFloat('@ViewBag.AdvanceAmt');
+        var PenaltyAmt = parseFloat('@ViewBag.EHSPenalty');
+        var EHSPenaltyAmt = parseFloat('@ViewBag.Penalty');
+        var LastMnthAmt = parseFloat('@ViewBag.PreviousMnthAmt');
+        var EMIAmt = parseFloat('@ViewBag.EMIAmt');
+        var SalAdv = parseFloat('@ViewBag.DriverSal');
+
+        if ('@ViewBag.PreviousMnthAmt' > 0) {
+            LastMnthAmt = parseFloat($('#hdnLastMnthDet').val());
+        }
+        var LstMnthAmount = parseFloat(LastMnthAmt);
+        var mainAmt = parseFloat(maintenanceAmt);
+        $('#hdnGrossDue').val((NetGrossAmt - mainAmt - (AdvancesAmt + PenaltyAmt + EHSPenaltyAmt + LstMnthAmount + EMIAmt + SalAdv)).toFixed());
+        $('#GrossDue').val($('#hdnGrossDue').val());
+    }
+    function GetAfterLastMonthNetAmount(lastMonthAmt) {
+        var NetGrossAmt = parseFloat($('#spnGrossNetAmtAfterDiesel').html());
+        var AdvancesAmt = parseFloat('@ViewBag.AdvanceAmt');
+        var PenaltyAmt = parseFloat('@ViewBag.EHSPenalty');
+        var EHSPenaltyAmt = parseFloat('@ViewBag.Penalty');
+        var LastMnthAmt = parseFloat(lastMonthAmt);
+        var EMIAmt = parseFloat('@ViewBag.EMIAmt');
+        var SalAdv = parseFloat('@ViewBag.DriverSal');
+
+        var mainAmt = parseFloat($('#MaintenanceAmt').val());
+        $('#hdnGrossDue').val((NetGrossAmt - mainAmt - (AdvancesAmt + PenaltyAmt + EHSPenaltyAmt + LastMnthAmt + EMIAmt + SalAdv)).toFixed());
+        $('#GrossDue').val($('#hdnGrossDue').val());
+    }
+    
+    $('#MaintenanceAmt').change(function () {
+        var mAmt = $(this).val();
+        GetAfterMaintenNetAmount(mAmt);
+    });
+    // Button click event for Make Invoice Payment
+    $('#btnMakeInvoice').click(function () {
+
+        if (ValidationForm()) {
+            var msg = '';
+            msg = 'Are you sure want to Generate Invoice ?';
+            if (confirm(msg)) {
+                $('#btnMakeInvoice').attr('disabled', true);
+                $('#btnMakeInvoice').attr('style', 'cursor:no-drop');
+                $.post('/VendorInvoice/GenerateInvoice', $('#frmVendorInvoice').serialize(), function (data) {
+                    if (data.success) {
+                        if (data.status == 1) {
+                            if (confirm(data.msg + ' Do you want to take print ? ')) {
+                                $('#loading').show();
+                                setTimeout(function () {
+                                    $('#loading').hide();
+                                    ClickHereToPrint('InvoiceView');
+                                }, 2000);
+                                if (data.hasAdhoc == 1) { window.location.href = '/VendorInvoice/SelectLogSheet'; }
+                                else { window.location.href = '/VendorInvoice/Index'; }
+                            } else {
+                                if (data.hasAdhoc == 1) { window.location.href = '/VendorInvoice/SelectLogSheet'; }
+                                else { window.location.href = '/VendorInvoice/Index'; }
+                            }
+                        }
+                        else {
+                            if (data.hasAdhoc == 1) {
+                                $('#loading').show();
+                                setTimeout(function () {
+                                    $('#loading').hide();
+                                    ClickHereToPrint('InvoiceView');
+                                    window.location.href = '/VendorInvoice/SelectLogSheet';
+                                }, 2000);
+                            }
+                            else { window.location.href = '/VendorInvoice/Index'; }
+                        }
+                    }
+                    else { alert(data.msg); }
+                });
+            }
+        }
+    });
+
+    // Validation for Invoice Payment
+    function ValidationForm() {
+        var InvoiceDate = $('#DueDate').val();
+        var InvoiceNum = $('#InvoiceNum').val();
+        var payMode = $('input[name=PayMode]:radio:checked').val();
+        var GrossDue = $('#GrossDue').val();
+        if (InvoiceDate == "") {
+            alert('Please select invoice date.');
+            $('#DueDate').focus();
+            return false;
+        }
+        if (InvoiceNum == "") {
+            alert("Please enter invoice number.");
+            $('#InvoiceNum').focus();
+            return false;
+        }
+        return true;
+    }
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            $('.PrintCopy').empty();
+            //$('.PrintCopy').html($('#InvoiceView').html());
+            $("#InvoiceView").clone().appendTo(".PrintCopy");
+            self.print();
+        }
+    }
+    
+</script>

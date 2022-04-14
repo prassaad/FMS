@@ -1,0 +1,39 @@
+﻿@model FMS.Models.tbl_service_stations
+@{
+    ViewBag.Title = "Edit"; 
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+
+<h2>
+    Edit Service Station</h2>
+     <div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "ServiceStation")">
+                Cancel</a></li>
+        </ul>
+    </div>
+</div>
+@using (@Html.BeginForm("Edit", "ServiceStation", FormMethod.Post, new { @id = "EditForm" }))
+{
+@ViewBag.Errormessage
+    @Html.ValidationSummary(true)
+    <fieldset>
+     <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td>
+                Service Station
+            </td>
+            <td>@Html.TextBox("ServiceStation", Model.ServiceStation, new { @style = "width:350px", @maxlength = "50" })
+            @Html.ValidationMessage("ServiceStation",new{@style="color:red"})
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" id="btnsave" value="Save" />
+            </td>
+        </tr>
+    </table>
+    </fieldset>
+}

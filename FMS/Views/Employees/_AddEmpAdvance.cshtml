@@ -1,0 +1,74 @@
+﻿@model FMS.Models.tbl_emp_advances
+@{
+    long EmpId = (long)ViewBag.EmpId;
+}
+@using (Html.BeginForm("AddEmpAdvance", "Employees", FormMethod.Post, new { id = "frmAddEmpAdvance", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+  <div class="clsmodalheader">Add Vehicle</div> 
+        <div style="overflow: auto; z-index: 9999; height: 500px;">
+        <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <span id="SpanValidateMsg" style="color: Red; display: none; font-size: 14px; font-weight: bold;">
+                    </span>
+                    <p style="color:Red;">
+                        @(ViewBag.Message)
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Amount : <span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AdvanceAmt)
+                    @Html.ValidationMessageFor(model => model.AdvanceAmt)
+                    @Html.Hidden("EmpID", EmpId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Date :<span style="color: Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AdvDate)
+                    @Html.ValidationMessageFor(model => model.AdvDate)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Remark
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Remark)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="button" id="btnAdvanceCreate" value="Add" />
+                    <input type="button" id="btnAdvanceCancel" value="Cancel" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+ <script type="text/javascript">
+     $('#AdvDate').datepicker({
+         changeMonth: true,
+         changeYear: true,
+         dateFormat: 'dd/mm/yy'
+     });
+     $("#btnAdvanceCreate").click(function () {
+         $.post("/Employees/AddEmpAdvance", $("#frmAddEmpAdvance").serialize(), function (result, status) {
+             $("#divSimpleModalDet").html(result);
+              
+         });
+
+     });
+     $("#btnAdvanceCancel").click(function () {
+         $.modal.close();
+     });
+ </script>

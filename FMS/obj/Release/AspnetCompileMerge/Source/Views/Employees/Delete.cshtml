@@ -1,0 +1,16 @@
+﻿@model FMS.Models.tbl_employees
+
+@{
+    ViewBag.Title = "Delete Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Employee</h2>
+
+<h3>Are you sure you want to delete this @Model.FirstName @Model.LastName ?</h3>
+ 
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" />  
+    </p>
+}

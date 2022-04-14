@@ -1,0 +1,325 @@
+﻿@model FMS.Models.tbl_odometer_readings
+@{
+    ViewBag.Title = "_AddNewOdometerRange";
+    Session["OdometerReadingList"] = null;
+}
+<style type="text/css">
+    .txtAutoComplete
+    {
+        width: 220px !important;
+        background: #FFB;
+        border: 1px #cccccc solid;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+         maxlength="30";
+    }
+    .txtInput
+    {
+    	 width: 220px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    .txtInputtime
+    {
+    	 width: 71px !important;
+    	  border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+ 
+    #btnAddReadingentry:focus
+     {
+    border:yellow 2px solid;
+    background-color:#0A99D1;
+    }
+</style>
+<div class="clsmodalheader">Add New Odometer Reading</div>
+@using (Html.BeginForm("SaveOdometerReadingEntry", "ODOMETER", FormMethod.Post, new { id = "frmReading", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+     <div style="overflow: auto;z-index:9999;height:500px;" id="divNewReading">
+         <table class="table-striped table-condensed dTableR dataTable">
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+             <tr>
+                <td colspan="2">
+                    <span id="SpanValidateMsg" style="color: Red;font-size:12px;font-weight:bold;"></span>   
+                </td>
+             </tr>
+             <tr>
+                 <td>
+                     Vehicle <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     @Html.TextBox("VehicleId", "", new { @class = "txtAutoComplete", @tabindex = 1 })
+                     @Html.Hidden("vid", "")
+                     @Html.Hidden("ModeOfEntry", "WEB")
+                 </td>
+             </tr>
+            @* <tr>
+                 <td>
+                     Mode of Entry <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     <select id="ModeOfEntry" name="ModeOfEntry" class="txtInput" tabindex="2">
+                         <option value="">--Select --</option>
+                         <option value="MOBILE">Mobile</option>
+                         <option value="WEB">Web</option>
+                     </select>
+                 </td>
+             </tr>*@
+             <tr>
+                 <td>
+                     Date <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     @Html.TextBox("ODMDate", "", new { @class = "txtInput", @tabindex = 3, @style = "width:180px;" })
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                     Reading(s) <span style="color: Red;">*</span>
+                 </td>
+                 <td>
+                     @Html.TextBox("ReadingValue", "", new { @class = "txtInput", @tabindex = 4, @style = "width:220px", @onkeypress = "return numberValidate(event);" })
+                     
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                 </td>
+                 <td>
+                     <input type="button" style="margin-top: 5px;" id="btnAddReadingentry" class="btnnewlog"
+                         value="Add Reading" tabindex="5" onfocus="focus();" />
+                 </td>
+             </tr>
+             <tr>
+                 <td colspan="2">
+                     <span id="dateDiff" class="label-success" style="display: none"></span>
+                 </td>
+             </tr> 
+             <tr>
+                <td colspan="2">
+                   &nbsp;
+                </td>
+             </tr>
+             <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+             </tr>
+             <tr>
+                <td colspan="2">
+                    <span id="lastReadingDate" style="display: none" class="label-important">Last Updated on @(ViewBag.lastUpdated)</span>
+                </td>
+             </tr>
+             <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+             </tr>
+             <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+             </tr>
+             <tr>
+                <td colspan="2">
+                    <span id="lastReadingVal" style="display: none"  class="label-pending"></span>
+                </td>
+             </tr>
+         </table>
+    </div>
+}
+<script src="../../Scripts/jquery.autocomplete.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript">
+    $('#div_loading').hide();
+
+    $(document).ready(function () {
+        myFunction();
+        $("#divlog_loading").fadeOut('slow');
+        $("#VehicleId").autocomplete("/ODOMeter/getVehicleAjaxResult/", { minChars: 2, matchContains: true, onItemSelect: OnselectItem });
+        function OnselectItem(li) {
+            $("#vid").val(0);
+            if (li == null) $('#vid').val(0);
+            if (!!li.extra) {
+                var sValue = li.extra[0];
+                $('input[tabindex="2"]').focus();
+            }
+            else var sValue = li.selectValue;
+            $('#vid').val(sValue);
+
+            $('input[tabindex="2"]').focus();
+            $("#SpanValidateMsg").html('');
+            GetMaxOdoMeterReading(sValue);
+        }
+        $("#divlog_loading").hide();
+        $("#divlog_loading").fadeOut('slow');
+        var myDate = new Date();
+        var prettyDate = myDate.getDate() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getFullYear() + ' ' + myDate.getHours() + ':' + myDate.getMinutes() + ':' + myDate.getSeconds();
+        $("#ODMDate").val(prettyDate);
+        $("#ODMDate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            maxDate: prettyDate,
+            onSelect: function () {
+                $('input[tabindex="4"]').focus();
+            }
+        });
+        // $("#LogDate").blur(function (e) { $(this).datepicker("hide"); });
+    });
+    // Two dates difference
+    function myFunction() {
+        var dt = '@ViewBag.lastreadingDate';
+        var date1 = new Date(); // for current date
+        var date2 = new Date(dt);
+        // for other date you can get the another date from a textbox by
+        // var Newdate=document.getElementById('<%=textBox1.ClientID%>').value;
+        // convert Newdate to dateTime by......   var date2=New Date(Newdate);
+
+        var yearDiff = date1.getFullYear() - date2.getFullYear(); // for year difference
+        var y1 = date1.getFullYear();
+        var y2 = date2.getFullYear();
+        var monthDiff = (date1.getMonth() + y1 * 12) - (date2.getMonth() + y2 * 12); // for month difference
+        var day1 = parseInt(date1.getDate());
+        var day2 = parseInt(date2.getDate());
+        var dayDiff = (day1 - day2) + (monthDiff * 30); // for day difference
+        var hrsDiff = (date1.getHours()) - (date2.getHours()); // for hours  difference
+        var mins1 = parseInt(date1.getMinutes());
+        var mins2 = parseInt(date2.getMinutes());
+        var minDiff = parseInt(mins1 - mins2); // for minutes difference
+        var Diff = ((isNaN(dayDiff) ? '' : dayDiff + ' Day(s)') + ":" + (isNaN(hrsDiff) ? '' : hrsDiff + ' Hour(s)') + ":" + (isNaN(minDiff) ? '' : minDiff + ' Min(s)'));
+
+        $("#dateDiff").html('Last odometer reading updated duration is ' + Diff);
+        if (Diff.length > 3) {
+            $('#dateDiff').show();
+            $('#lastReadingDate').show();
+        }
+
+    }
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+    $("#ReadingValue").change(function () {
+        var range = $(this).val();
+        var vehId = $('#vid').val();
+        if (range != '' || vehId != '') {
+            $.get('/ODOMETER/checkleastRange?range=' + range + '&vehId=' + vehId, "", function (data) {
+                if (data.success) {
+                    $("#SpanValidateMsg").empty();
+                }
+                else {
+                    $("#SpanValidateMsg").html(data.msg);
+                    $('#ReadingValue').val(''); $('#ReadingValue').focus();
+                }
+            });
+        }
+    });
+
+    function GetMaxOdoMeterReading(VehicleId) {
+        $.get('/OdoMeter/MaxOdoMeterReading?VehicleId=' + VehicleId, function (data) {
+            if (data != 0) {
+                $('#lastReadingVal').show();
+                $('#lastReadingVal').html('Maximum reading value is ' + data);
+            }
+        });
+    }
+    
+    var i = 0;
+    $("#btnAddReadingentry").click(function () {
+        if (!ValidateMsg()) {
+            $('#divNewReading').animate({ scrollTop: 0 }, 'slow');
+            return;
+        }
+        var VehicleID = $("#vId").val();
+        $("#SpanValidateMsg").hide();
+        var frmColl = $("#frmReading").serialize();
+        $("#divlog_loading").show();
+        $("#divlog_loading").fadeIn('slow');
+        $.ajax(
+              {
+                  type: "POST",
+                  url: "../ODOMeter/AddOdometerReadingEntry",
+                  dataType: "html",
+                  data: "frm=" + frmColl + "&VID=" + VehicleID,
+                  success: function (result, textStatus, jqXHR) {
+                      $('#divOdometerReading').html('');
+                      $('#divOdometerReading').html(result);
+                      $("#btnSaveAllLogentries").show();
+                      var status = $("#Status").val();
+                      if (i < 9) {
+                          var msg = 'Are you want to Add one more reading entry in the List?';
+                          if (confirm(msg)) {
+                              i = i + 1;
+                              ClearAll();
+                              $("#divlog_loading").hide();
+                              $("#divlog_loading").fadeOut('slow');
+                              var myDate = new Date();
+                              var prettyDate = (myDate.getMonth() + 1) + '/' + myDate.getDate() + '/' + myDate.getFullYear();
+                              $("#ODMDate").val(prettyDate);
+                          }
+                          else {
+                              document.getElementById("frmReading").submit();
+                              i = 0;
+                              ClearAll();
+                              $("#divlog_loading").hide();
+                              $("#divlog_loading").fadeOut('slow');
+                          }
+                      }
+                      else {
+                          alert("Unable to add more than 10 records to list. Please click on ok to save!");
+                          document.getElementById("frmReading").submit();
+                          i = 0;
+                      }
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    });
+
+    // Refresh Fields
+    function ClearAll() {
+        $("#VehicleId").val('');
+        $("#ModeOfEntry").val('');
+        $("#ReadingValue").val('');
+        $("#errReading").html('');
+    }
+
+    // Validate Fields
+    function ValidateMsg() {
+        var vehicleID = $("#VehicleId").val();
+        var modeOfEntry = $("#ModeOfEntry").val();
+        var readingValue = $("#ReadingValue").val();
+        if (vehicleID == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please search vehicle register number');
+            $("#LogDate").focus();
+            return false;
+        }
+        if (modeOfEntry == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please select mode of entry');
+            $("#ModeOfEntry").focus();
+            return false;
+        }
+        if (readingValue == "") {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html('Please enter reading value.');
+            $("#ReadingValue").focus();
+            return false;
+        }
+        return true;
+    }
+   
+
+
+</script>

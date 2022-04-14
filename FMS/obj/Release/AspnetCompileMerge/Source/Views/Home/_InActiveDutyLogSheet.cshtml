@@ -1,0 +1,122 @@
+﻿@model IEnumerable<FMS.Models.tbl_vehicles>
+@using FMS.Models;           
+@{
+    bool IsProxy = false;
+    FMSDBEntities db = new FMSDBEntities();
+    string DriverName = string.Empty;
+    core objCore = new core(); 
+}
+<link href="../../Content/Site.print.css" rel="stylesheet" type="text/css" media="print" />
+ <style type="text/css">
+  #printable { display: none; }
+ @@media print
+        {
+            #printable { display: block; }
+        }
+</style>
+
+ <div class="nonPrintable" id="printIcon">
+      Click here to print:<a href="#" onclick="javascript:ClickHereToPrint('divPrintable');">
+      <img alt="Print Report" src="../../Content/images/printer.jpeg" /> </a>
+      &nbsp;&nbsp;&nbsp; <a href="@Url.Action("InActiveDutyExportToExcel", "Home")">Export to Excel</a>
+</div> 
+<h2 id="printable"> InActive Duty LogSheets
+</h2>
+ <p style="margin-top:10px;">
+No of entries @(ViewBag.ListCount) showing
+</p>
+<div id="divPrintable">
+<table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+    <thead>
+    <tr>
+        <th>
+            Vehicle Reg#
+        </th>
+        <th>
+            Driver
+        </th>
+        <th>
+            Model
+        </th>
+        <th>
+            Type
+        </th>
+        <th>
+            Seater
+        </th>
+        <th>
+            IsProxy
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @{ DriverName = string.Empty; }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.Encode(item.VehicleRegNum)
+            </td>
+            <td>
+                @{
+           var driverList = db.tbl_drivers.Where(a => a.Status == true && a.CurrentVehicleID == item.ID).ToList();
+           foreach (tbl_drivers objDriver in driverList)
+           {
+               DriverName += "," + objDriver.FirstName + " " + objDriver.LastName;
+           }
+           if (DriverName != "")
+           {
+               DriverName = DriverName.Substring(1);
+           }
+                }
+                @Html.Encode(DriverName) 
+                @{ DriverName = string.Empty; }
+            </td>
+            <td>
+                @Html.Encode(objCore.GetVehicleModel((long)item.VehicleModelID))
+            </td>
+            <td>
+                @Html.Encode(objCore.GetVehicleType((long)item.VehicleTypeID))
+            </td>
+            <td>
+                @Html.Encode(objCore.GetSeater((long)item.SeaterId))
+            </td>
+            <td>
+                @{ IsProxy = (item.IsProxy == null ? false : (bool)item.IsProxy); }
+                @if (IsProxy)
+                {
+                    <span class="system positive">Yes</span>
+                }
+                else
+                {
+                    <span class="system negative">No</span>
+                }
+            </td>
+        </tr>
+    }
+ </tbody>
+</table>
+<p>
+  Generated on  @String.Format("{0:MMM , dd yyyy hh:mm tt}", DateTime.Now.ToString(new System.Globalization.CultureInfo("en-Us")))
+</p>
+</div>
+<script type="text/javascript" language="javascript">
+    
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('#wrapper').removeAttr("style");
+            self.print();
+        }
+    }
+</script>

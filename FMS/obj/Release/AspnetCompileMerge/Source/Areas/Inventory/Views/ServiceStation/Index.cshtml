@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FMS.Models.tbl_service_stations>
+@{
+    ViewBag.Title = "Index"; 
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+}
+
+<h2>List Of Service Stations</h2>
+ <div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "ServiceStation")">
+                Cancel</a></li>
+           <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Create", "ServiceStation")">
+                Add New Service Station</a></li>
+        </ul>
+    </div>
+</div>
+    @if(Model.Count()>0)
+    {
+       
+        <table class="table table-striped table-hover table-full-width dataTable" id="dt_a">
+            <thead>
+                <tr>
+                    <th>
+                        Service Station
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ServiceStation
+                        </td>
+                        <td>
+                        @Html.ActionLink("Edit", "Edit", new { @item.Id })| 
+                        <a href="@Url.Action("Delete", "Service", new { id = @item.Id })", onclick="return confirm('Are you sure want to delete this record?')">
+                            Delete</a>
+                        </td>
+                    </tr>
+    }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2>
+            No records has found to display.</h2>
+        }

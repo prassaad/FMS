@@ -1,0 +1,113 @@
+﻿@model FMS.Models.EmployeeManagement
+@using System.Data;
+@using FMS.Models;
+@using FMS.Controllers;
+@{
+    System.Data.DataTable dt = (System.Data.DataTable)ViewBag.ViewPayables;
+    EmployeesController objEmp = new EmployeesController(); 
+    decimal NetSalary = 0;
+    int ColCnt = 0;
+    long EmpId = 0;
+    string MonthId = string.Empty;
+}
+@{
+    ViewBag.Title = "Employee Pay Bill List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Employee Pay Bill List</h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @if ((bool)core.GetUserAccess(15, User.Identity.Name).Add)
+            { <li class="active">@Html.ActionLink("Generate Pay Bill", "EmpPayBill")</li> }
+        </ul>
+    </div>
+</div>
+<p style="color:Red;">@(ViewBag.Message)</p>
+@if (dt.Rows.Count > 0)
+{
+    <table class="table table-striped table-condensed dTableR dataTable" id="dt_a">
+    <thead>
+    <tr>
+        @foreach (DataColumn dc in dt.Columns)
+        {
+            <th>
+                @if (dc.ColumnName == "BP")
+                {
+                    dc.ColumnName = "Salary";
+                }
+                @dc.ColumnName
+            </th> 
+        }
+        <th></th> 
+    </tr>
+    </thead>
+    @{  NetSalary = 0; }
+    <tbody>
+    @foreach (DataRow dr in dt.Rows)
+    {
+        <tr>
+            @foreach (DataColumn dc in dt.Columns)
+            {
+                <td>
+                    @dr[dc.ColumnName]
+                </td>
+                <text>
+                @if (dc.ColumnName == "Net Salary")
+                {
+                    NetSalary += Convert.ToDecimal(dr[dc.ColumnName]);
+                }
+                </text>
+                
+            }
+            <td>
+                @if (!objEmp.IsApproveEmpPayBill((long)dr["ID"]))
+                {
+                    if ((bool)core.GetUserAccess(15, User.Identity.Name).Edit)
+                    {  <a href="@Url.Action("ApproveEmployeePayBill", "Employees", new { ID = @dr["ID"] })" style="color:Red;text-decoration:underline;" onclick="return confirm('Are you sure want to approve this item ?');">
+                        Approve</a> }
+                }
+                else
+                {
+                    if ((bool)core.GetUserAccess(15, User.Identity.Name).View)
+                    {  <a href="@Url.Action("PaySlip", "Employees", new { MonthId = dr["MonthYear"], EmpId = objEmp.GetEmpId((long)dr["ID"]) })" 
+                    onclick="return confirm('Are you sure want to generate pay slip ?')" style="color:Green;text-decoration:underline;">
+                        Pay Slip </a>  }
+                }
+                @if ((bool)core.GetUserAccess(15, User.Identity.Name).Delete)
+               { <text> | </text> <a href="@Url.Action("DeleteEmployeePayBill", "Employees", new { ID = @dr["ID"] })" style="color:Red;text-decoration:underline;" 
+                    onclick="return confirm('Are you sure want to delete this ?');">Delete</a> }
+            </td>
+        </tr>
+    }
+    </tbody>
+    @{ ColCnt = dt.Columns.Count - 2; }
+    <tfoot>
+    <tr>
+        <td>
+        </td>
+        <td colspan="@ColCnt">
+            Total Net Salary
+        </td>
+        <td>
+            @Html.Encode(String.Format("{0:N}", NetSalary))
+        </td>
+        <td></td>
+    </tr>
+    </tfoot>
+</table>
+}
+else
+{
+    <h2 style="text-align:center;font-size:25px;">No Payables were available </h2>
+}
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function () {
+        $('#dt_a tr th:nth-child(1)').hide();
+        $('#dt_a tr td:nth-child(1)').hide();
+    });
+
+</script>

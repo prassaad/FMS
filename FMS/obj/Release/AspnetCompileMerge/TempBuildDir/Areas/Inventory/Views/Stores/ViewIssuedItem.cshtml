@@ -1,0 +1,370 @@
+﻿@{
+    ViewBag.Title = "View Issue Item";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    int IssueId = ViewBag.IssueId;
+    string Status = ViewBag.Status;
+    string IssueNo = ViewBag.IssueNo;
+    string IssueCreatedBy = ViewBag.IssueCreatedBy;
+    int IssueItemStatus = ViewBag.IssueItemStatus;
+    bool WaitForAvail = ViewBag.hasWaitForAvail;
+    int IsJobCard = Convert.ToInt32(ViewBag.IsJobCard);
+}
+<style type="text/css">
+  #printable { display: none; }
+  .Printable { display: none; }
+ @@media print
+        {
+            #printable { display: block; }
+            .Printable{display:block;} 
+           #IssueDetList4 {page-break-after: always;}
+        }
+</style>
+<h2 class="nonPrintable"><i class="clip-list"></i> View Issue Item  with Issue No [ @IssueNo ]</h2>
+<div class="bread_title" style="width: 100%">
+        <div class="bread_navigation" style="width: 30%;">
+  <ul>
+    <li><i class="clip-arrow-left-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Outward", "Stores")">Go Back</a> </li>
+    @if (Status.Trim().ToUpper() != "TRANSFER" && Status.Trim().ToUpper() != "CANCELED" && Status.Trim().ToUpper() == "WAITINGFORAVAILABILITY")
+    {
+        <li> <input type="button" class="btn btn-primary btn-xs" onclick="@IsJobCard == 0 ? IndentProcurement('@IssueId') : JobCardProcurement('@IssueId','@IsJobCard');" value="PurchaseOrder"  style="margin-top: -5px;"/></li>
+       <li><input type="button" class="btn btn-orange btn-xs" onclick="RejectIssuedItem('@IssueId')" value="Cancel"  style="margin-top: -5px;"/></li>
+    }
+    @if (Status.Trim().ToUpper() != "TRANSFER" && Status.Trim().ToUpper() != "CANCELED" && Status.Trim().ToUpper() == "READYTOTRANSFER" && WaitForAvail == false)
+    {
+         <li><a data-toggle="modal" href="#"  class="btn btn-primary btn-xs"  onclick="ConfirmAndTransferModal('@IssueId')">Transfer</a></li>
+         <li><input type="button" class="btn btn-orange btn-xs" onclick="RejectIssuedItem('@IssueId')" value="Cancel"  style="margin-top: -5px;"/></li>
+    }
+     @if (Status.Trim().ToUpper() != "TRANSFER" && Status.Trim().ToUpper() != "CANCELED" && Status.Trim().ToUpper() == "READYTOTRANSFER" && WaitForAvail == true)
+    {
+         <li><a data-toggle="modal" href="#"  class="btn btn-primary btn-xs" onclick="ConfirmAndTransferModal('@IssueId')">Transfer</a></li>
+           <li> <input type="button" class="btn btn-success btn-xs" onclick="IndentProcurement('@IssueId')" value="PurchaseOrder"  style="margin-top: -5px;"/></li>
+         <li><input type="button" class="btn btn-orange btn-xs" onclick="RejectIssuedItem('@IssueId')" value="Cancel" style="margin-top: -5px;"/></li>
+    }
+    @if (IssueItemStatus == 4 && Status.Trim().ToUpper() == "TRANSFER")
+    {
+       @*<li><a data-toggle="modal" href="#DcPrintPreviewIssuedItems"  class="btn btn-primary btn-xs" style="color:White;" onclick="DcPrintPreviewIssuedItems('@IssueId')">Dc Print Preview</a></li>  *@
+        <li><button type="button" class="btn btn-primary btn-xs" id="btnPrint" onclick="ClickHereToPrint('divTransferOutwards')"  style="margin-top: -5px;"> Print</button></li>
+    }
+</ul>
+  </div>
+   <div style="float: left; width: 0; margin-top: -8px;">
+        </div>
+   <div style="float: right; width: 45%; margin-top: -5px;">
+   <ul id="tabs" class="wizard-steps">
+    <li id="tab-hd-1" class="step">   @* if completed "completed-step"*@
+        <div class="a-before"></div>
+        <a href="javascript:void(0)" onclick="GetIssuedItemDetails(@IssueId,'@Status','@IssueItemStatus')">
+            <span>1</span> 
+            Issue Draft
+        </a>
+        <div class="a-after"></div>
+    </li>
+     <li id="tab-hd-2" class="step"> 
+        <div class="a-before"></div>
+        <a href="javascript:void(0)"  onclick="GetIssuedItemDetails(@IssueId,'@Status','@IssueItemStatus')">
+            <span>2</span> 
+          Waiting for Availability
+        </a>
+        <div class="a-after"></div>
+    </li>
+    <li id="tab-hd-3" class="step"> 
+        <div class="a-before"></div>
+        <a href="javascript:void(0)"  onclick="GetIssuedItemDetails(@IssueId,'@Status','@IssueItemStatus')">
+            <span>3</span> 
+           Ready to Transfer
+        </a>
+        <div class="a-after"></div>
+    </li>
+    <li id="tab-hd-4" class="step">
+         <div class="a-before"></div>
+        <a href="javascript:void(0)" onclick="GetIssuedItemDetails(@IssueId,'@Status','@IssueItemStatus')">
+          <span>4</span> 
+          Transfer
+        </a>
+        <div class="a-after"></div>
+    </li>
+   
+</ul>
+   </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul id="tab">
+            <li>
+                <fieldset>
+                    <legend>&nbsp; Issue Item Info </legend>&nbsp; &nbsp; &nbsp; &nbsp; <b><i class="clip-user">
+                    </i> Authority User : <span class="label label-important">@IssueCreatedBy</span> </b>
+                        <div id="IssueDetList1">
+                        </div>
+                </fieldset>
+            </li>
+             <li>
+                 <fieldset>
+                     <legend>&nbsp; Waiting for Availability </legend>&nbsp; &nbsp; &nbsp;&nbsp; <b><i
+                         class="clip-user"></i> Authority User : <span class="label label-important">@IssueCreatedBy</span> </b>
+                         <div id="IssueDetList2">
+                         </div>
+                 </fieldset>
+            </li>
+            <li>
+                <fieldset>
+                    <legend>&nbsp; Ready to Transfer </legend>&nbsp; &nbsp; &nbsp;&nbsp; <b><i class="clip-user">
+                    </i> Authority User :<span class="label label-important"> @IssueCreatedBy </span> </b>
+                        <div id="IssueDetList3">
+                        </div>
+                </fieldset>
+            </li>
+            <li>
+                <fieldset>
+                    <legend>&nbsp; Transfer </legend>&nbsp; &nbsp; &nbsp;&nbsp; <b><i class="clip-user">
+                    </i> User :<span class="label label-important"> @IssueCreatedBy </span> </b>
+                         <div class="Printable" style="text-align:center;">
+                            <h3>
+                                Office Copy</h3>
+                            <i>----------------------------------------------------------------------------------------------------------------------------------------------------</i>
+                        </div>
+                        <div id="IssueDetList4">
+                        </div>
+                        <div class="Printable" style="text-align: center;">
+                            <h3>
+                                Receiver Copy</h3>
+                            <i>----------------------------------------------------------------------------------------------------------------------------------------------------</i>
+                        </div>
+                </fieldset>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="printable" class="panel panel-default PrintCopy Printable">
+</div>
+
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+
+
+<script type="text/javascript">
+    GetIssuedItemDetails('@IssueId', '@Status','@IssueItemStatus');
+    SetIssueItemTabsByStaus('@Status','@IssueItemStatus')
+    function GetIssuedItemDetails(IssueId, Status,IssueItemStatus) {
+        // $("#loading").fadeIn('slow');
+        $.get('@Url.Action("GetIssuedItemDetails", "Stores", new { area = "Inventory" })?IssueId=' + IssueId, function (data) {
+            SetIssueItemTabsByStaus(Status, IssueItemStatus);
+            SelectDivByStatus(Status, IssueItemStatus,data);
+            $("#loading").fadeOut('slow');
+        });
+    }
+    function ClosePopUpWindow(IssueId) {
+        $("#TransIssuedItems").modal('hide');
+        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId;
+    }
+    function ClosePopUp() {
+        $("#DcPrintPreviewIssuedItems").modal('hide');
+    }
+    function SelectDivByStatus(Status, IssueItemStatus, data) {
+        if (IssueItemStatus == 2 && Status.toLowerCase() != "canceled") {
+            $('#IssueDetList2').html('');
+            $('#IssueDetList2').html(data);
+        }
+        else if (Status.toLowerCase() == "readytotransfer" && IssueItemStatus == 3) {
+            $('#IssueDetList3').html('');
+            $('#IssueDetList3').html(data);
+        }
+        else if (Status.toLowerCase() == "transfer" || IssueItemStatus == 4) {
+            $('#IssueDetList4').html('');
+            $('#IssueDetList4').html(data);
+        }
+        else if (Status.toLowerCase() == "canceled") {
+            $('#IssueDetList1').html('');
+            $('#IssueDetList1').html(data);
+        }
+        else {
+            $('#IssueDetList1').html('');
+            $('#IssueDetList1').html(data);
+        }
+    }
+    function SetIssueItemTabsByStaus(Status, IssueItemStatus) {
+        if (IssueItemStatus == 2 && Status.toLowerCase() != "canceled") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-2").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 2 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "readytotransfer" && IssueItemStatus == 3) {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-3").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 3 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "transfer" || IssueItemStatus == 4) {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-4").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 4 + ")").addClass("current-tab");
+        }
+        else if (Status.toLowerCase() == "canceled") {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-1").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+        }
+        else {
+            $("ul#tabs li.active-step").removeClass("active-step");
+            $("#tab-hd-1").addClass("active-step");
+            $("ul#tab li.current-tab").removeClass("current-tab");
+            $("ul#tab li:nth-child(" + 1 + ")").addClass("current-tab");
+        }
+    }
+    function TransferIssuedItem(IssueId) {
+        if (!confirm('Are you sure want to transfer this issue?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("TransferIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + data.IssueId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function RejectIssuedItem(IssueId) {
+        if (!confirm('Are you sure want to cancel transfer this indent?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("RejectIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId, function (data) {
+                if (data.success) {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("OutWard", "Stores", new { area = "Inventory" })';
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    var delay = 1000; //1 seconds
+                    setTimeout(function () {
+                        //your code to be executed after 1 seconds
+                        window.location.href = '@Url.Action("ViewIssuedItem", "Stores", new { area = "Inventory" })?IssueId=' + IssueId;
+                    }, delay);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function ConfirmAndTransferModal(IssueId) {
+        $("#div_loading").fadeIn('slow');
+        $('#divSimpleModal').modal
+            ({
+                containerCss: {
+                    width: 610,
+                    height: 550
+                },
+                close: false,
+                onShow: function (dialog) {
+                    dialog.data.find('.no').click(function () {
+                        $.modal.close();
+                    });
+                    $("#btnItemAdd").attr("href", "#");
+                    $('#div_loading').show();
+                    ConfirmAndTransferIssuedItem(IssueId);
+                }
+            });
+    }
+    function ConfirmAndTransferIssuedItem(IssueId) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("ModifyIssuedItems", "Stores", new { area = "Inventory" })?IssueId=' + IssueId,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+    }
+    function IndentProcurement(IssueId) {
+        if (!confirm('Are you sure want to generate purchase order for this issue?')) {
+            return;
+        }
+        else {
+
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("CheckIndentProcurement", "Indent", new { area = "Inventory" })?Id=' + IssueId, function (data) {
+                if (data.success) {
+                    window.location.href = '@Url.Action("IndentProcurement", "PurchaseOrders", new { area = "Inventory" })?IssueId=' + IssueId;
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function JobCardProcurement(IssueId, IsJobCard) {
+        if (!confirm('Are you sure want to generate purchase order for this issue?')) {
+            return;
+        }
+        else {
+            $("#loading").fadeIn('slow');
+            $.post('@Url.Action("CheckJobCardProcurement", "JobCard", new { area = "Inventory" })?Id=' + IssueId, function (data) {
+                if (data.success) {
+                    window.location.href = '@Url.Action("IndentProcurement", "PurchaseOrders", new { area = "Inventory" })?IssueId=' + IssueId + '&IsJobcard=' + IsJobCard;
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    alert(data.msg);
+                    $("#loading").fadeOut('slow');
+                }
+            });
+        }
+    }
+    function ClickHereToPrint(divid) {
+        try {
+            var oIframe = document.getElementById('ifrmPrint').contentDocument;
+            var oContent = document.getElementsById(divid).innerHTML;
+            oIframe.document.write("<html><head>");
+            oIframe.document.write("</head><body onload='this.focus(); this.print();'>");
+
+            oIframe.document.write(oContent + "</body></html>");
+            oIframe.document.close();
+            oIframe.focus();
+            // oIframe.print();
+        }
+        catch (e) {
+            $('.PrintCopy').empty();
+            $("#IssueDetList4").clone().appendTo(".PrintCopy");
+            // $('#divTransferOutwards').append('<br/> <div class="Printable" style="text-align:center;"> <h3> Receiver Copy</h3><i>----------------------------------------------------------------------------------------------------------------------------------------------------</i></div>');
+            self.print();
+        }
+    } 
+</script>

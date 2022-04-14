@@ -1,0 +1,33 @@
+﻿@model FMS.Models.tbl_fuel_stations
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Fuel Station</h2>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home","Index","Home")</li>
+                            <li class="lastactive"> @Html.ActionLink("List of Fuel Stations", "Index")</li>
+                        </ul>
+                    </div>
+</div>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Fuel Station</legend>
+        <div class="editor-label">
+            Fuel Station
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FuelStation)
+            @Html.ValidationMessageFor(model => model.FuelStation)
+        </div>
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+ 

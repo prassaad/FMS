@@ -1,0 +1,30 @@
+﻿@model FMS.Models.tbl_documents
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>tbl_documents</legend>
+
+    <div class="display-label">DocumentType</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DocumentType)
+    </div>
+
+    <div class="display-label">DocCode</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DocCode)
+    </div>
+
+    <div class="display-label">Status</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

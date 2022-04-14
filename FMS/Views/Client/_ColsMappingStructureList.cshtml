@@ -1,0 +1,73 @@
+﻿@model IEnumerable<FMS.Models.tbl_client_log_sheet_cols>
+ @{
+    int sno = 0;
+}
+<style>
+    #tbl_list tr th
+    {
+    	text-align:left;
+    }
+</style>
+<p style="float:right;"> <a href="#" onclick="EditLogSheetMappedCols('@ViewBag.ClientID');" style="text-decoration:underline;color:Red;">Edit Mapping</a> </p><br />
+<table class="table table-striped table-condensed dTableR dataTable" id="tbl_list">
+ 
+    <tr>
+        <th>
+            SNO.
+        </th>
+        <th>
+            Field Text
+        </th>
+    </tr>
+ 
+    @{sno = 0; } 
+  
+@foreach (var item in Model) {
+    <tr>
+        <td>
+         @{ sno = sno + 1;}
+                    @sno
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FieldText)
+        </td>
+    </tr>
+}
+ 
+</table>
+<script type="text/javascript">
+    function EditLogSheetMappedCols(ClientID) {
+        $.ajax(
+        {
+        type: "GET",
+        url: "../../Client/EditLogSheetMappedCols",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddlogSheetMapCols').html(result);
+            EditLogSheetMappedListBoxCols(ClientID);
+        },
+        error: function (error) {
+
+        }
+    });
+}
+function EditLogSheetMappedListBoxCols(ClientID) {
+    $.ajax(
+    {
+        type: "GET",
+        url: "../../Client/EditLogSheetListBoxCols",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddedFieldTextList').html(result);
+            GetMappedStructList(ClientID);
+        },
+        error: function (error) {
+
+        }
+    });
+
+}
+
+</script>

@@ -1,0 +1,132 @@
+﻿@model SecurityGuard.ViewModels.ManageUsersViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SecurityGuard/Views/Shared/_SecurityGuardLayoutPage.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+
+    | @Html.ActionLink("Grant Menu Links to Roles", "GrantLinkTORoles", "RolePermission", new { area = "SecurityGuard" }, new { id = "grant-roles-to-user", disabled = "disabled" })
+   @* @Html.ActionLink("Create New", "Create")*@
+</p>
+<table>
+    <tr>
+        <th>
+            Select
+        
+            Role
+        </th>
+    </tr>
+    @if (Model.RolesList != null)
+    {
+        var grid = new WebGrid(Model.RolesList.ToList(),null,null,10);
+        <tr><td colspan="2">
+        @grid.GetHtml(columns: grid.Columns(grid.Column("RoleName","",canSort:true,format:@<text>  <input type="radio" name="rolename" value="@item.RoleName" class="userRadio" /></text>),grid.Column("RoleName", "", canSort: true)))</td></tr>
+        if (Model.RolesList.TotalCount == 0)
+        {
+        }
+        
+    }
+
+    
+
+</table>
+<script type="text/javascript">
+
+    $(function () {
+
+        /**************************************************
+        * Begin Radio Button functions
+        *
+        * This captures radio button event clicks and 
+        * enables the "Grant Roles To User" link.
+        **************************************************/
+        var anchor = $("a#grant-roles-to-user");
+        //anchor.attr("disabled", "disabled");
+        var href = anchor.attr("href");
+        $(".userRadio").click(function () {
+            // Get the value of the clicked radio button
+            // which is the username.
+            var userName = $(this).val();
+
+            // Get a reference to the "href" of the link.
+         
+            // Concatenate the existing href value with the username
+            var newHref = href + "?rolename=" + userName;
+
+            // Replace the existing href value with the new one
+            anchor.attr("href", newHref);
+            
+            // Remove the disabled attribute on the 
+            // Grant Roles to User link
+            anchor.removeAttr("disabled");
+
+        });
+
+        /**************************************************
+        * End Radio Button functions
+        **************************************************/
+
+
+
+        /**************************************************
+        * Begin FilterBy functions
+        *
+        * This will enable or disable the search field
+        * if the "ViewAll" selection is chosen.
+        **************************************************/
+
+        $("#filterby").live('change', function () {
+            var optionValue = $("option:selected", this).val();
+            if (optionValue == "all") {
+                // Clear the search field
+                $("#searchterm").val("");
+
+                // Disable the search term field
+                $("#searchterm").attr("disabled", "disabled");
+            } else {
+                $("#searchterm").removeAttr("disabled");
+            }
+        });
+
+
+        function InitSearchField() {
+            var filterbyVal = $("#filterby option:selected").val();
+            if (filterbyVal == "all") {
+                $("#searchterm").attr("disabled", "disabled");
+            }
+        }
+
+        InitSearchField();
+
+        /**************************************************
+        * End FilterBy functions
+        **************************************************/
+
+
+
+        /**************************************************
+        * Begin PageSize functions
+        *
+        * This handles the page size selected change functions.
+        **************************************************/
+
+        $("#page-size").change(function () {
+            var filterbyVal = $("#filterby option:selected").val();
+            var searchtermVal = $("#searchterm").val();
+            var pageSizeVal = $("option:selected", this).val();
+
+            location.href = '/SecurityGuard/Membership/index/' + filterbyVal + '/' + searchtermVal + '?pagesize=' + pageSizeVal;
+        });
+
+        /**************************************************
+        * End PageSize functions
+        **************************************************/
+
+
+    });
+
+</script>

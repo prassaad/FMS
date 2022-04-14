@@ -1,0 +1,323 @@
+﻿@model FMS.Models.tbl_inv_indents
+@{
+    ViewBag.Title = "Indent Entry";
+    Layout = "~/Areas/Inventory/Views/Shared/_InventryLayout.cshtml";
+    Session["List"] = null;
+    var VehicleList = (Dictionary<long, string>)ViewBag.VehicleID;
+}
+<style type="text/css">
+     .chzn-container
+     {
+         position:relative;
+         margin:0;
+     }   
+</style>
+<h2>Indent Entry</h2>
+<form id="IndentEntryForm" action="@Url.Action("Create", "Indent", new { area = "Inventory" })" method="post" enctype="multipart/form-data">
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li><i class="clip-close-2"></i><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Indent")">
+                Cancel</a> </li>
+            <li>
+                <input type="button" id="btnIndentEntry" class="btn btn-primary btn-xs" value="Save Indent Entry"
+                    style="margin-top: -12px;" /></li>
+        </ul>
+    </div>
+</div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+        <p class="clsmark" style="color: Red; width: 320px;margin:10px;"> 
+            &nbsp;(*) marked fields are mandatory
+        </p>
+            @Html.ValidationSummary(true)
+            <table cellpadding="5" class="table table-striped table-bordered">
+                <tr>
+                <td>
+                    Select Vehicle <span class="clsmark">*</span>
+                </td>
+                <td>
+                    <div class="side-by-side clearfix">
+                        <select id="VehicleId" data-placeholder="Select Vehicle..." class="chzn-select" style="width: 220px;" name="VehicleId">
+                            <option value=""></option>
+                            @foreach (var item in VehicleList.Keys)
+                            {
+                                <option value="@item">
+                                    @VehicleList[item]
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <input type="hidden" id="status" name="status" />
+                </td>
+                    <td>
+                        Department:<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("DepartId", (IEnumerable<SelectListItem>)ViewBag.DeptID, "--Select--", new { @style = "width:160px;" })
+                    </td>
+                    <td>
+                        Delivery Method:<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("Delivery", (IEnumerable<SelectListItem>)ViewBag.Delivery, "--Select--", new { @style = "width:160px;" })
+                    </td>
+                </tr>
+                <tr>
+                   
+                    <td>
+                        Purchase For<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("PurchasesFor", (IEnumerable<SelectListItem>)ViewBag.PurchasesFor, "- Select -", new { @style = "width:160px" })
+                    </td>
+                      <td>
+                        Priority<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("Priority", (IEnumerable<SelectListItem>)ViewBag.Priority, "- Select -", new { @style = "width:160px" })
+                    </td>
+                    <td>
+                        Indent Type <span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.DropDownList("IndentType", (IEnumerable<SelectListItem>)ViewBag.IndentType, "- Select -", new { @style = "width:160px" })
+                    </td>
+                </tr>
+                <tr>
+                   
+                    <td>
+                        Req. Dt.<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("RequiredDt", DateTime.Now.ToShortDateString(), new { @style = "width:160px;", @class = "BoxBackground datetimepicker" })
+                    </td>
+                    <td>
+                        Date:<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        @Html.TextBox("DtOfInd", DateTime.Now.ToShortDateString(), new { @style = "width:160px;", @class = "BoxBackground datetimepicker" })
+                    </td>
+                    <td>
+                        Indent Ref. No.<span class="clsmark">*</span>
+                    </td>
+                    <td>
+                        <input type="text" id="IndRefNo" name="IndRefNo" value="@(ViewBag.IndRefNo)"
+                        readonly="readonly"  class="BoxBackground" style="width:160px ! important;" />
+                    </td>
+                </tr>
+                 <tr>
+             <td>
+                        Additional Info.:
+                    </td>
+                    <td  colspan="2">
+                          @Html.TextArea("AddInfo", null, new { @maxlength = 250, @class = "validate", @style = "width:280px;height:45px;resize:none;", @rows = "2", @cols = "20" })
+                    </td>
+                    <td colspan="3">
+                    
+                    </td>
+           </tr>
+              
+            </table>
+            <div class="col-md-12">
+                            <h3>
+                               Add Indent Items <a data-toggle="modal" href="#" id="btnIndItemAdd" onclick="AddIndentItems()" style="vertical-align: middle;">
+                               <img src="@Url.Content("~/Content/images/plus.png")" alt="Add" style="margin-top:10px;height:15px;" /> </a></h3>
+                            <div id="IndentDetList">
+                            </div>
+                        </div>
+                        <br />
+          @{ ViewData["IsEdit"] = "0"; }
+           <input type="hidden" id="isEdit" value="0" />
+        </div>
+    </div> 
+</form>
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 30%; top: 35%; padding-bottom: 15px; padding-top: 15px; position: absolute;">
+        <img src="@Url.Content("~/Content/images/layout/loading.gif")" alt="Loading..." />
+    </div>
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="@Url.Content("~/Scripts/chosen.jquery.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#loading').hide();
+    var config = {
+        '.chzn-select': {},
+        '.chzn-select-deselect': { allow_single_deselect: true },
+        '.chzn-select-no-single': { disable_search_threshold: 10 },
+        '.chzn-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chzn-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    $(function () {
+        $(".datetimepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy'
+        });
+    });
+    $('#IndRefNo').attr('style', 'background-color:#ddd;cursor:no-drop;width: 150px')
+
+    function AddIndentItems() {
+        if (!ValidateMsg()) {
+            return false;
+        }
+        else {
+            $("#div_loading").fadeIn('slow');
+            $('#divSimpleModal').modal
+         ({
+             containerCss: {
+                 width: 610,
+                 height: 550
+             },
+             close: false,
+             onShow: function (dialog) {
+                 dialog.data.find('.no').click(function () {
+                     $.modal.close();
+                 });
+                 $("#btnItemAdd").attr("href", "#");
+                 $('#div_loading').show();
+                 var VehicleId = $('#VehicleId').val();
+                 AddItems(VehicleId, 0);
+             }
+         });
+        }
+    }
+
+    function AddItems(VehicleId, IsEdit) {
+        $.ajax(
+              {
+                  type: "GET",
+                  url: '@Url.Action("AddIndentItem", "Indent", new { area = "Inventory" })?VehicleId=' + VehicleId + "&IsEdit=" + IsEdit,
+                  dataType: "html",
+                  success: function (result) {
+                      $('#div_loading').hide();
+                      $('#divSimpleModalDet').html(result);
+                  },
+                  error: function (error) {
+                      alert(error);
+                  }
+              });
+
+    }
+    // Stock register master Validations and save stock
+    $('#btnIndentEntry').click(function () {
+        // validate here 
+        if ($.trim($('#IndentDetList').html()) == "") {
+            alert("Please add indent items below to continue the process");
+            $('#ddlItem').focus();
+            return;
+        }
+        $('#loading').show();
+        $('#status').val(0);
+        $.post('@Url.Action("Create", "Indent", new { area = "Inventory" })', $('#IndentEntryForm').serialize(), function (data) {
+            if (data.success) {
+                $('#loading').hide();
+                alert(data.msg);
+                window.location.href = '@Url.Action("Edit", "Indent", new { area = "Inventory" })?Id='+data.IndentId;
+            }
+            else {
+                $('#loading').hide();
+                alert(data.msg);
+            }
+        });
+      
+    });
+
+    function ValidateMsg() {
+        if ($.trim($('#VehicleId').val()) == "" || $.trim($('#VehicleId').val()) == "--Select Vehicle--") {
+            alert("Please select vehicle reg number to continue process.");
+            $('#CampusId').focus();
+            return false;
+        }
+        if ($.trim($('#DepartId').val()) == "" || $.trim($('#CampusId').val()) == "--Select Department--") {
+            alert("Please select department to continue process.");
+            $('#DepartId').focus();
+            return false;
+        }
+        if ($.trim($('#Delivery').val()) == "") {
+            alert("Please add delivery method to continue the process");
+            $('#Delivery').focus();
+            return false;
+        }
+        if ($.trim($('#IndRefNo').val()) != "") {
+            $.get('@Url.Action("VerifyIndentRefNo", "Indent", new { area = "Inventory" })?IndRefNo=' + $('#IndRefNo').val(), function (data) {
+                if (data == 1) {
+                    alert("Please change Indent Refference No#.");
+                    return false;
+                }
+            });
+        }
+       
+
+        if ($.trim($('#PurchasesFor').val()) == "") {
+            alert("Please select purchases for to continue process.");
+            $('#PurchasesFor').focus();
+            return false;
+        }
+        if ($.trim($('#Priority').val()) == "") {
+            alert("Please select priority to continue process.");
+            $('#Priority').focus();
+            return false;
+        }
+        if ($.trim($('#IndentType').val()) == "") {
+            alert("Please add indent type to continue the process");
+            $('#IndentType').focus();
+            return false;
+        }
+        if ($.trim($('#RequiredDt').val()) == "") {
+            alert("Please enter required date.");
+            $('#RequiredDt').focus();
+            return false;
+        }
+        if ($.trim($('#DtOfInd').val()) == "") {
+            alert("Please enter indent date.");
+            $('#DtOfInd').focus();
+            return false;
+        }
+        return true;
+    }
+
+    $(".validate").change(function (e) {
+        if ($.trim(this.value) != "") {
+            var title = isName(this.value);
+            if (title == false) {
+                $("#errormsg").show();
+                $("#errormsg").text("Your string has special characters. \nThese are not allowed.");
+                document.getElementById("" + this.id + "").value = '';
+                $("#" + this.id).focus();
+            }
+            else {
+                var title1 = DisableSpace(e);
+                if (title1 == false) {
+                    $("#errormsg").show();
+                    $("#errormsg").text("Your string has spaces.\n These are not allowed.");
+                    document.getElementById("" + this.id + "").value = '';
+                    document.getElementById("" + this.id + "").focus();
+                }
+                else {
+                    $("#errormsg").hide();
+                }
+            }
+        }
+        else {
+            $("#errormsg").text("Space should not be allowed.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+
+    });
+    function numberValidate(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 47 && charCode < 58 || charCode == 127 || charCode == 8 || charCode == 9)
+        { return true; } else { return false; }
+    }
+</script>
+

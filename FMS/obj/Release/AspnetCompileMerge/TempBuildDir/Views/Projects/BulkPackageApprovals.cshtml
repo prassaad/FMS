@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Bulk Package Renewals & Approvals";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ <h2>
+   Bulk Package Approvals </h2>
+<div class="bread_title">
+    <div class="bread_navigation">
+        <ul>
+            <li class="lastactive"><a id="FiscialYears" class="button_bg" href="@Url.Action("Index", "Projects")">
+               Cancel </a></li>
+        </ul>
+    </div>
+</div>
+<fieldset>
+    <legend>Renewals & Approvals </legend>
+    <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td>
+               Client:<span style=" color:red;"> * </span> 
+            </td>
+            <td> 
+               @Html.DropDownList("ClientId", (IEnumerable<SelectListItem>)ViewBag.ClientId, "-Select Client-", new { @style = "width:220px;display:inline;" })  
+               <span id="errClientId" style=" display:none; color:Red"> Please select client</span>
+             
+              </td>
+            <td>
+                Project:<span style=" color:red;"> * </span> 
+            </td>
+            <td>
+                <select id="ProjectId" name="ProjectId" class="clsPackage" style="width: 220px;display:inline;">
+                    <option value="0">-Select Project-</option>
+                </select>
+                <span id="errProjectId" style=" display:none; color:Red"> Please select project</span></td>
+            <td>
+                Package Period
+            </td>
+            <td>
+                @Html.DropDownList("Package", null, "-Select-", new { @style = "width:120px" })
+                <span id="errPackagePeriod" style="display:none; color:Red">Please select package peroid</span>
+            </td>
+            <td>
+                <input type="radio" name="filter" id="rdftAll" value="0" checked="checked" /> &nbsp; All
+                <input type="radio" name="filter" id="rdftActive" value="1" /> &nbsp; Active 
+                <input type="radio" name="filter" id="rdftExpired" value="2" /> &nbsp; Expired 
+            
+            </td>
+            <td>
+                <input type="button" id="btnGetPackages" value="Get Packages" />
+            </td>
+           
+        </tr>
+    </table>
+    <div id="divPackageApprovedList">
+        
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+
+    function GetPackageApproveAndRenewalList(ClientId, ProjectId, Rdfilter, Package) {
+        $.ajax(
+    {
+        type: "GET",
+        beforeSend: function () {
+            $('#loading').fadeIn('slow');
+        },
+        url: "/Projects/GetPackageApproveAndRenewalList",
+        data: "ClientId=" + ClientId + "&ProjectId=" + ProjectId + "&rdFilter=" + Rdfilter + "&PackageMonth=" + Package,
+        dataType: "html",
+        success: function (result) {
+            $('#divPackageApprovedList').html(result);
+            $('#loading').fadeOut('slow');
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+    }
+
+    $('#btnGetPackages').click(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var rdfilter = $('input[name=filter]:checked').val();
+        var package = $('#Package').val();
+        $("#errClientId").hide(); $("#errProjectId").hide(); $("#errPackagePeriod").hide();
+
+        if (clientId != '') {
+
+            if (projectId != '') {
+
+                if (package !== '') {
+
+                    GetPackageApproveAndRenewalList(clientId, projectId, rdfilter, package);
+                }
+
+                else {
+                    $("#errPackagePeriod").show();
+                }
+            }
+
+            else {
+                //  alert("Please Select Project ")
+                $("#errProjectId").show();
+            }
+        }
+
+        else {
+            //  alert("Please Select Client")
+            $("#errClientId").show();
+        }
+
+    });
+
+    $('#ClientId').change(function () {
+        var clientId = $(this).val(); $("#errClientId").hide(); $("#errProjectId").hide();
+        if (clientId != '')
+            GetProjectsByClient(clientId);
+        else {
+            $('#ProjectId').empty().append("<option>-Select-</option>");
+        }
+    });
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+</script>

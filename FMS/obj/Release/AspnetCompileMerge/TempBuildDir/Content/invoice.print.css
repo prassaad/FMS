@@ -1,0 +1,91 @@
+﻿.noprint {display:none;}
+@page{
+margin-left: 1px;
+margin-right: 5px;
+margin-top: 1px;
+margin-bottom: 0px;
+}
+body{ top:0; }
+     hr
+     {
+        margin: 10px 0px 10px 0px;    
+     }
+     
+     /* Printable Invoice format */ 
+     .table tr td 
+     {
+     	padding:1px;
+     }
+     .table thead tr 
+     {
+     	border:1px solid #000;
+     }		
+     fieldset
+     {
+     	margin:0;
+     	padding: 0 1.4em 1.4em 1.4em;
+     	border: 1px solid #000;
+     }
+     .bread_title
+     {
+     	margin-top: 0;
+     	margin-bottom: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+     }
+     h2
+     {
+     	margin:0;
+     	line-height: 12px;
+		margin-top: 5px;
+     }
+     .table
+     {
+     	margin-bottom:0;
+     }
+     #wrapper
+     {
+     	padding-top:0;
+     }
+     input[type="text"] {
+		display: block;
+		margin:0 ! important;
+		padding:0 ! important;
+		border: none;
+		font-size:12px;
+	}
+	.topAlign
+	{
+	    margin-top:20px;
+	}
+      /* -----Alerts print ----------*/
+     #tileContainer
+     {
+     	display:none;
+     }
+     #dmenu
+     {
+     	display:none;
+     }
+     #masterheader
+      {
+     	display:none;
+     }
+     
+     .row
+     {
+     	display:none;
+     }
+     #hdrdashboard
+     {
+     	display:none;
+     }
+     .commonHeader
+     {
+     	display:none;
+     }
+    #printIcon{display:none;}.nonPrintable{display:none;}
+    #wrapper{ padding-top:0; }
+    #ifrmPrint { display:block; }
+    
+    

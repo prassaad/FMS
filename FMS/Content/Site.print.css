@@ -1,0 +1,78 @@
+﻿.noprint {display:none;}
+body{ top:0; }
+  table.invoiceHeader, table.invoiceHeader tr, table.invoiceHeader tr td
+    {
+        border:0; 
+     }
+     
+     div.from 
+     {
+        padding:10px;    
+        width:250px;
+     }
+     
+     div.invoiceFooter
+     {
+        margin-top:30px;
+        text-align:right;
+        font-style:italic;
+     }
+     
+     table td.invoiceFooterTitle
+     {
+        text-align:right;
+        padding-right:15px;
+        font-weight:bold;    
+     }
+     
+     table td
+     {
+        font-weight:bold;    
+        padding-left:15px;
+        font-size:100%;
+     }
+     
+     table td.invoiceFooterValueTotal
+     {
+         padding-left:15px;
+         font-weight:bold;  
+         font-size:80%;
+         text-decoration:underline;
+     }
+     
+     hr
+     {
+        margin: 10px 0px 10px 0px;    
+     }
+      /* -----Alerts print ----------*/
+     #tileContainer
+     {
+     	display:none;
+     }
+     #dmenu
+     {
+     	display:none;
+     }
+     #masterheader
+      {
+     	display:none;
+     }
+     
+     .row
+     {
+     	display:none;
+     }
+     #hdrdashboard
+     {
+     	display:none;
+     }
+     .commonHeader
+     {
+     	display:none;
+     }
+    #printIcon{display:none;}
+    .nonPrintable{display:none;}
+     
+    #wrapper{ padding-top:0; }
+    
+    

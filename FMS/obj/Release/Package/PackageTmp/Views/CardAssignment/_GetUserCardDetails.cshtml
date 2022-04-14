@@ -1,0 +1,510 @@
+﻿@using FMS.Models;
+@{
+    Int64 PackageId = Convert.ToInt64(ViewBag.PackageId);
+    Int32 StatusId = Convert.ToInt32(ViewBag.Status);
+    UserCardEntryModel objCustomModel = (UserCardEntryModel)ViewBag.CustomModel;
+}
+<style type="text/css">
+    .disabled
+    {
+        background-color: #E3E3E3 !important;
+        cursor: no-drop;
+    }
+</style>
+@if (StatusId > 0)
+{
+    <h2>
+        @(ViewBag.Message)
+    </h2>
+}
+else
+{
+    <fieldset>
+        <legend>Card Details </legend>
+        <table style="width: 100%">
+            <tr style="width: 100%">
+                <td style="width: 70%">
+                    <table class="table-striped table-condensed dTableR dataTable">
+                        <tr>
+                            <td>
+                                Client <span style="color: red;">* </span>
+                            </td>
+                            <td>
+                                @Html.Hidden("VehId", 0)
+                                <!-- dummy hidden field don't remove -->
+                                @Html.DropDownList("ClientId", null, "-Select Client-", new { @style = "width:160px;", @disabled = "disabled" })
+                                @Html.Hidden("ClientId", objCustomModel.ClientId)
+                                <span id="errClientId" style="display: none; color: Red">Please select client</span>
+                            </td>
+                            <td>
+                                Project <span style="color: red;">* </span>
+                            </td>
+                            <td>
+                                @Html.DropDownList("ProjectId", null, "-Select Project-", new { @style = "width:160px;", @class = "clsPackage", @disabled = "disabled" })
+                                @Html.Hidden("ProjectId", objCustomModel.ProjectId)
+                                <span id="errProjectId" style="display: none; color: Red">Please select project</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Package <span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                           
+                                <select id="PackageId" name="PackageId" style="width: 160px;" disabled="disabled">
+                                    <option value="0">-Select-</option>
+                                </select>
+                                @Html.Hidden("PackageId", objCustomModel.PackageId)
+                                <span id="errPackageId" style="display: none; color: Red">Please select package</span>
+                            </td>
+                            <td>
+                                Route#/Name<span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                @Html.TextBox("RouteId", "", new { @style = "width:45px;", @class = "disabled", @readonly = true })
+                                <span id="errRouteId" style="display: none; color: Red">Please enter RouteId</span>
+                                @Html.TextBox("RouteName", "", new { @style = "width:100px;", @class = "disabled", @readonly = true })
+                                <span id="errRouteName" style="display: none; color: Red">Please enter Route name</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Vehicle Reg# <span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                @Html.DropDownList("VehicleId", null, "-Select Vehicle-", new { @style = "width:160px;display:inline;", @disabled = "disabled" })
+                                @Html.Hidden("VehicleId", objCustomModel.VehicleId)
+                                <span id="errVehicleId" style="display: none; color: Red">Please select vehicle</span>
+                            </td>
+                            <td>
+                                Trip Type <span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                <select id="TripeType" name="TripeType" style="width: 160px;">
+                                    <option value="">-Select Trip Type-</option>
+                                    <option value="PICKUP">PICK UP</option>
+                                    <option value="DROP">DROP</option>
+                                </select>
+                                <span id="errTripeType" style="display: none; color: Red">Please enter Trip Type</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Driver<span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                <select id="DriverID" name="DriverID" class="txtInput" style="width: 160px;" disabled="disabled">
+                                    <option value="0">--Select Driver--</option>
+                                </select>
+                                @Html.Hidden("DriverID", objCustomModel.DriverId)
+                                <span id="errDriverID" style="display: none; color: Red">Please enter Driver</span>
+                            </td>
+                            <td>
+                                Vehicle Model<span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                <select id="VehicleModelID" name="VehicleModelID" class="txtInput" style="width: 160px;"
+                                    disabled="disabled">
+                                    <option value="0">--Select Vehicle Model--</option>
+                                </select>
+                                @Html.Hidden("VehicleModelId", objCustomModel.VehicleModelId)
+                                <span id="errVehicleModelID" style="display: none; color: Red">Please enter Vehicle
+                                    Model</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Vehicle Type<span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                @Html.DropDownList("VehicleTypeID", null, "--Select Vehicle Type--", new { @class = "txtInput", @style = "width:160px;", @disabled = "disabled" })
+                                @Html.Hidden("VehicleTypeId", objCustomModel.VehicleTypeId)
+                                <span id="errVehicleTypeID" style="display: none; color: Red">Please enter Vehicle Type</span>
+                            </td>
+                            <td>
+                                Package Amount<span style="color: Red;">* </span>
+                            </td>
+                            <td>
+                                @Html.TextBox("PackageAmt", "", new { @style = "width:150px;", @class = "disabled", @readonly = true })
+                                <span id="errPackageAmt" style="display: none; color: Red">Please enter package amount
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                LogInTime/LogOutTime
+                            </td>
+                            <td>
+                                <input type="checkbox" id="Hide" value="" class="CHK" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="Box">
+                                LogIn Time <span style="color: Red;">* </span>
+                            </td>
+                            <td class="Box">
+                                @Html.TextBox("LogInTime", "", new { @style = "width:150px;" })
+                                <span id="errLogInTime" style="display: none; color: Red">Please enter Login Time</span>
+                            </td>
+                            <td class="Box">
+                                LogOut Time<span style="color: Red;">* </span>
+                            </td>
+                            <td class="Box">
+                                @Html.TextBox("LogOutTime", "", new { @style = "width:150px;" })
+                                <span id="errLogOutTime" style="display: none; color: Red">Please enter LogOut Time</span>
+                            </td>
+                        </tr>
+                        <tr id="Alternate">
+                            <td>
+                                Alternate Veh.#<span style="color: Red;"></span>
+                            </td>
+                            <td>
+                                @Html.TextBox("AlternateVehNumber", "", new { @style = "width:150px;" })
+                                <span id="errAlternateVehNumber" style="display: none; color: Red">Please enter Alternate
+                                    Vehicle Number</span>
+                            </td>
+                            <td>
+                                Mobile
+                            </td>
+                            <td>
+                                @Html.TextBox("ContactNumber", "", new { @style = "width:150px;" })
+                                <span id="errContactNumber" style="display: none; color: Red">Please enter Contact Number</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Amount
+                            </td>
+                            <td>
+                                @Html.TextBox("NetAmount", "", new { @style = "width:150px;" })
+                                <span id="errNetAmount" style="display: none; color: Red">Please enter amount</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" align="center">
+                                &nbsp;&nbsp;
+                                <input type="button" id="btnSubmit" value="Submit" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 30%; vertical-align: top;">
+                    <div style="overflow-y: scroll; height: 350px; padding: 5px 5px 0 5px;">
+                        <div id="divExistedLogEntries">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+<script type="text/javascript">
+
+    GetLogbyCardNumber($("#CardNo :selected").text());
+
+    $('#btnSubmit').click(function () {
+        //if (ValidationForErrorMsg()) {
+        $('#loading').fadeIn('slow');
+        $('#btnSubmit').attr('disabled', true);
+        $('#btnSubmit').attr('style', 'cursor:no-drop');
+        $.post('/CardAssignment/UserCardEntry', $('#frmUserCardEntry').serialize(), function (data) {
+            alert(data.msg);
+            $('#loading').fadeOut('slow');
+            $('#btnSubmit').attr('disabled', false);
+            $('#btnSubmit').attr('style', 'cursor:pointer');
+            if (data.success) {
+                window.location.href = "/logsheetmanagement/Index";
+            }
+        });
+        //}
+    });
+
+    function GetLogbyCardNumber(cardNumber) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/CardAssignment/GetLogbyCardNumber?cardNumber=" + cardNumber,
+            dataType: "html",
+            success: function (data) {
+                $('#divExistedLogEntries').html(data);
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+
+    function ValidationForErrorMsg() {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var packageId = $('#PackageId').val();
+        var vehicleId = $('#VehicleId').val();
+        var tripType = $('#TripeType').val();
+        var routeId = $('#RouteId').val();
+        var routeName = $('#RouteName').val();
+        var driverId = $('#DriverID').val();
+        var vehicleModel = $('#VehicleModelID').val();
+        var vehicleType = $('#VehicleTypeID').val();
+        var packageAmt = $('#PackageAmt').val();
+        var logInTime = $('#LogInTime').val();
+        var logOutTime = $('#LogOutTime').val();
+        if (clientId == '') {
+            $('#errClientId').show();
+            return false;
+        }
+        if (projectId == '') {
+            $('#errProjectId').show();
+            return false;
+        }
+        if (packageId == '') {
+            $('#errPackageId').show();
+            return false;
+        }
+        if (vehicleId == '') {
+            $('#errVehicleId').show();
+            return false;
+        }
+
+        if (tripType == '') {
+            $('#errTripeType').show();
+            return false;
+        }
+
+        if (routeId == '') {
+            $('#errRouteId').show();
+            return false;
+        }
+
+        if (routeName == '') {
+            $('#errRouteName').show();
+            return false;
+        }
+
+        if (driverId == '') {
+            $('#errDriverID').show();
+            return false;
+        }
+
+        if (vehicleModel == '') {
+            $('#VehicleModelID').show();
+            return false;
+        }
+
+        if (vehicleType == '') {
+            $('#errVehicleTypeID').show();
+            return false;
+        }
+
+        if (packageAmt == '') {
+            $('#errPackageAmt').show();
+            return false;
+        }
+        if (logInTime == '') {
+            $('#errLogInTime').show();
+            return false;
+        }
+        if (logOutTime == '') {
+            $('#errLogOutTime').show();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    $(document).ready(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var logDate = $('#LogDate').val();
+        var vehicleId = $('#VehicleId').val();
+
+        Getpackages(clientId, projectId, logDate, '@PackageId');
+
+        GetVehicleDriver(vehicleId);
+
+        GetVehicleModel(vehicleId);
+
+        $('#TripeType').val('PICKUP');
+
+    });
+
+    $('#ProjectId').change(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var logDate = $('#LogDate').val();
+        if (clientId != '' && projectId != '' && logDate != '') {
+            Getpackages(clientId, projectId, logDate);
+        }
+    });
+
+    $('#PackageId').change(function () {
+        var PackageId = $(this).val();
+        if (PackageId != '') {
+            GetPackageDetailsbyPackage(PackageId);
+        }
+    });
+
+    $('#VehicleId').change(function () {
+        var clientId = $('#ClientId').val();
+        var projectId = $('#ProjectId').val();
+        var PackageId = $('#PackageId').val();
+        var sValue = $(this).val();
+        if (sValue != '') {
+            GetVehicleDriver(sValue);
+            GetVehicleModel(sValue);
+        }
+    });
+
+
+    function GetProjectsByClient(ClientId) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/Projects/GetProjectsByClient?ClientId=" + ClientId,
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#ProjectId').html('<option value="">-Select-</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].Id + "'>" + data[i].ProjectName + "</option>";
+                        sModel = data[i].Id;
+                    }
+                    $("#ProjectId").append(options);
+                }
+                else
+                    $('#ProjectId').html('<option value="">-No Project Available-</option>');
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+    function Getpackages(ClientId, ProjectId, SelectedMonth, PackageId) {
+        $("#loading").fadeIn('slow');
+        $.get('@Url.Action("GetMonthlyPackages", "CardAssignment")?SelectedMonth=' + SelectedMonth + '&ClientId=' + ClientId + '&ProjectId=' + ProjectId + "&PackageId=" + PackageId, function (data) {
+            if (data.length > 0) {
+                $("#PackageId").html('<option value="">-Select Package-</option>');
+                var options = ""; var sModel = "";
+                for (var i = 0; i < data.length; ++i) {
+                    options += "<option value='" + data[i].Id + "'>" + data[i].Package + "</option>";
+                    sModel = data[i].Id;
+                }
+                $("#PackageId").append(options);
+                $("#PackageId option[value=" + sModel + "]").attr("selected", "selected");
+                $('#PackageId option:contains("Loading...")').remove();
+                $("#loading").fadeOut('slow');
+
+                GetPackageDetailsbyPackage(sModel);
+            }
+            else {
+                $('#PackageId').html('<option value="">-No Packages Available-</option>');
+                $("#loading").fadeOut('slow');
+            }
+        });
+    }
+
+    function GetPackageDetailsbyPackage(PackageId) {
+        $("#loading").fadeIn('slow');
+        $.get('@Url.Action("GetPackageDetailsbyPackage", "CardAssignment")?PackageId=' + PackageId, function (data) {
+            $('#RouteId').val(data.RouteId);
+            $('#RouteName').val(data.RouteName);
+            $('#PackageAmt').val(data.PackageAmt);
+            $('#LogInTime').val(data.LogInTime);
+            $('#LogOutTime').val(data.LogOutTime);
+            $("#loading").fadeOut('slow');
+        });
+    }
+
+    function GetVehicleDriver(VehicleID) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleDriver?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").hide();
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#DriverID").append(options);
+                    $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#DriverID option:contains("Loading...")').remove();
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    $('#DriverID').html('<option value="">--Select Driver--</option>');
+                    $("#btnaddDriver").show();
+                    var options = ""; var sModel = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; ++i) {
+                            options += "<option value='" + data[i].ID + "'>" + data[i].FirstName + " " + data[i].LastName + "</option>";
+                            sModel = data[i].ID;
+                        }
+                        $("#DriverID").append(options);
+                        $("#DriverID option[value=" + sModel + "]").attr("selected", "selected");
+
+                    }
+                    $("#loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+    function GetVehicleModel(VehicleID) {
+        $("#loading").fadeIn('slow');
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/LogsheetManagement/GetVehicleModel?VehicleID=" + VehicleID + "",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    var options = ""; var sModel = "";
+                    for (var i = 0; i < data.length; ++i) {
+                        options += "<option value='" + data[i].ID + "'>" + data[i].VehicleModelName + "</option>";
+                        sModel = data[i].ID;
+                    }
+                    $("#VehicleModelID").append(options);
+                    $("#VehicleModelID option[value=" + sModel + "]").attr("selected", "selected");
+                    $('#VehicleModelID option:contains("Loading...")').remove();
+                    $("#loading").fadeOut('slow');
+                }
+                else {
+                    $('#VehicleModelID').html('<option value="">--Select Model--</option>');
+                    $("#loading").fadeOut('slow');
+                }
+            },
+            error: function (error) {
+                // alert(error);
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $(".Box").hide();
+        $("#Hide").click(function () {
+            $("#Alternate").toggle();
+            $(".Box").toggle();
+        });
+    });
+
+   
+
+</script>

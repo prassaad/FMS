@@ -1,0 +1,335 @@
+﻿@model FMS.Models.tbl_clients
+
+@{
+    ViewBag.Title = "Edit Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="../../Content/jquery.stepy.css" rel="stylesheet" type="text/css" />
+<script src="../../Scripts/jquery.stepy.min.js" type="text/javascript"></script>
+<h2>Edit Client [ @(Model.CompanyName==null ? "" : Model.CompanyName.ToString().ToUpper() )   ]</h2>
+ <div id="div_loading" align="center" style="padding-right: 25px; z-index: 3; padding-left: 25px;
+        left: 45%; top: 40%; padding-bottom: 15px; padding-top: 15px; position: absolute;display:none;">
+        <h4>
+            </h4>
+        <img src="../../Content/images/layout/loading.gif"  alt="Loading..."/ >
+    </div>
+<div class="bread_title">
+                    <div class="bread_navigation">
+                        <ul>
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li class="lastactive">@Html.ActionLink("List of Clients", "Index")</li>
+                        </ul>
+                    </div>
+            </div>
+@using (Html.BeginForm("Edit", "Client", FormMethod.Post, new { enctype = "multipart/form-data", id = "callback" }))
+{
+    @Html.ValidationSummary(true)
+ 
+     <fieldset title="Client Details" class="step" id="callback-step-1" style="display: block;
+            width: 98%">
+        <legend>Edit Details</legend>
+        <table class="table-striped table-condensed dTableR dataTable">
+        <tr>
+            <td colspan="2" style="padding-top:10px;">
+                <span id="SpanValidateMsg" style="color: Red; display: none;font-size:14px;font-weight: bold;">
+                </span>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    Company Name :<span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.CompanyName, new { @class="isName"})
+                    @Html.ValidationMessageFor(model => model.CompanyName)
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    Address :
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address, new { @cols = 36 })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone Number :
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PhoneNumber, new { @maxlength = "10" })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Agreement Document :
+                </td>
+                <td>
+                    <input type="file" name="Agreement" id="AgreementDocument"/> &nbsp;&nbsp;&nbsp;&nbsp; @if (Model.AgreementDocument != null)
+                                                                                            {
+                    <img src="../../Content/uploadimages/@Model.AgreementDocument" width="80" height="80" alt="Photo" />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                    <img src="../../Content/uploadimages/user-avatar.jpg" width="80" height="80" alt="Photo" />
+                                                                                            }
+                    @Html.ValidationMessageFor(model => model.AgreementDocument)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   Billing Type : <span style="color:Red;">*</span>
+                </td>
+                <td>
+                    @Html.DropDownList("BillingTypeID", null, "--Select Bill Type--", new { style="width:310px;" })  
+                    <h3 style="color:Red">&nbsp;&nbsp;Current Chart Rate is @Model.tbl_billing_types.BillingType </h3>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save Changes" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset title="Client Rate" class="step" id="callback-step-2" style="width: 98%">
+        <legend>Rate Details</legend>
+        <table>
+            <tr style="width: 100%;">
+                <td style="vertical-align: top;">
+                    <div id="divAddClientRateChart">
+                    </div><br /><br />
+                    <fieldset>
+                    <legend>Added Rate List</legend>
+                    <div id="divAddedClientRateList">
+                    </div>
+                    </fieldset>
+                </td>
+            </tr>
+        </table>
+    </fieldset> 
+    <fieldset title="Log Sheet Maps" class="step" id="callback-step-3" style="width: 98%">
+        <legend>Map Column Details</legend>
+        <table style="width: 50%;">
+           <tr style="width: 100%;">
+                <td colspan="2" style="vertical-align: top;">
+                    <div id="divAddlogSheetMapCols" style="width:100%;">
+                    </div>
+                </td> 
+            </tr>
+        </table>
+         <br /><br />
+    </fieldset> 
+     
+}
+<div id="divSimpleModal" style="display: none; overflow: auto" class="simplemodal-widget">
+    <div id="divSimpleModalDet">
+    </div>
+    <a class="no"></a>
+</div>
+<script src="../../Scripts/jquery.simplemodal-1.2.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var ClientId = '@Model.ID';
+    $("#btnSaveAll").hide();
+    $("#loading").hide();
+    $('#callback').stepy({ titleClick: true, select: function (index) {
+        switch (index) {
+            case 1:
+                break;
+            case 2:
+                AddClientRateChart(ClientId);
+                ClientRateChartList(ClientId);
+                break;
+            case 3:
+                ClientColumnsToBeMapped(ClientId);
+                break;
+           
+        }
+    }
+    });
+
+// Client Rate Tab 
+function AddClientRateChart(ClientID) {
+    $("#loading").fadeIn('slow');
+    $.ajax(
+    {
+        type: "GET",
+        url: "../../Client/AddClientRateChart",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddClientRateChart').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            
+        }
+    });
+}
+function ClientRateChartList(ClientID) {
+    $("#loading").fadeIn('slow');
+    $.ajax(
+    {
+        type: "GET",
+        url: "../../Client/GetClientRateList",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddedClientRateList').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            
+        }
+    });
+}
+// Log Sheet Maps Tab
+function ClientColumnsToBeMapped(ClientID) {
+    $("#loading").fadeIn('slow');
+    $.ajax(
+    {
+        type: "GET",
+        url: "../../Client/AddColumnsToBeMapped",
+        data: "ClientID=" + ClientID,
+        dataType: "html",
+        success: function (result) {
+            $('#divAddlogSheetMapCols').html(result);
+            $("#loading").fadeOut('slow');
+        },
+        error: function (error) {
+            
+        }
+    });
+}
+// Reload List Box Items
+function ReloadListBoxItems(ClientID) {
+    $("#loading").fadeIn('slow');
+    $.ajax(
+        {
+            type: "GET",
+            url: "../../Client/ReLoadListBoxItems",
+            data: "ClientID=" + ClientID,
+            dataType: "html",
+            success: function (result) {
+                $('#divAddedFieldTextList').html(result);
+                GetMappedStructList();
+                $("#btnSaveAll").show();
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+}
+// Get Mapped Structure List
+function GetMappedStructList(ClientID) {
+    $("#loading").fadeIn('slow');
+    $.ajax(
+        {
+            type: "GET",
+            url: "../../Client/GetMappedStructList",
+            data: "ClientID=" + ClientID,
+            dataType: "html",
+            success: function (result) {
+                $('#divMappedColsStructure').html(result);
+                $("#loading").fadeOut('slow');
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+}
+function EditSLABDetails(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 610,
+              height: 430
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+              $.ajax(
+    {
+        type: "GET",
+        url: "/Client/EditSLABDetails",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+        },
+        error: function (error) {
+            //            alert(error);
+        }
+    });
+
+          }
+
+      });
+
+}
+function EditKMDetails(ID) {
+    $('#divSimpleModal').modal
+      ({
+          containerCss: {
+              width: 610,
+              height: 430
+          },
+          close: false,
+          onShow: function (dialog) {
+              dialog.data.find('.no').click(function () {
+                  $.modal.close();
+              });
+   $.ajax(
+    {
+        type: "GET",
+        url: "/Client/EditKMDetails",
+        data: "ID=" + ID,
+        dataType: "html",
+        success: function (result) {
+            $('#divSimpleModalDet').html(result);
+        },
+        error: function (error) {
+            //            alert(error);
+        }
+    });
+
+          }
+
+      });
+
+}
+// Billing Type change event
+$("#BillingTypeID").change(function () {
+   alert("Previous rate chart applied will be deleted.Do you want to change?");
+});
+
+$("#PhoneNumber").change(function () {
+    var result = isValidMobileNumber(this.value)
+    $("#SpanValidateMsg").hide();
+    if (result == false) {
+        $("#SpanValidateMsg").show();
+        $("#SpanValidateMsg").html("Phone number should be digit..");
+        document.getElementById("" + this.id + "").value = '';
+        $("#" + this.id).focus();
+    }
+});
+$(".isName").change(function () {
+    var result = IsPureCharsAndSpace(this.value)
+    $("#SpanValidateMsg").hide();
+    if (this.id == "CompanyName") {
+        if (result == false) {
+            $("#SpanValidateMsg").show();
+            $("#SpanValidateMsg").html("Company Name should be alphabets.");
+            document.getElementById("" + this.id + "").value = '';
+            $("#" + this.id).focus();
+        }
+    }
+ 
+});
+</script>
